@@ -1,11 +1,7 @@
 #+TODO: TODO(t!) START(s!) WAIT(w!) | DONE(d!) FLEEZE(f!) CANCEL(c!)
 * CURRENT
-** TODO object と名がつくオペレータを atman にする。
-   - State "TODO"       from ""           [2014-05-27 火 22:56]
-
-まぁ、これも好みじゃけぇ。
-テストも通らんといけんよ。
-
+** TODO 1キー複数値に対応するための関数を実装する。
+   - State "TODO"       from ""           [2014-05-27 火 23:59]
 * BACKLOG
 ** TODO TEST-OP
   - State "TODO"       from ""           [2014-05-27 火 22:53]
@@ -72,4 +68,14 @@ system ってのが気に入らんことを思い出したけぇね。
 brahman? とかも考えたけど、 brahman = nil じゃろうけぇ、ちょっと違うんよね。
 
 変えたよー。テストもしたけぇ。
+
+** CANCEL object と名がつくオペレータを atman にする。そのために一覧を洗い出そう。
+   - State "CANCEL"     from "TODO"       [2014-05-28 水 00:01]
+   - State "TODO"       from ""           [2014-05-27 火 22:56]
+
+まぁ、これも好みじゃけぇ。
+テストも通らんといけんよ。
+
+なんか、もぉええかって気になってきた。
+なもんでキャンセル。
 
