@@ -22,7 +22,7 @@
 
 ;; A generic object prevalence protocol handling objects with id
 
-(defclass object-with-id ()
+(defclass atman ()
   ((id :reader get-id :initarg :id :initform -1))
   (:documentation "Superclass for objects with an id"))
 
@@ -48,10 +48,10 @@
   (let ((root-name (get-objects-root-name class)))
     (get-root-object system root-name)))
 
-(defgeneric find-object-with-id (system class id)
+(defgeneric find-atman (system class id)
   (:documentation "Find and return the object in system of class with id, null if not found"))
 
-(defmethod find-object-with-id ((system prevalence-system) class id)
+(defmethod find-atman ((system prevalence-system) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
          (index (get-root-object system index-name)))
@@ -66,7 +66,7 @@
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index (get-root-object system index-name)))
     (if index
-        (find-object-with-id system class (gethash value index))
+        (find-atman system class (gethash value index))
         (find value (find-all-objects system class)
               :key #'(lambda (object) (slot-value object slot)) :test test))))
 
@@ -128,7 +128,7 @@
 
 (defun tx-delete-object (system class id)
   "Delete the object of class with id from the system"
-  (let ((object (find-object-with-id system class id)))
+  (let ((object (find-atman system class id)))
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class 'id)))
@@ -138,7 +138,7 @@
 
 (defun tx-change-object-slots (system class id slots-and-values)
   "Change some slots of the object of class with id in system using slots and values"
-  (let ((object (find-object-with-id system class id)))
+  (let ((object (find-atman system class id)))
     (unless object (error "no object of class ~a with id ~d found in ~s" class id system))
     (loop :for (slot value) :in slots-and-values
        :do (when (slot-value-changed-p object slot value)

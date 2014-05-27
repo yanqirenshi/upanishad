@@ -28,7 +28,7 @@
 
 ;; a test object class
 
-(defclass test-system-user (object-with-id)
+(defclass test-system-user (atman)
   ((username :accessor get-username :initarg :username :initform nil)
    (password :accessor get-password :initarg :password :initform nil)))
 
@@ -68,14 +68,14 @@
 ;; now do the test
 
 (test test-get-master-user
-  (let ((user (find-object-with-id *master-test-system* 'test-system-user *user-id*)))
+  (let ((user (find-atman *master-test-system* 'test-system-user *user-id*)))
     (is (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 
 (test test-get-slave-user :depends-on '(and test-get-master-user)
       ;; Plato Wu,2009/02/27: because it need time to transfer data from master to slave?
       (sleep 1)
-      (let ((user (find-object-with-id *slave-test-system* 'test-system-user *user-id*)))
+      (let ((user (find-atman *slave-test-system* 'test-system-user *user-id*)))
         (is (and (equal (get-username user) "billg")
                  (equal (get-password user) "windows")))))
 

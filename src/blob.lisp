@@ -14,7 +14,7 @@
 
 (in-package :upanishad)
 
-(defclass blob (object-with-id)
+(defclass blob (atman)
   ((name :accessor get-name :initarg :name :initform "untitled")
    (size :reader get-size :initarg :size :initform -1)
    (mime-type :accessor get-mime-type :initarg :mime-type :initform "application/octet-stream")

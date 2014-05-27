@@ -1,15 +1,18 @@
 #+TODO: TODO(t!) START(s!) WAIT(w!) | DONE(d!) FLEEZE(f!) CANCEL(c!)
 * CURRENT
-** TODO object-with-id を atman にする。
-   - State "TODO"       from ""           [2014-05-27 火 22:55]
-そんなんする必要があるか？って。好みじゃけぇしかたなかろう。
-テストも通るようにしといて。
-
 ** TODO object と名がつくオペレータを atman にする。
    - State "TODO"       from ""           [2014-05-27 火 22:56]
 
 まぁ、これも好みじゃけぇ。
 テストも通らんといけんよ。
+
+** WAIT prevalence-system を pool という名前に変更する。
+   - State "WAIT"       from "START"      [2014-05-27 火 23:45]
+   - State "START"      from "TODO"       [2014-05-27 火 23:43]
+   - State "TODO"       from ""           [2014-05-27 火 23:35]
+
+system ってのが気に入らんことを思い出したけぇね。
+brahman? とかも考えたけど、 brahman = nil じゃろうけぇ、ちょっと違うんよね。
 
 * BACKLOG
 ** TODO TEST-OP
@@ -57,3 +60,12 @@
 
 * ICEBOX
 * COMPLETE
+** DONE object-with-id を atman にする。
+   - State "DONE"       from "START"      [2014-05-27 火 23:42]
+   - State "START"      from "TODO"       [2014-05-27 火 23:39]
+   - State "TODO"       from ""           [2014-05-27 火 22:55]
+そんなんする必要があるか？って。好みじゃけぇしかたなかろう。
+テストも通るようにしといて。
+
+完了しました。テストも通りました。
+

@@ -22,7 +22,7 @@
 
 (defpackage :upanishad
   (:use :cl :s-serialization)
-  #+nil (:nicknames :up)
+  (:nicknames :up)
   (:export
    #:make-prevalence-system
    #:make-transaction
@@ -61,11 +61,11 @@
    #:destroy
 
    #:execute-transaction
-   #:object-with-id
+   #:atman
    #:get-id
    #:id
    #:find-all-objects
-   #:find-object-with-id
+   #:find-atman
    #:tx-create-id-counter
    #:tx-create-object
    #:tx-delete-object
