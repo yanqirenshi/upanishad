@@ -14,12 +14,12 @@
 
 ;;; Public API: Functions and Generic Functions
 
-(defun make-prevalence-system (directory &key (prevalence-system-class 'prevalence-system) init-args)
+(defun make-pool (directory &key (pool-class 'pool) init-args)
   "Create and return a new prevalence system on directory. When the
   directory contains a valid snapshot and/or transaction log file, the
   system will be restored. Optionally specify the prevalence system's
   class."
-  (apply #'make-instance prevalence-system-class :directory directory init-args))
+  (apply #'make-instance pool-class :directory directory init-args))
 
 (defun make-transaction (function &rest args)
   "Create and return a new transaction specifying a function name and
@@ -69,7 +69,7 @@
 
 ;;; Classes
 
-(defclass prevalence-system ()
+(defclass pool ()
   ((directory ;; :type pathname
     :initarg :directory
     :accessor get-directory)
@@ -106,7 +106,7 @@
     :initform #'identity))
   (:documentation "Base Prevalence system implementation object"))
 
-(defclass guarded-prevalence-system (prevalence-system)
+(defclass guarded-pool (pool)
   ((guard ;; :type function
     :accessor get-guard
     :initform #'(lambda (thunk) (funcall thunk))))
@@ -137,7 +137,7 @@
 
 ;;; Implementation
 
-(defmethod initialize-instance :after ((system prevalence-system) &rest initargs &key &allow-other-keys)
+(defmethod initialize-instance :after ((system pool) &rest initargs &key &allow-other-keys)
   "After a system is initialized, derive its file paths and try to restore it"
   (declare (ignore initargs))
   (with-slots (directory) system
@@ -150,7 +150,7 @@
                                                         directory)))
   (restore system))
 
-(defmethod get-transaction-log-stream :before ((system prevalence-system))
+(defmethod get-transaction-log-stream :before ((system pool))
   (with-slots (transaction-log-stream) system
     (unless transaction-log-stream
       (setf transaction-log-stream (open (get-transaction-log system)
@@ -159,14 +159,14 @@
                                          #+ccl :sharing #+ccl nil
                                          :if-exists :append)))))
 
-(defmethod close-open-streams ((system prevalence-system) &key abort)
+(defmethod close-open-streams ((system pool) &key abort)
   "Close all open stream associated with system (optionally aborting operations in progress)"
   (with-slots (transaction-log-stream) system
     (when transaction-log-stream
       (close transaction-log-stream :abort abort)
       (setf transaction-log-stream nil))))
 
-(defmethod totally-destroy ((system prevalence-system) &key abort)
+(defmethod totally-destroy ((system pool) &key abort)
   "Totally destroy system from permanent storage by deleting any files used by the system, remove all root objects"
   (close-open-streams system :abort abort)
   (when (probe-file (get-directory system))
@@ -181,24 +181,24 @@
             (get-function transaction)
             (or (get-args transaction) "()"))))
 
-(defmethod get-root-object ((system prevalence-system) name)
+(defmethod get-root-object ((system pool) name)
   (gethash name (get-root-objects system)))
 
-(defmethod (setf get-root-object) (value (system prevalence-system) name)
+(defmethod (setf get-root-object) (value (system pool) name)
   (setf (gethash name (get-root-objects system)) value))
 
-(defmethod get-option ((system prevalence-system) name)
+(defmethod get-option ((system pool) name)
   (with-slots (options) system
     (gethash name options)))
 
-(defmethod (setf get-option) (value (system prevalence-system) name)
+(defmethod (setf get-option) (value (system pool) name)
   (with-slots (options) system
     (setf (gethash name options) value)))
 
-(defmethod remove-root-object ((system prevalence-system) name)
+(defmethod remove-root-object ((system pool) name)
   (remhash name (get-root-objects system)))
 
-(defmethod execute ((system prevalence-system) (transaction transaction))
+(defmethod execute ((system pool) (transaction transaction))
   "Execute a transaction on a system and log it to the transaction log"
   (let ((result
          (handler-bind ((error #'(lambda (condition)
@@ -212,27 +212,27 @@
     (log-transaction system transaction)
     result))
 
-(defmethod log-transaction ((system prevalence-system) (transaction transaction))
+(defmethod log-transaction ((system pool) (transaction transaction))
   "Log transaction for system"
   (let ((out (get-transaction-log-stream system)))
     (funcall (get-serializer system) transaction out (get-serialization-state system))
     (terpri out)
     (finish-output out)))
 
-(defmethod log-transaction :after ((system prevalence-system) (transaction transaction))
+(defmethod log-transaction :after ((system pool) (transaction transaction))
   "Execute the transaction-hook"
   (funcall (get-transaction-hook system) transaction))
 
-(defmethod query ((system prevalence-system) function &rest args)
+(defmethod query ((system pool) function &rest args)
   "Execute an exclusive query function on a sytem"
   (apply function (cons system args)))
 
-(defmethod execute-on ((transaction transaction) (system prevalence-system))
+(defmethod execute-on ((transaction transaction) (system pool))
   "Execute a transaction itself in the context of a system"
   (apply (get-function transaction)
          (cons system (get-args transaction))))
 
-(defmethod snapshot ((system prevalence-system))
+(defmethod snapshot ((system pool))
   "Write to whole system to persistent storage resetting the transaction log"
   (let ((timetag (timetag))
         (transaction-log (get-transaction-log system))
@@ -251,7 +251,7 @@
                                                   transaction-log))
       (delete-file transaction-log))))
 
-(defmethod backup ((system prevalence-system) &key directory)
+(defmethod backup ((system pool) &key directory)
   "Make backup copies of the current snapshot and transaction-log files"
   (let* ((timetag (timetag))
          (transaction-log (get-transaction-log system))
@@ -269,7 +269,7 @@
       (copy-file snapshot snapshot-backup))
     timetag))
 
-(defmethod restore ((system prevalence-system))
+(defmethod restore ((system pool))
   "Load a system from persistent storage starting from the last snapshot and replaying the transaction log"
   (clrhash (get-root-objects system))
   (close-open-streams system)
@@ -293,27 +293,27 @@
                    (execute-on transaction system)
                    (return)))))))))
 
-(defmethod execute ((system guarded-prevalence-system) (transaction transaction))
+(defmethod execute ((system guarded-pool) (transaction transaction))
   "Execute a transaction on a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system transaction))))
 
-(defmethod query ((system guarded-prevalence-system) function &rest args)
+(defmethod query ((system guarded-pool) function &rest args)
   "Execute an exclusive query function on a sytem controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (apply function (cons system args)))))
 
-(defmethod snapshot ((system guarded-prevalence-system))
+(defmethod snapshot ((system guarded-pool))
   "Make a snapshot of a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system))))
 
-(defmethod backup ((system guarded-prevalence-system) &key directory)
+(defmethod backup ((system guarded-pool) &key directory)
   "Do a backup on a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system directory))))
 
-(defmethod restore ((system guarded-prevalence-system))
+(defmethod restore ((system guarded-pool))
   "Restore a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system))))
@@ -328,11 +328,11 @@
             "~d~2,'0d~2,'0dT~2,'0d~2,'0d~2,'0d"
             year month date hour minute second)))
 
-(defmethod get-transaction-log-filename ((system prevalence-system) &optional suffix)
+(defmethod get-transaction-log-filename ((system pool) &optional suffix)
   "Return the name of the transaction-log filename, optionally using a suffix"
   (format nil "transaction-log~@[-~a~]" suffix))
 
-(defmethod get-snapshot-filename ((system prevalence-system) &optional suffix)
+(defmethod get-snapshot-filename ((system pool) &optional suffix)
   "Return the name of the snapshot filename, optionally using a suffix"
   (format nil "snapshot~@[-~a~]" suffix))
 
@@ -370,7 +370,7 @@
 
 ;;; from the serialization package
 
-(defmethod reset-known-slots ((system prevalence-system) &optional class)
+(defmethod reset-known-slots ((system pool) &optional class)
   (reset-known-slots (get-serialization-state system) class))
 
 ;;; extra documentation

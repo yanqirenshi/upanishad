@@ -43,7 +43,7 @@
 (defgeneric find-all-objects (system class)
   (:documentation "Return an unordered collection of all objects in system that are instances of class"))
 
-(defmethod find-all-objects ((system prevalence-system) class)
+(defmethod find-all-objects ((system pool) class)
   "Return an unordered collection of all objects in system that are instances of class"
   (let ((root-name (get-objects-root-name class)))
     (get-root-object system root-name)))
@@ -51,7 +51,7 @@
 (defgeneric find-atman (system class id)
   (:documentation "Find and return the object in system of class with id, null if not found"))
 
-(defmethod find-atman ((system prevalence-system) class id)
+(defmethod find-atman ((system pool) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
          (index (get-root-object system index-name)))
@@ -61,7 +61,7 @@
 (defgeneric find-object-with-slot (system class slot value &optional test)
   (:documentation "Find and return the object in system of class with slot equal to value, null if not found"))
 
-(defmethod find-object-with-slot ((system prevalence-system) class slot value &optional (test #'equalp))
+(defmethod find-object-with-slot ((system pool) class slot value &optional (test #'equalp))
   "Find and return the object in system of class with slot equal to value, null if not found"
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index (get-root-object system index-name)))
@@ -152,7 +152,7 @@
   "Initialize the id counter to 0"
   (setf (get-root-object system :id-counter) 0))
 
-(defmethod next-id ((system prevalence-system))
+(defmethod next-id ((system pool))
   "Increment and return the next id"
   (incf (get-root-object system :id-counter)))
 
@@ -161,7 +161,7 @@
 (defgeneric get-preference (system key)
   (:documentation "Retrieve the value of the persistent preference stored under key in system"))
 
-(defmethod get-preference ((system prevalence-system) key)
+(defmethod get-preference ((system pool) key)
   "Retrieve the value of the persistent preference stored under key in system"
   (let ((preferences (get-root-object system :preferences)))
     (when preferences
@@ -178,7 +178,7 @@
 (defgeneric all-preferences-keys (system)
   (:documentation "Return a list of all persistent preference keys of system"))
 
-(defmethod all-preferences-keys ((system prevalence-system))
+(defmethod all-preferences-keys ((system pool))
   "Return a list of all persistent preference keys of system"
   (let ((preferences (get-root-object system :preferences)))
     (when preferences

@@ -56,7 +56,7 @@
   system)
 
 (defvar *bank-system*
-  (let ((system (make-prevalence-system *bank-system-location*)))
+  (let ((system (make-pool *bank-system-location*)))
     (init-bank-system system)))
 
 (defun tx-create-account (system holder)
@@ -222,8 +222,8 @@
   t)
 
 (defun bank-test-3 ()
-  (let ((system (make-prevalence-system *bank-system-location*
-                                        :prevalence-system-class 'guarded-prevalence-system)))
+  (let ((system (make-pool *bank-system-location*
+                           :pool-class 'guarded-pool)))
     (query system #'get-bank-balance)
     (close-open-streams system)))
 
@@ -311,8 +311,8 @@
 
 (defun bank-test-5-setup ()
   (when *bank-system* (close-open-streams *bank-system*))
-  (setf *bank-system* (make-prevalence-system *bank-system-location*
-                                              :prevalence-system-class 'guarded-prevalence-system))
+  (setf *bank-system* (make-pool *bank-system-location*
+                                 :pool-class 'guarded-pool))
   (setf (get-guard *bank-system*) #'bank-system-guard)
   (mapcar #'(lambda (account)
               (delete-account (get-number account)))

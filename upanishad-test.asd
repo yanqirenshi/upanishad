@@ -9,7 +9,7 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
 (in-package :upanishad-test-asd)
 
 (defsystem :upanishad-test
-  :name "CL-PREVALENCE-TEST"
+  :name "UPANISHAD-TEST"
   :author "yanqirenshi"
   :version "0.1"
   :maintainer "yanqirenshi"
@@ -21,6 +21,5 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
    (:file "test/test-prevalence")
    (:file "test/test-managed-prevalence")
    (:file "test/test-master-slave")
-   (:file "test/test-serialization")
-   )
-  :depends-on (:cl-prevalence :fiveam))
+   (:file "test/test-serialization"))
+  :depends-on (:upanishad :fiveam))

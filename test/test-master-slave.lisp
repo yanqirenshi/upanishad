@@ -42,14 +42,14 @@
   (when *master-test-system*
     (totally-destroy *master-test-system*))
 
-  (setf *master-test-system* (make-prevalence-system *master-test-system-directory*))
+  (setf *master-test-system* (make-pool *master-test-system-directory*))
   (is-true *master-test-system*)
   (totally-destroy *master-test-system*)
   (execute-transaction (tx-create-id-counter *master-test-system*))
 
   (when *slave-test-system*
     (totally-destroy *slave-test-system*))
-  (setf *slave-test-system* (make-prevalence-system *slave-test-system-directory*))
+  (setf *slave-test-system* (make-pool *slave-test-system-directory*))
   (is-true *slave-test-system*)
   (totally-destroy *slave-test-system*)
   (execute-transaction (tx-create-id-counter *slave-test-system*))

@@ -27,7 +27,7 @@
     (when (probe-file directory)
       (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
         (delete-file pathname)))
-    (setf *test-system* (make-prevalence-system directory))
+    (setf *test-system* (make-pool directory))
     (is-true *test-system*)))
 ;; A Test CLOS class
 
@@ -83,7 +83,7 @@
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using the transaction log"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((person (gethash *jlp* (get-root-object *test-system* :persons))))
     (is (eq (class-of person) (find-class 'person)))
     (is (equal (get-firstname person) "Jean-Luc"))
@@ -101,7 +101,7 @@
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using the snapshot"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((person (gethash *jlp* (get-root-object *test-system* :persons))))
     (is (eq (class-of person) (find-class 'person)))
     (is (equal (get-firstname person) "Jean-Luc"))
@@ -128,7 +128,7 @@
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using both the snapshot and the transaction log"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((person (gethash *jlp* (get-root-object *test-system* :persons))))
     (is (eq (class-of person) (find-class 'person)))
     (is (equal (get-firstname person) "Jean-Luc"))
@@ -159,8 +159,8 @@
 (test test-guarded
   "testing a guarded prevalence system"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*
-                                              :prevalence-system-class 'guarded-prevalence-system))
+  (setf *test-system* (make-pool *test-system-directory*
+                                 :pool-class 'guarded-pool))
   (setf (get-guard *test-system*) #'guard)
   (let (new-person)
     (setf *guard* nil)

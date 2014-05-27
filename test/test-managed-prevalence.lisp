@@ -28,7 +28,7 @@
     (when (probe-file directory)
       (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
         (delete-file pathname)))
-    (setf *test-system* (make-prevalence-system directory))
+    (setf *test-system* (make-pool directory))
     (is-true *test-system*)
     (index-on *test-system* 'managed-person '(firstname lastname) 'equal)))
 
@@ -107,7 +107,7 @@
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the transaction log"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((managed-person (find-atman *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
@@ -137,7 +137,7 @@
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the snapshot"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((managed-person (find-atman *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
@@ -173,7 +173,7 @@
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using both the snapshot and the transaction log"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*))
+  (setf *test-system* (make-pool *test-system-directory*))
   (let ((managed-person (find-atman *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
@@ -213,8 +213,8 @@
   "testing a managed-guarded prevalence system
    [Not sure that we need the below test here -- RRR]"
   (close-open-streams *test-system*)
-  (setf *test-system* (make-prevalence-system *test-system-directory*
-                                              :prevalence-system-class 'guarded-prevalence-system))
+  (setf *test-system* (make-pool *test-system-directory*
+                                 :pool-class 'guarded-pool))
   (setf (get-guard *test-system*) #'managed-guard)
   (let (new-managed-person)
     (setf *managed-guard* nil)

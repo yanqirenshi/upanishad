@@ -13,43 +13,43 @@
 
 (in-package :upanishad)
 
-(defun start-master-client (prevalence-system &key (host "localhost") (port 7651))
-  "Start a connection to host:port to deliver transactions from prevalence-system"
-  (stop-master-client prevalence-system)
+(defun start-master-client (pool &key (host "localhost") (port 7651))
+  "Start a connection to host:port to deliver transactions from pool"
+  (stop-master-client pool)
   (let ((out (s-sysdeps:open-socket-stream host port)))
-    (setf (get-transaction-hook prevalence-system)
+    (setf (get-transaction-hook pool)
           #'(lambda (transaction)
-              (funcall (get-serializer prevalence-system)
+              (funcall (get-serializer pool)
                        transaction
                        out
-                       (get-serialization-state prevalence-system))
+                       (get-serialization-state pool))
               (finish-output out)
               (when (eq transaction :stop)
                 (close out)))))
   t)
 
 (defun stop-master-client (prevalence-sytem)
-  "Stop a connection from prevalence-system"
+  "Stop a connection from pool"
   (with-slots (transaction-hook)
       prevalence-sytem
     (when transaction-hook
       (funcall transaction-hook :stop)
       (setf transaction-hook #'identity))))
 
-(defun start-slave-server (prevalence-system &key (port 7651))
-  "Start a server on port accepting transactions to be executed on prevalence-system"
+(defun start-slave-server (pool &key (port 7651))
+  "Start a server on port accepting transactions to be executed on pool"
   (s-sysdeps:start-standard-server
    :port port
    :name "prevalence-slave-server"
    :connection-handler #'(lambda (stream)
                            (loop
-                              (let ((transaction (funcall (get-deserializer prevalence-system)
+                              (let ((transaction (funcall (get-deserializer pool)
                                                           stream
-                                                          (get-serialization-state prevalence-system))))
+                                                          (get-serialization-state pool))))
                                 (if (or (null transaction)
                                         (eq transaction :stop))
                                     (return)
-                                    (execute prevalence-system transaction)))))))
+                                    (execute pool transaction)))))))
 
 (defun stop-slave-server (server)
   ;; Plato Wu,2009/02/26: stop-server need be exported in s-sysdeps.

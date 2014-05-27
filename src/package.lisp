@@ -24,7 +24,7 @@
   (:use :cl :s-serialization)
   (:nicknames :up)
   (:export
-   #:make-prevalence-system
+   #:make-pool
    #:make-transaction
    #:execute
    #:query
@@ -34,8 +34,8 @@
    #:get-root-object
    #:get-option
    #:remove-root-object
-   #:prevalence-system
-   #:guarded-prevalence-system
+   #:pool
+   #:guarded-pool
    #:get-guard
    #:transaction
    #:no-rollback-error

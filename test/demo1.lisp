@@ -44,7 +44,7 @@
 
 (defun demo1 ()
   "Run the demo1 loop, computing primes and making the list of primes found persistent"
-  (let ((system (make-prevalence-system *system-location*)))
+  (let ((system (make-pool *system-location*)))
     (unwind-protect
          (let* ((numbers (or (get-root-object system :numbers)
                              (execute system (make-transaction 'tx-create-numbers-root))))
@@ -63,25 +63,25 @@
 
 (defun benchmark1 ()
   (let (system)
-    (setf system (make-prevalence-system *system-location*))
+    (setf system (make-pool *system-location*))
     (totally-destroy system)
     (execute system (make-transaction 'tx-create-numbers-root))
     (time (dotimes (i 10000) (execute system (make-transaction 'tx-add-number i))))
     (close-open-streams system)
-    (setf system (time (make-prevalence-system *system-location*)))
+    (setf system (time (make-pool *system-location*)))
     (close-open-streams system)))
 
 (defun benchmark2 ()
   (let (system)
-    (setf system (make-prevalence-system *system-location*
-                                         :init-args '(:serializer serialize-sexp
-                                                      :deserializer deserialize-sexp
-                                                      :file-extension "sexp")))
+    (setf system (make-pool *system-location*
+                            :init-args '(:serializer serialize-sexp
+                                         :deserializer deserialize-sexp
+                                         :file-extension "sexp")))
     (totally-destroy system)
     (execute system (make-transaction 'tx-create-numbers-root))
     (time (dotimes (i 10000) (execute system (make-transaction 'tx-add-number i))))
     (close-open-streams system)
-    (setf system (time (make-prevalence-system *system-location*)))
+    (setf system (time (make-pool *system-location*)))
     (close-open-streams system)))
 
 ;;;; eof
