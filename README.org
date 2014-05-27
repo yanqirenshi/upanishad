@@ -1,0 +1,22 @@
+* Upanishad 
+
+cl-prevalence を自分用に変更したいのでフォークしました。
+
+** Usage
+
+** Dependencies
+
+** Installation
+
+** Author
+
+yanqirenshi (yanqirenshie@gmail.com)
+
+* Copyright
+
+Copyright (c) 2013 yanqirenshi (yanqirenshie@gmail.com)
+
+* License
+
+Licensed under the LLGPL License.
+
