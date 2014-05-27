@@ -18,7 +18,7 @@
 (defmacro execute-transaction (transaction-call)
   "Create a transaction object from transaction-call and execute it"
   `(execute ,(second transaction-call)
-	    (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
+            (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
 
 ;; A generic object prevalence protocol handling objects with id
 
@@ -54,7 +54,7 @@
 (defmethod find-object-with-id ((system prevalence-system) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
-	 (index (get-root-object system index-name)))
+         (index (get-root-object system index-name)))
     (when index
       (gethash id index))))
 
@@ -64,11 +64,11 @@
 (defmethod find-object-with-slot ((system prevalence-system) class slot value &optional (test #'equalp))
   "Find and return the object in system of class with slot equal to value, null if not found"
   (let* ((index-name (get-objects-slot-index-name class slot))
-	 (index (get-root-object system index-name)))
+         (index (get-root-object system index-name)))
     (if index
         (find-object-with-id system class (gethash value index))
-      (find value (find-all-objects system class) 
-            :key #'(lambda (object) (slot-value object slot)) :test test))))
+        (find value (find-all-objects system class)
+              :key #'(lambda (object) (slot-value object slot)) :test test))))
 
 (defun tx-create-objects-slot-index (system class slot &optional (test #'equalp))
   "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"
@@ -78,7 +78,7 @@
         (setf (get-root-object system index-name) index)
         (dolist (object (find-all-objects system class))
           (add-object-to-slot-index system class slot object))))))
-  
+
 (defun tx-remove-objects-slot-index (system class slot)
   "Remove an index for this object on this slot"
   (let ((index-name (get-objects-slot-index-name class slot)))
@@ -88,14 +88,14 @@
 (defun add-object-to-slot-index (system class slot object)
   "Add an index entry using this slot to this object"
   (let* ((index-name (get-objects-slot-index-name class slot))
-	 (index (get-root-object system index-name)))
+         (index (get-root-object system index-name)))
     (when (and index  (slot-boundp object slot))
       (setf (gethash (slot-value object slot) index) (get-id object)))))
 
 (defun remove-object-from-slot-index (system class slot object)
   "Remove the index entry using this slot to this object"
   (let* ((index-name (get-objects-slot-index-name class slot))
-	 (index (get-root-object system index-name)))
+         (index (get-root-object system index-name)))
     (when (and index (slot-boundp object slot))
       (remhash (slot-value object slot) index))))
 
@@ -112,15 +112,15 @@
 (defun slot-value-changed-p (object slot value)
   "Return true when slot in object is not eql to value (or when the slot was unbound)"
   (or (not (slot-boundp object slot))
-      (not (eql (slot-value object slot) value)))) 
+      (not (eql (slot-value object slot) value))))
 
 (defun tx-create-object (system class &optional slots-and-values)
   "Create a new object of class in system, assigning it a unique id, optionally setting some slots and values"
   (let* ((id (next-id system))
-	 (object (make-instance class :id id))
-	 (index-name (get-objects-slot-index-name class 'id))
-	 (index (or (get-root-object system index-name)
-		    (setf (get-root-object system index-name) (make-hash-table)))))
+         (object (make-instance class :id id))
+         (index-name (get-objects-slot-index-name class 'id))
+         (index (or (get-root-object system index-name)
+                    (setf (get-root-object system index-name) (make-hash-table)))))
     (push object (get-root-object system (get-objects-root-name class)))
     (setf (gethash id index) object)
     (tx-change-object-slots system class id slots-and-values)
@@ -130,22 +130,22 @@
   "Delete the object of class with id from the system"
   (let ((object (find-object-with-id system class id)))
     (if object
-	(let ((root-name (get-objects-root-name class))
-	      (index-name (get-objects-slot-index-name class 'id)))
-	  (setf (get-root-object system root-name) (delete object (get-root-object system root-name)))
-	  (remhash id (get-root-object system index-name)))
-      (error "no object of class ~a with id ~d found in ~s" class id system))))
+        (let ((root-name (get-objects-root-name class))
+              (index-name (get-objects-slot-index-name class 'id)))
+          (setf (get-root-object system root-name) (delete object (get-root-object system root-name)))
+          (remhash id (get-root-object system index-name)))
+        (error "no object of class ~a with id ~d found in ~s" class id system))))
 
 (defun tx-change-object-slots (system class id slots-and-values)
   "Change some slots of the object of class with id in system using slots and values"
   (let ((object (find-object-with-id system class id)))
     (unless object (error "no object of class ~a with id ~d found in ~s" class id system))
     (loop :for (slot value) :in slots-and-values
-          :do (when (slot-value-changed-p object slot value)
-                (remove-object-from-slot-index system class slot object)
-                (setf (slot-value object slot) value)
-                (add-object-to-slot-index system class slot object)))))
-                
+       :do (when (slot-value-changed-p object slot value)
+             (remove-object-from-slot-index system class slot object)
+             (setf (slot-value object slot) value)
+             (add-object-to-slot-index system class slot object)))))
+
 ;; We use a simple id counter to generate unique object identifiers
 
 (defun tx-create-id-counter (system)
@@ -165,14 +165,14 @@
   "Retrieve the value of the persistent preference stored under key in system"
   (let ((preferences (get-root-object system :preferences)))
     (when preferences
-      (gethash key preferences)))) 
+      (gethash key preferences))))
 
 (defun tx-set-preference (system key value)
   "Set the value of the persistent preference key in system"
   (let ((preferences (get-root-object system :preferences)))
     (when (not preferences)
       (setf preferences (make-hash-table)
-	    (get-root-object system :preferences) preferences))
+            (get-root-object system :preferences) preferences))
     (setf (gethash key preferences) value)))
 
 (defgeneric all-preferences-keys (system)

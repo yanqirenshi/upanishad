@@ -10,22 +10,22 @@
 ;;;; as governed by the terms of the Lisp Lesser General Public License
 ;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 
-(in-package :cl-prevalence-test)
+(in-package :upanishad-test)
 
-(def-suite test-serialization :in cl-prevalence-test)
+(def-suite test-serialization :in upanishad-test)
 
 (in-suite test-serialization)
 
 (defun serialize-and-deserialize-xml (object)
   (with-input-from-string
-    (in (with-output-to-string (out)
-	  (serialize-xml object out)))
+      (in (with-output-to-string (out)
+            (serialize-xml object out)))
     (deserialize-xml in)))
 
 (defun serialize-and-deserialize-sexp (object)
   (with-input-from-string
-    (in (with-output-to-string (out)
-	  (serialize-sexp object out)))
+      (in (with-output-to-string (out)
+            (serialize-sexp object out)))
     (deserialize-sexp in)))
 
 ;; primitives
@@ -141,144 +141,144 @@
 (test test-primitive-21
   (is
    (equal (serialize-and-deserialize-xml "Hello")
-	  "Hello")))
+          "Hello")))
 
 (test test-primitive-22
   (is
    (equal (serialize-and-deserialize-sexp "Hello")
-	  "Hello")))
+          "Hello")))
 
 (test test-primitive-23
-  (is 
+  (is
    (equal (serialize-and-deserialize-xml "")
-	  "")))
+          "")))
 
 (test test-primitive-24
-  (is 
+  (is
    (equal (serialize-and-deserialize-sexp "")
-	  "")))
+          "")))
 
 (test test-primitive-25
   (is
    (equal (serialize-and-deserialize-xml #\A)
-	  #\A)))
+          #\A)))
 
 (test test-primitive-26
   (is
    (equal (serialize-and-deserialize-sexp #\A)
-	  #\A)))
+          #\A)))
 
 (test test-primitive-27
   (is
    (equal (serialize-and-deserialize-xml #\<)
-	  #\<)))
+          #\<)))
 
 (test test-primitive-28
   (is
    (equal (serialize-and-deserialize-sexp #\<)
-	  #\<)))
+          #\<)))
 
 (test test-primitive-29
   (is
    (equal (serialize-and-deserialize-xml "Hello <foo> & </bar>!")
-	  "Hello <foo> & </bar>!")))
+          "Hello <foo> & </bar>!")))
 
 (test test-primitive-30
   (is
    (equal (serialize-and-deserialize-sexp "Hello <foo> & </bar>!")
-	  "Hello <foo> & </bar>!")))
+          "Hello <foo> & </bar>!")))
 
 ;; simple sequences
 
 (test test-simple-sequences-1
   (is
    (reduce #'(lambda (x &optional (y t)) (and x y))
-	   (map 'list
-		#'eql
-		(serialize-and-deserialize-xml (list 1 2 3))
-		(list 1 2 3)))))
+           (map 'list
+                #'eql
+                (serialize-and-deserialize-xml (list 1 2 3))
+                (list 1 2 3)))))
 
 (test test-simple-sequences-2
   (is
    (reduce #'(lambda (x &optional (y t)) (and x y))
-	   (map 'list
-		#'eql
-		(serialize-and-deserialize-sexp (list 1 2 3))
-		(list 1 2 3)))))
+           (map 'list
+                #'eql
+                (serialize-and-deserialize-sexp (list 1 2 3))
+                (list 1 2 3)))))
 
 (test test-simple-sequences-3
   (is
    (equal (serialize-and-deserialize-xml (list 1 2 3))
-	  (list 1 2 3))))
+          (list 1 2 3))))
 
 (test test-simple-sequences-4
   (is
    (equal (serialize-and-deserialize-sexp (list 1 2 3))
-	  (list 1 2 3))))
+          (list 1 2 3))))
 
 (test test-simple-sequences-5
   (is
    (equal (serialize-and-deserialize-xml (cons 1 2))
-	  (cons 1 2))))
+          (cons 1 2))))
 
 (test test-simple-sequences-6
   (is
    (equal (serialize-and-deserialize-sexp (cons 1 2))
-	  (cons 1 2))))
+          (cons 1 2))))
 
 (test test-simple-sequences-7
-  (is 
+  (is
    (equal (serialize-and-deserialize-xml '(1 2 3 4 5 6 7 8 9 . 0))
-	  '(1 2 3 4 5 6 7 8 9 . 0))))
+          '(1 2 3 4 5 6 7 8 9 . 0))))
 
 (test test-simple-sequences-8
-  (is 
+  (is
    (equal (serialize-and-deserialize-sexp '(1 2 3 4 5 6 7 8 9 . 0))
-	  '(1 2 3 4 5 6 7 8 9 . 0))))
+          '(1 2 3 4 5 6 7 8 9 . 0))))
 
 (test test-simple-sequences-9
   (is
    (equal (serialize-and-deserialize-xml (cons 'hi 2))
-	  (cons 'hi 2))))
+          (cons 'hi 2))))
 
 (test test-simple-sequences-10
   (is
    (equal (serialize-and-deserialize-sexp (cons 'hi 2))
-	  (cons 'hi 2))))
+          (cons 'hi 2))))
 
 (defun circular-list (&rest elements)
-   (let ((cycle (copy-list elements))) 
-     (nconc cycle cycle)))
+  (let ((cycle (copy-list elements)))
+    (nconc cycle cycle)))
 
 (test test-circular-list-1
   (is
    (equal (third (serialize-and-deserialize-sexp (circular-list 'a 'b)))
-	  'a)))
+          'a)))
 
 (test test-circular-list-2
   (is
    (equal (third (serialize-and-deserialize-xml (circular-list 'a 'b)))
-	  'a)))
+          'a)))
 
 (test test-circular-list-3
   (is
    (equal (serialize-and-deserialize-xml (cons 'hi 2))
-	  (cons 'hi 2))))
+          (cons 'hi 2))))
 
 (test test-circular-list-4
   (is
    (equal (serialize-and-deserialize-sexp (cons 'hi 2))
-	  (cons 'hi 2))))
+          (cons 'hi 2))))
 
 (test test-circular-list-5
   (is
    (equal (third (serialize-and-deserialize-sexp (circular-list 'a 'b)))
-	  'a)))
+          'a)))
 
 (test test-circular-list-6
   (is
    (equal (third (serialize-and-deserialize-xml (circular-list 'a 'b)))
-	  'a)))
+          'a)))
 
 ;; simple objects
 
@@ -291,14 +291,14 @@
 (test test-simple-objects-1
   (let ((foobar (serialize-and-deserialize-xml *foobar*)))
     (is (and (equal (get-foo foobar) (get-foo *foobar*))
-	     (equal (get-bar foobar) (get-bar *foobar*))
-	     (eq (class-of foobar) (class-of *foobar*))))))
+             (equal (get-bar foobar) (get-bar *foobar*))
+             (eq (class-of foobar) (class-of *foobar*))))))
 
 (test test-simple-objects-2
   (let ((foobar (serialize-and-deserialize-sexp *foobar*)))
     (is (and (equal (get-foo foobar) (get-foo *foobar*))
-	     (equal (get-bar foobar) (get-bar *foobar*))
-	     (eq (class-of foobar) (class-of *foobar*))))))
+             (equal (get-bar foobar) (get-bar *foobar*))
+             (eq (class-of foobar) (class-of *foobar*))))))
 
 ;; standard structs
 
@@ -311,34 +311,34 @@
 (test test-standard-structs-1
   (let ((foobaz (serialize-and-deserialize-xml *foobaz*)))
     (is (and (foobaz-p foobaz)
-	     (equal (foobaz-foo foobaz) (foobaz-foo *foobaz*))
-	     (equal (foobaz-baz foobaz) (foobaz-baz *foobaz*))))))
+             (equal (foobaz-foo foobaz) (foobaz-foo *foobaz*))
+             (equal (foobaz-baz foobaz) (foobaz-baz *foobaz*))))))
 
 (test test-standard-structs-2
   (let ((foobaz (serialize-and-deserialize-sexp *foobaz*)))
     (is (and (foobaz-p foobaz)
-	     (equal (foobaz-foo foobaz) (foobaz-foo *foobaz*))
-	     (equal (foobaz-baz foobaz) (foobaz-baz *foobaz*))))))
+             (equal (foobaz-foo foobaz) (foobaz-foo *foobaz*))
+             (equal (foobaz-baz foobaz) (foobaz-baz *foobaz*))))))
 
 ;;; hash-tables
 
-(defparameter *hashtable* 
+(defparameter *hashtable*
   (let ((hashtable (make-hash-table :test 'equal)))
     (map nil
-       #'(lambda (feature) (setf (gethash (symbol-name feature) hashtable) feature))
-       *features*)
+         #'(lambda (feature) (setf (gethash (symbol-name feature) hashtable) feature))
+         *features*)
     hashtable))
 
 (test test-hash-tables-1
   (let (h2)
     (setf h2 (serialize-and-deserialize-xml *hashtable*))
-    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *hashtable*) 
+    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *hashtable*)
     (maphash #'(lambda (k v) (is (equal v (gethash k *hashtable*)))) h2)))
 
 (test test-hash-tables-2
   (let (h2)
     (setf h2 (serialize-and-deserialize-sexp *hashtable*))
-    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *hashtable*) 
+    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *hashtable*)
     (maphash #'(lambda (k v) (is (equal v (gethash k *hashtable*)))) h2)))
 
 (defparameter *empty-hashtable* (make-hash-table))
@@ -346,13 +346,13 @@
 (test test-empty-hash-tables-1
   (let (h2)
     (setf h2 (serialize-and-deserialize-xml *empty-hashtable*))
-    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *empty-hashtable*) 
+    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *empty-hashtable*)
     (maphash #'(lambda (k v) (is (equal v (gethash k *hashtable*)))) h2)))
 
 (test test-empty-hash-tables-2
   (let (h2)
     (setf h2 (serialize-and-deserialize-sexp *empty-hashtable*))
-    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *empty-hashtable*) 
+    (maphash #'(lambda (k v) (is (equal v (gethash k h2)))) *empty-hashtable*)
     (maphash #'(lambda (k v) (is (equal v (gethash k *hashtable*)))) h2)))
 
 

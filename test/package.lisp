@@ -1,12 +1,12 @@
-(defpackage :cl-prevalence-test
-  (:use :cl :cl-prevalence :5am :s-serialization)
+(defpackage :upanishad-test
+  (:use :cl :upanishad :5am :s-serialization)
   (:export
    #:run!
-   #:cl-prevalence-test
+   #:upanishad-test
    )
   )
-(in-package :cl-prevalence-test)
+(in-package :upanishad-test)
 
-(def-suite cl-prevalence-test)
+(def-suite upanishad-test)
 
 

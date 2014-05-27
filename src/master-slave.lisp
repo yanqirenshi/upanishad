@@ -19,9 +19,9 @@
   (let ((out (s-sysdeps:open-socket-stream host port)))
     (setf (get-transaction-hook prevalence-system)
           #'(lambda (transaction)
-              (funcall (get-serializer prevalence-system) 
-                       transaction 
-                       out 
+              (funcall (get-serializer prevalence-system)
+                       transaction
+                       out
                        (get-serialization-state prevalence-system))
               (finish-output out)
               (when (eq transaction :stop)
@@ -38,18 +38,18 @@
 
 (defun start-slave-server (prevalence-system &key (port 7651))
   "Start a server on port accepting transactions to be executed on prevalence-system"
-  (s-sysdeps:start-standard-server 
+  (s-sysdeps:start-standard-server
    :port port
    :name "prevalence-slave-server"
    :connection-handler #'(lambda (stream)
-                           (loop 
-                            (let ((transaction (funcall (get-deserializer prevalence-system)
-                                                        stream
-                                                        (get-serialization-state prevalence-system))))
-                              (if (or (null transaction)
-                                      (eq transaction :stop))
-                                  (return)
-                                (execute prevalence-system transaction)))))))
+                           (loop
+                              (let ((transaction (funcall (get-deserializer prevalence-system)
+                                                          stream
+                                                          (get-serialization-state prevalence-system))))
+                                (if (or (null transaction)
+                                        (eq transaction :stop))
+                                    (return)
+                                    (execute prevalence-system transaction)))))))
 
 (defun stop-slave-server (server)
   ;; Plato Wu,2009/02/26: stop-server need be exported in s-sysdeps.

@@ -21,17 +21,17 @@
   :description "Common Lisp Prevalence Package"
   :long-description "Common Lisp Prevalence is an implementation of Object Prevalence for Common Lisp"
 
-  :components 
+  :components
   ((:module "src"
-      :components ((:file "package")
-                   (:module "serialization"
-                      :components ((:file "serialization")
-                                   (:file "xml" :depends-on ("serialization"))
-                                   (:file "sexp" :depends-on ("serialization")))
-                      :depends-on ("package"))
-                   (:file "prevalence" :depends-on ("serialization"))
-                   (:file "managed-prevalence" :depends-on ("prevalence"))
-                   (:file "master-slave" :depends-on ("prevalence"))
-                   (:file "blob" :depends-on ("managed-prevalence")))))
+            :components ((:file "package")
+                         (:module "serialization"
+                                  :components ((:file "serialization")
+                                               (:file "xml" :depends-on ("serialization"))
+                                               (:file "sexp" :depends-on ("serialization")))
+                                  :depends-on ("package"))
+                         (:file "prevalence" :depends-on ("serialization"))
+                         (:file "managed-prevalence" :depends-on ("prevalence"))
+                         (:file "master-slave" :depends-on ("prevalence"))
+                         (:file "blob" :depends-on ("managed-prevalence")))))
   :depends-on (:s-xml :s-sysdeps))
 

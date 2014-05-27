@@ -18,18 +18,18 @@
   "Echo the XML making up the transaction log of system to t"
   (with-open-file (in (get-transaction-log system) :direction :input)
     (loop
-     (let ((transaction (s-xml::echo-xml in *standard-output*)))
-       (when (null transaction) (return)))))
+       (let ((transaction (s-xml::echo-xml in *standard-output*)))
+         (when (null transaction) (return)))))
   t)
 
 (defun show-transaction-log (system)
   "Print the transaction objects making up the transaction log of system to t"
   (with-open-file (in (get-transaction-log system) :direction :input)
     (loop
-     (let ((transaction (deserialize-xml in (get-serialization-state system))))
-       (if (null transaction)
-	   (return)
-	 (format t "~a~%" transaction)))))
+       (let ((transaction (deserialize-xml in (get-serialization-state system))))
+         (if (null transaction)
+             (return)
+             (format t "~a~%" transaction)))))
   t)
 
 (defun print-snapshot (system)
@@ -43,10 +43,10 @@
   (let (transactions)
     (with-open-file (in (get-transaction-log system) :direction :input)
       (loop
-       (let ((transaction (deserialize-xml in (get-serialization-state system))))
-	 (if (null transaction)
-	     (return)
-	   (push transaction transactions)))))
+         (let ((transaction (deserialize-xml in (get-serialization-state system))))
+           (if (null transaction)
+               (return)
+               (push transaction transactions)))))
     (setf transactions (nreverse transactions))
     (nthcdr (max 0 (- (length transactions) count)) transactions)))
 

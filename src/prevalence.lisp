@@ -47,20 +47,20 @@
   (:documentation "Retrieve a root object by symbol name from system"))
 
 (defgeneric (setf get-root-object) (value system name)
-  (:documentation "Set a symbol named root object of system to value")) 
+  (:documentation "Set a symbol named root object of system to value"))
 
 (defgeneric get-option (system name)
   (:documentation "Retrieve a named option from system"))
 
 (defgeneric (setf get-option) (value system name)
-  (:documentation "Set a named option of system to value")) 
+  (:documentation "Set a named option of system to value"))
 
 (defgeneric remove-root-object (system name)
   (:documentation "Remove the root object by symbol name from system"))
 
 (defgeneric initiates-rollback (condition)
   (:documentation "Return true when a condition initiates a rollback when thrown from a transaction"))
-  
+
 (defgeneric backup (system &key directory)
   (:documentation "Make backup copies of the current snapshot and transaction-log files"))
 
@@ -71,56 +71,56 @@
 
 (defclass prevalence-system ()
   ((directory ;; :type pathname
-	      :initarg :directory
-	      :accessor get-directory)
+    :initarg :directory
+    :accessor get-directory)
    (root-objects ;; :type hash-table
-		 :accessor get-root-objects
-		 :initform (make-hash-table :test 'eq))
+    :accessor get-root-objects
+    :initform (make-hash-table :test 'eq))
    (options ;; :type hash-table
-	    :initform (make-hash-table :test 'eq))
+    :initform (make-hash-table :test 'eq))
    (snapshot ;; :type pathname
-	     :accessor get-snapshot)
+    :accessor get-snapshot)
    (transaction-log ;; :type pathname
-		    :accessor get-transaction-log)
+    :accessor get-transaction-log)
    (transaction-log-stream ;; :type stream
-			   :accessor get-transaction-log-stream
-			   :initform nil)
+    :accessor get-transaction-log-stream
+    :initform nil)
    (serializer ;; type function
-               :accessor get-serializer
-               :initarg :serializer
-               :initform #'serialize-xml)
+    :accessor get-serializer
+    :initarg :serializer
+    :initform #'serialize-xml)
    (deserializer ;; type function
-                 :accessor get-deserializer
-                 :initarg :deserializer
-                 :initform #'deserialize-xml)
+    :accessor get-deserializer
+    :initarg :deserializer
+    :initform #'deserialize-xml)
    (file-extension ;; type string
-                   :accessor get-file-extension
-                   :initarg :file-extension 
-                   :initform "xml")
+    :accessor get-file-extension
+    :initarg :file-extension
+    :initform "xml")
    (serialization-state ;; type serialization-state
-                        :reader get-serialization-state
-                        :initform (make-serialization-state))
+    :reader get-serialization-state
+    :initform (make-serialization-state))
    (transaction-hook ;; type function
-                     :accessor get-transaction-hook
-                     :initarg :transaction-hook
-                     :initform #'identity))
+    :accessor get-transaction-hook
+    :initarg :transaction-hook
+    :initform #'identity))
   (:documentation "Base Prevalence system implementation object"))
 
 (defclass guarded-prevalence-system (prevalence-system)
   ((guard ;; :type function
-	  :accessor get-guard
-	  :initform #'(lambda (thunk) (funcall thunk))))
+    :accessor get-guard
+    :initform #'(lambda (thunk) (funcall thunk))))
   (:documentation "A Prevalence system with a guard thunk"))
 
 (defclass transaction ()
   ((args ;; :type cons
-	 :initarg :args
-	 :accessor get-args
-	 :initform nil)
+    :initarg :args
+    :accessor get-args
+    :initform nil)
    (function ;; :type symbol
-	     :initarg :function
-	     :accessor get-function
-	     :initform 'identity))
+    :initarg :function
+    :accessor get-function
+    :initform 'identity))
   (:documentation "A simple Transaction object joining a function and its arguments"))
 
 ;;; Conditions
@@ -142,10 +142,10 @@
   (declare (ignore initargs))
   (with-slots (directory) system
     (ensure-directories-exist directory)
-    (setf (get-snapshot system) (merge-pathnames (make-pathname :name (get-snapshot-filename system) 
-                                                                :type (get-file-extension system)) 
+    (setf (get-snapshot system) (merge-pathnames (make-pathname :name (get-snapshot-filename system)
+                                                                :type (get-file-extension system))
                                                  directory)
-	  (get-transaction-log system) (merge-pathnames (make-pathname :name (get-transaction-log-filename system)
+          (get-transaction-log system) (merge-pathnames (make-pathname :name (get-transaction-log-filename system)
                                                                        :type (get-file-extension system))
                                                         directory)))
   (restore system))
@@ -154,10 +154,10 @@
   (with-slots (transaction-log-stream) system
     (unless transaction-log-stream
       (setf transaction-log-stream (open (get-transaction-log system)
-					 :direction :output
-					 :if-does-not-exist :create
-					 #+ccl :sharing #+ccl nil
-					 :if-exists :append)))))
+                                         :direction :output
+                                         :if-does-not-exist :create
+                                         #+ccl :sharing #+ccl nil
+                                         :if-exists :append)))))
 
 (defmethod close-open-streams ((system prevalence-system) &key abort)
   "Close all open stream associated with system (optionally aborting operations in progress)"
@@ -201,14 +201,14 @@
 (defmethod execute ((system prevalence-system) (transaction transaction))
   "Execute a transaction on a system and log it to the transaction log"
   (let ((result
-	 (handler-bind ((error #'(lambda (condition)
-				   (when (and (get-option system :rollback-on-error)
-					      (initiates-rollback condition))
-				     (format *standard-output* 
-                                             ";; Notice: system rollback/restore due to error (~a)~%" 
+         (handler-bind ((error #'(lambda (condition)
+                                   (when (and (get-option system :rollback-on-error)
+                                              (initiates-rollback condition))
+                                     (format *standard-output*
+                                             ";; Notice: system rollback/restore due to error (~a)~%"
                                              condition)
-				     (restore system)))))
-	   (execute-on transaction system))))
+                                     (restore system)))))
+           (execute-on transaction system))))
     (log-transaction system transaction)
     result))
 
@@ -230,20 +230,20 @@
 (defmethod execute-on ((transaction transaction) (system prevalence-system))
   "Execute a transaction itself in the context of a system"
   (apply (get-function transaction)
-	 (cons system (get-args transaction))))
+         (cons system (get-args transaction))))
 
 (defmethod snapshot ((system prevalence-system))
   "Write to whole system to persistent storage resetting the transaction log"
   (let ((timetag (timetag))
-	(transaction-log (get-transaction-log system))
-	(snapshot (get-snapshot system)))
+        (transaction-log (get-transaction-log system))
+        (snapshot (get-snapshot system)))
     (close-open-streams system)
     (when (probe-file snapshot)
       (copy-file snapshot (merge-pathnames (make-pathname :name (get-snapshot-filename system timetag)
                                                           :type (get-file-extension system))
                                            snapshot)))
     (with-open-file (out snapshot
-			 :direction :output :if-does-not-exist :create :if-exists :supersede)
+                         :direction :output :if-does-not-exist :create :if-exists :supersede)
       (funcall (get-serializer system) (get-root-objects system) out (get-serialization-state system)))
     (when (probe-file transaction-log)
       (copy-file transaction-log (merge-pathnames (make-pathname :name (get-transaction-log-filename system timetag)
@@ -254,14 +254,14 @@
 (defmethod backup ((system prevalence-system) &key directory)
   "Make backup copies of the current snapshot and transaction-log files"
   (let* ((timetag (timetag))
-	 (transaction-log (get-transaction-log system))
-	 (snapshot (get-snapshot system))
-	 (transaction-log-backup (merge-pathnames (make-pathname :name (get-transaction-log-filename system timetag)
+         (transaction-log (get-transaction-log system))
+         (snapshot (get-snapshot system))
+         (transaction-log-backup (merge-pathnames (make-pathname :name (get-transaction-log-filename system timetag)
                                                                  :type (get-file-extension system))
-						  (or directory transaction-log)))
-	 (snapshot-backup (merge-pathnames (make-pathname :name (get-snapshot-filename system timetag)
+                                                  (or directory transaction-log)))
+         (snapshot-backup (merge-pathnames (make-pathname :name (get-snapshot-filename system timetag)
                                                           :type (get-file-extension system))
-					   (or directory snapshot))))
+                                           (or directory snapshot))))
     (close-open-streams system)
     (when (probe-file transaction-log)
       (copy-file transaction-log transaction-log-backup))
@@ -278,30 +278,30 @@
       (setf (get-root-objects system) (funcall (get-deserializer system) in (get-serialization-state system)))))
   (when (probe-file (get-transaction-log system))
     (let ((position 0))
-      (handler-bind ((s-xml:xml-parser-error 
+      (handler-bind ((s-xml:xml-parser-error
                       #'(lambda (condition)
-                          (format *standard-output* 
-                                  ";; Warning: error during transaction log restore: ~s~%" 
+                          (format *standard-output*
+                                  ";; Warning: error during transaction log restore: ~s~%"
                                   condition)
                           (truncate-file (get-transaction-log system) position)
                           (return-from restore))))
-	(with-open-file (in (get-transaction-log system) :direction :input)
-	  (loop
-	   (let ((transaction (funcall (get-deserializer system) in (get-serialization-state system))))
-	     (setf position (file-position in))
-	     (if transaction
-		 (execute-on transaction system)
-	       (return)))))))))
+        (with-open-file (in (get-transaction-log system) :direction :input)
+          (loop
+             (let ((transaction (funcall (get-deserializer system) in (get-serialization-state system))))
+               (setf position (file-position in))
+               (if transaction
+                   (execute-on transaction system)
+                   (return)))))))))
 
 (defmethod execute ((system guarded-prevalence-system) (transaction transaction))
   "Execute a transaction on a system controlled by a guard"
   (funcall (get-guard system)
-	   #'(lambda () (call-next-method system transaction))))
+           #'(lambda () (call-next-method system transaction))))
 
 (defmethod query ((system guarded-prevalence-system) function &rest args)
   "Execute an exclusive query function on a sytem controlled by a guard"
   (funcall (get-guard system)
-	   #'(lambda () (apply function (cons system args)))))
+           #'(lambda () (apply function (cons system args)))))
 
 (defmethod snapshot ((system guarded-prevalence-system))
   "Make a snapshot of a system controlled by a guard"
@@ -325,8 +325,8 @@
   (multiple-value-bind (second minute hour date month year)
       (decode-universal-time universal-time 0)
     (format nil
-	    "~d~2,'0d~2,'0dT~2,'0d~2,'0d~2,'0d"
-	    year month date hour minute second)))
+            "~d~2,'0d~2,'0dT~2,'0d~2,'0d~2,'0d"
+            year month date hour minute second)))
 
 (defmethod get-transaction-log-filename ((system prevalence-system) &optional suffix)
   "Return the name of the transaction-log filename, optionally using a suffix"
@@ -341,34 +341,34 @@
 (defun truncate-file (file position)
   "Truncate the physical file at position by copying and replacing it"
   (let ((tmp-file (merge-pathnames (concatenate 'string "tmp-" (pathname-name file)) file))
-	(buffer (make-string 4096))
-	(index 0)
-	(read-count 0))
+        (buffer (make-string 4096))
+        (index 0)
+        (read-count 0))
     (with-open-file (in file :direction :input)
       (with-open-file (out tmp-file :direction :output :if-exists :overwrite :if-does-not-exist :create)
-	(when (> position (file-length in)) (return-from truncate-file))
-	(loop
-	 (when (= index position) (return))
-	 (setf read-count (read-sequence buffer in))
-	 (when (>= (+ index read-count) position)
-	   (setf read-count (- position index)))
-	 (incf index read-count)
-	 (write-sequence buffer out :end read-count))))
+        (when (> position (file-length in)) (return-from truncate-file))
+        (loop
+           (when (= index position) (return))
+           (setf read-count (read-sequence buffer in))
+           (when (>= (+ index read-count) position)
+             (setf read-count (- position index)))
+           (incf index read-count)
+           (write-sequence buffer out :end read-count))))
     (delete-file file)
     (rename-file tmp-file file))
   (format t ";; Notice: truncated transaction log at position ~d~%" position))
 
 (defun copy-file (source target)
   (let ((buffer (make-string 4096))
-	(read-count 0))
+        (read-count 0))
     (with-open-file (in source :direction :input)
       (with-open-file (out target :direction :output :if-exists :overwrite :if-does-not-exist :create)
-	(loop
-	 (setf read-count (read-sequence buffer in))
-	 (write-sequence buffer out :end read-count)
-	 (when (< read-count 4096) (return)))))))
-  
-;;; from the serialization package 
+        (loop
+           (setf read-count (read-sequence buffer in))
+           (write-sequence buffer out :end read-count)
+           (when (< read-count 4096) (return)))))))
+
+;;; from the serialization package
 
 (defmethod reset-known-slots ((system prevalence-system) &optional class)
   (reset-known-slots (get-serialization-state system) class))

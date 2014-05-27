@@ -10,21 +10,21 @@
 ;;;; as governed by the terms of the Lisp Lesser General Public License
 ;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 
-(in-package :cl-prevalence)
+(in-package :upanishad)
 
 (defun prime-p (n)
   "Prime predicate copied from Java code"
   (cond ((< n 2) nil)
-	((= n 2) t)
-	((evenp n) nil)
-	(t (let ((factor 3)
-		 (square (ceiling (sqrt n))))
-	     (loop
-	      (unless (<= factor square)
-		(return-from prime-p t))
-	      (if (zerop (mod n factor))
-		  (return-from prime-p nil)
-		(incf factor 2)))))))
+        ((= n 2) t)
+        ((evenp n) nil)
+        (t (let ((factor 3)
+                 (square (ceiling (sqrt n))))
+             (loop
+                (unless (<= factor square)
+                  (return-from prime-p t))
+                (if (zerop (mod n factor))
+                    (return-from prime-p nil)
+                    (incf factor 2)))))))
 
 (defclass numbers ()
   ((numbers-list :accessor get-numbers-list :initform nil))
@@ -46,19 +46,19 @@
   "Run the demo1 loop, computing primes and making the list of primes found persistent"
   (let ((system (make-prevalence-system *system-location*)))
     (unwind-protect
-	(let* ((numbers (or (get-root-object system :numbers)
-			    (execute system (make-transaction 'tx-create-numbers-root))))
-	       (numbers-list (get-numbers-list numbers))
-	       (candidate (if numbers-list (1+ (first numbers-list)) 0))
-	       (largest 0))
-	  (loop
-	   (when (> candidate (min most-positive-fixnum 16777215))
-	     (return))
-	   (when (prime-p candidate)
-	     (execute system (make-transaction 'tx-add-number candidate))
-	     (setf largest candidate)
-	     (format t "Primes found: ~d. Largest: ~d~%" (length (get-numbers-list numbers)) largest))
-	   (incf candidate)))
+         (let* ((numbers (or (get-root-object system :numbers)
+                             (execute system (make-transaction 'tx-create-numbers-root))))
+                (numbers-list (get-numbers-list numbers))
+                (candidate (if numbers-list (1+ (first numbers-list)) 0))
+                (largest 0))
+           (loop
+              (when (> candidate (min most-positive-fixnum 16777215))
+                (return))
+              (when (prime-p candidate)
+                (execute system (make-transaction 'tx-add-number candidate))
+                (setf largest candidate)
+                (format t "Primes found: ~d. Largest: ~d~%" (length (get-numbers-list numbers)) largest))
+              (incf candidate)))
       (close-open-streams system))))
 
 (defun benchmark1 ()
@@ -73,9 +73,9 @@
 
 (defun benchmark2 ()
   (let (system)
-    (setf system (make-prevalence-system *system-location* 
-                                         :init-args '(:serializer serialize-sexp 
-                                                      :deserializer deserialize-sexp 
+    (setf system (make-prevalence-system *system-location*
+                                         :init-args '(:serializer serialize-sexp
+                                                      :deserializer deserialize-sexp
                                                       :file-extension "sexp")))
     (totally-destroy system)
     (execute system (make-transaction 'tx-create-numbers-root))

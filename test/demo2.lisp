@@ -10,7 +10,7 @@
 ;;;; as governed by the terms of the Lisp Lesser General Public License
 ;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 
-(in-package :cl-prevalence)
+(in-package :upanishad)
 
 ;;; Domain Model
 
@@ -36,8 +36,8 @@
   (multiple-value-bind (second minute hour date month year)
       (decode-universal-time universal-time)
     (format nil
-	    "~d/~2,'0d/~2,'0d ~2,'0d:~2,'0d:~2,'0d"
-	    year month date hour minute second)))
+            "~d/~2,'0d/~2,'0d ~2,'0d:~2,'0d:~2,'0d"
+            year month date hour minute second)))
 
 (defmethod print-object ((account-entry account-entry) stream)
   (with-slots (timestamp amount) account-entry
@@ -61,11 +61,11 @@
 
 (defun tx-create-account (system holder)
   (let* ((bank (get-root-object system :bank))
-	 (account-number (get-next-account-number bank))
-	 (new-account (make-instance 'account
-				     :holder holder
-				     :number account-number)))
-    (setf (gethash account-number (get-accounts-by-number bank)) new-account) 
+         (account-number (get-next-account-number bank))
+         (new-account (make-instance 'account
+                                     :holder holder
+                                     :number account-number)))
+    (setf (gethash account-number (get-accounts-by-number bank)) new-account)
     (incf (get-next-account-number bank))
     new-account))
 
@@ -74,23 +74,23 @@
 (define-condition unknown-account (bank-error)
   ((account-number :reader unknown-account-number :initarg :account-number))
   (:report (lambda (condition stream)
-	     (format stream "Unknown account ~a"
-		     (unknown-account-number condition)))))
+             (format stream "Unknown account ~a"
+                     (unknown-account-number condition)))))
 
 (define-condition overdrawn-account (bank-error)
   ((account :reader overdrawn-account-account :initarg :account)
    (amount :reader overdrawn-account-amount :initarg :amount))
   (:report (lambda (condition stream)
-	     (format stream "You cannot withdraw ~d from account ~a"
-		     (overdrawn-account-amount condition)
-		     (overdrawn-account-account condition)))))
+             (format stream "You cannot withdraw ~d from account ~a"
+                     (overdrawn-account-amount condition)
+                     (overdrawn-account-account condition)))))
 
 (defun get-account (system account-number)
   (let* ((bank (get-root-object system :bank))
-	 (account (gethash account-number (get-accounts-by-number bank))))
+         (account (gethash account-number (get-accounts-by-number bank))))
     (if account
-	account
-      (error 'unknown-account :account-number account-number))))
+        account
+        (error 'unknown-account :account-number account-number))))
 
 (defun tx-delete-account (system account-number)
   (when (get-account system account-number)
@@ -105,38 +105,38 @@
   (let ((account (get-account system account-number)))
     (incf (get-balance account) amount)
     (push (make-instance 'account-entry :amount amount :timestamp timestamp)
-	  (get-transaction-history account))
+          (get-transaction-history account))
     account))
 
 (defun tx-withdraw (system account-number amount timestamp)
   (let ((account (get-account system account-number)))
     (if (< (get-balance account) amount)
-	(error 'overdrawn-account :account account :amount amount)
-      (decf (get-balance account) amount))
+        (error 'overdrawn-account :account account :amount amount)
+        (decf (get-balance account) amount))
     (push (make-instance 'account-entry :amount (- amount) :timestamp timestamp)
-	  (get-transaction-history account))
+          (get-transaction-history account))
     account))
 
 (defun tx-transfer (system from-account-number to-account-number amount timestamp)
   (let* ((from-account (get-account system from-account-number))
-	 (to-account (get-account system to-account-number)))
+         (to-account (get-account system to-account-number)))
     (cond ((< (get-balance from-account) amount)
-	   (error 'overdrawn-account :amount amount :account from-account))
-	  (t (decf (get-balance from-account) amount)
-	     (incf (get-balance to-account) amount)
-	     (push (make-instance 'account-entry :amount (- amount) :timestamp timestamp)
-		   (get-transaction-history from-account))
-	     (push (make-instance 'account-entry :amount amount :timestamp timestamp)
-		   (get-transaction-history to-account))))
+           (error 'overdrawn-account :amount amount :account from-account))
+          (t (decf (get-balance from-account) amount)
+             (incf (get-balance to-account) amount)
+             (push (make-instance 'account-entry :amount (- amount) :timestamp timestamp)
+                   (get-transaction-history from-account))
+             (push (make-instance 'account-entry :amount amount :timestamp timestamp)
+                   (get-transaction-history to-account))))
     amount))
 
 (defun get-bank-balance (system)
   (let ((bank (get-root-object system :bank))
-	(total 0))
+        (total 0))
     (maphash #'(lambda (key value)
-		 (declare (ignore key))
-		 (incf total (get-balance value)))
-	     (get-accounts-by-number bank))
+                 (declare (ignore key))
+                 (incf total (get-balance value)))
+             (get-accounts-by-number bank))
     total))
 
 ;;; Client Interface
@@ -152,15 +152,15 @@
 
 (defun deposit (account-number amount)
   (execute *bank-system* (make-transaction 'tx-deposit
-					   account-number amount (get-universal-time))))
+                                           account-number amount (get-universal-time))))
 
 (defun withdraw (account-number amount)
   (execute *bank-system* (make-transaction 'tx-withdraw
-					   account-number amount (get-universal-time))))
+                                           account-number amount (get-universal-time))))
 
 (defun transfer (from-account-number to-account-number amount)
   (execute *bank-system* (make-transaction 'tx-transfer
-					   from-account-number to-account-number amount (get-universal-time))))
+                                           from-account-number to-account-number amount (get-universal-time))))
 
 (defun find-account (account-number)
   (let ((bank (get-root-object *bank-system* :bank)))
@@ -168,18 +168,18 @@
 
 (defun list-all-accounts ()
   (let ((bank (get-root-object *bank-system* :bank))
-	accounts)
+        accounts)
     (maphash #'(lambda (key value)
-		 (declare (ignore key))
-		 (push value accounts))
-	     (get-accounts-by-number bank))
+                 (declare (ignore key))
+                 (push value accounts))
+             (get-accounts-by-number bank))
     accounts))
 
 ;;; Now some test code
 
 (defun bank-test-1 ()
   (let ((test-1 (get-number (create-account "Test Account 1")))
-	(test-2 (get-number (create-account "Test Account 2"))))
+        (test-2 (get-number (create-account "Test Account 2"))))
     (assert (zerop (get-balance (find-account test-1))))
     (assert (zerop (get-balance (find-account test-2))))
     (deposit test-1 1000)
@@ -197,8 +197,8 @@
 
 (defun bank-test-2 ()
   (let ((test-1 (get-number (create-account "Test Account 1")))
-	(test-2 (get-number (create-account "Test Account 2")))
-	now)
+        (test-2 (get-number (create-account "Test Account 2")))
+        now)
     (assert (zerop (get-balance (find-account test-1))))
     (assert (zerop (get-balance (find-account test-2))))
     (deposit test-1 1000)
@@ -212,18 +212,18 @@
     (setf now (get-universal-time))
     (restore *bank-system*)
     (let ((account-1 (find-account test-1))
-	  (account-2 (find-account test-2)))
+          (account-2 (find-account test-2)))
       (dolist (account-entry (get-transaction-history account-1))
-	(assert (< (get-timestamp account-entry) now)))
+        (assert (< (get-timestamp account-entry) now)))
       (dolist (account-entry (get-transaction-history account-2))
-	(assert (< (get-timestamp account-entry) now))))
+        (assert (< (get-timestamp account-entry) now))))
     (delete-account test-1)
     (delete-account test-2))
   t)
 
 (defun bank-test-3 ()
   (let ((system (make-prevalence-system *bank-system-location*
-					:prevalence-system-class 'guarded-prevalence-system)))
+                                        :prevalence-system-class 'guarded-prevalence-system)))
     (query system #'get-bank-balance)
     (close-open-streams system)))
 
@@ -232,15 +232,15 @@
 
 (defun tx-bogus-withdraw (system account-number amount)
   (let* ((bank (get-root-object system :bank))
-	 (account (gethash account-number (get-accounts-by-number bank))))
+         (account (gethash account-number (get-accounts-by-number bank))))
     (if (null account)
-	(error 'unknown-account :account-number account-number)
-      (progn
-	;; this is intentionally wrong: we modify before we test
-	(decf (get-balance account) amount)
-	;; if negative throw a hard error (could initiate rollback)
-	(when (< (get-balance account) 0)
-	  (error "Account ~a went below zero!" account))))))
+        (error 'unknown-account :account-number account-number)
+        (progn
+          ;; this is intentionally wrong: we modify before we test
+          (decf (get-balance account) amount)
+          ;; if negative throw a hard error (could initiate rollback)
+          (when (< (get-balance account) 0)
+            (error "Account ~a went below zero!" account))))))
 
 (defun bank-test-4 ()
   (let ((account-number (get-number (create-account "bank-test4"))))
@@ -275,7 +275,7 @@
     (setf account-number (get-number (create-account "bank-test4")))
     ;; put 20 bucks on the account
     (deposit account-number 10)
-    ;; check that we have 10 bucks 
+    ;; check that we have 10 bucks
     (assert (= 10 (get-balance (find-account account-number))))
     ;; try to withdraw 20 bucks from the account
     (ignore-errors
@@ -312,11 +312,11 @@
 (defun bank-test-5-setup ()
   (when *bank-system* (close-open-streams *bank-system*))
   (setf *bank-system* (make-prevalence-system *bank-system-location*
-					      :prevalence-system-class 'guarded-prevalence-system))
+                                              :prevalence-system-class 'guarded-prevalence-system))
   (setf (get-guard *bank-system*) #'bank-system-guard)
   (mapcar #'(lambda (account)
-	      (delete-account (get-number account)))
-	  (list-all-accounts))
+              (delete-account (get-number account)))
+          (list-all-accounts))
   (dotimes (i 10)
     (deposit (get-number (create-account (format nil "bank-test-5-account-~d" i))) 100))
   (assert (= (get-bank-balance *bank-system*) 1000)))
@@ -326,17 +326,17 @@
 (defun bank-test-5-worker ()
   (dotimes (i 10)
     (let* ((accounts (list-all-accounts))
-	   (from-account (elt accounts (random (length accounts))))
-	   (to-account (elt (remove from-account accounts) (random (1- (length accounts)))))
-	   (amount (random 100)))
+           (from-account (elt accounts (random (length accounts))))
+           (to-account (elt (remove from-account accounts) (random (1- (length accounts)))))
+           (amount (random 100)))
       (catch 'trap-overdraw
-	(handler-bind ((overdrawn-account (lambda (condition)
-					    (format t "Transfer cancelled (~a)~%" condition)
-					    (throw 'trap-overdraw :ignore))))
-	  (format *worker-output* "Tranfering ~d from ~a to ~a~%" amount from-account to-account)
-	  (transfer (get-number from-account)
-		    (get-number to-account)
-		    amount))))))
+        (handler-bind ((overdrawn-account (lambda (condition)
+                                            (format t "Transfer cancelled (~a)~%" condition)
+                                            (throw 'trap-overdraw :ignore))))
+          (format *worker-output* "Tranfering ~d from ~a to ~a~%" amount from-account to-account)
+          (transfer (get-number from-account)
+                    (get-number to-account)
+                    amount))))))
 
 (defun bank-test-5-invariant ()
   (dotimes (i 10)
@@ -347,10 +347,10 @@
   (spawn-process "invariant" #'bank-test-5-invariant)
   (dotimes (i 10)
     (spawn-process (format nil "bank-test-5-worker-~d" i)
-		   #'bank-test-5-worker)
+                   #'bank-test-5-worker)
     (spawn-process "invariant" #'bank-test-5-invariant))
   (spawn-process "invariant" #'bank-test-5-invariant)
   (sleep 1)
   (spawn-process "invariant" #'bank-test-5-invariant))
-  
+
 ;;;; eof

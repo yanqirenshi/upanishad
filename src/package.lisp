@@ -60,7 +60,7 @@
    #:fill-from-file
    #:destroy
 
-   #:execute-transaction 
+   #:execute-transaction
    #:object-with-id
    #:get-id
    #:id
