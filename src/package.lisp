@@ -65,7 +65,7 @@
    #:get-id
    #:id
    #:find-all-objects
-   #:find-atman
+   #:find-object
    #:tx-create-id-counter
    #:tx-create-object
    #:tx-delete-object

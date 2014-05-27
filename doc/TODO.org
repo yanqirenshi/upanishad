@@ -1,7 +1,5 @@
 #+TODO: TODO(t!) START(s!) WAIT(w!) | DONE(d!) FLEEZE(f!) CANCEL(c!)
 * CURRENT
-** TODO 1キー複数値に対応するための関数を実装する。
-   - State "TODO"       from ""           [2014-05-27 火 23:59]
 * BACKLOG
 ** TODO TEST-OP
   - State "TODO"       from ""           [2014-05-27 火 22:53]
@@ -79,3 +77,7 @@ brahman? とかも考えたけど、 brahman = nil じゃろうけぇ、ちょ�
 なんか、もぉええかって気になってきた。
 なもんでキャンセル。
 
+** DONE 1キー複数値に対応するための関数を実装する。
+   - State "DONE"       from "START"      [2014-05-28 水 01:02]
+   - State "START"      from "TODO"       [2014-05-28 水 01:02]
+   - State "TODO"       from ""           [2014-05-27 火 23:59]
