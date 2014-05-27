@@ -1,0 +1,59 @@
+#+TODO: TODO(t!) START(s!) WAIT(w!) | DONE(d!) FLEEZE(f!) CANCEL(c!)
+* CURRENT
+** TODO object-with-id を atman にする。
+   - State "TODO"       from ""           [2014-05-27 火 22:55]
+そんなんする必要があるか？って。好みじゃけぇしかたなかろう。
+テストも通るようにしといて。
+
+** TODO object と名がつくオペレータを atman にする。
+   - State "TODO"       from ""           [2014-05-27 火 22:56]
+
+まぁ、これも好みじゃけぇ。
+テストも通らんといけんよ。
+
+* BACKLOG
+** TODO TEST-OP
+  - State "TODO"       from ""           [2014-05-27 火 22:53]
+
+** TODO port to ccl, ecl
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO introduce global state that doesn't get reset
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO move txn-state to serialize-xxx, local-state
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO possibly make local-state a function parameter instead
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+  of a dynamic var
+
+** TODO fix SEXP serializer
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO fix managed prevalence
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO add tests for correct object ref (de-)serialization
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO test suite -> fiveam
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO s-serialization should probably become a separate library
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO progress display
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO continuable errors on deser
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO printer for systems should display directory, possibly other useful info
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+** TODO unify SEXP/XML tests
+  - State "TODO"       from ""           [2014-05-27 火 22:54]
+
+* ICEBOX
+* COMPLETE
