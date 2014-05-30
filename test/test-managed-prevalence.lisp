@@ -92,7 +92,7 @@
     (setf *jlp* (get-id managed-person))))
 
 (test test-get-managed-person
-  (let ((managed-person (find-object *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -108,7 +108,7 @@
   counting on a restore operation using the transaction log"
   (close-open-streams *test-system*)
   (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (find-object *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -122,7 +122,7 @@
 (test test-find-managed-person-snapshot
   "Create a snapshot of our test system"
   (snapshot *test-system*)
-  (let ((managed-person (find-object *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -138,7 +138,7 @@
   counting on a restore operation using the snapshot"
   (close-open-streams *test-system*)
   (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (find-object *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -162,7 +162,7 @@
     (setf *kj* (get-id managed-person))))
 
 (test test-find-managed-person-1
-  (let ((managed-person (find-object *test-system* 'managed-person *kj*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
@@ -174,7 +174,7 @@
    counting on a restore operation using both the snapshot and the transaction log"
   (close-open-streams *test-system*)
   (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (find-object *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -186,7 +186,7 @@
     (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
 
 (test test-find-managed-person-restart-2
-  (let ((managed-person (find-object *test-system* 'managed-person *kj*)))
+  (let ((managed-person (find-object-with-id *test-system* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))

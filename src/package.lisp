@@ -65,7 +65,8 @@
    #:get-id
    #:id
    #:find-all-objects
-   #:find-object
+   #:find-object-with-id
+   #:find-object-with-slot
    #:tx-create-id-counter
    #:tx-create-object
    #:tx-delete-object
@@ -75,7 +76,6 @@
    #:tx-set-preference
    #:index-on
    #:drop-index-on
-   #:find-object-with-slot
 
    ;; Plato Wu,2009/02/28: Add for testing system.
    #:close-open-streams

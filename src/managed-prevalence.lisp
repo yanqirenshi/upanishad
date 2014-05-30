@@ -48,18 +48,14 @@
   (let ((root-name (get-objects-root-name class)))
     (get-root-object system root-name)))
 
-(defgeneric find-object (system class id)
+(defgeneric find-object-with-id (system class id)
   (:documentation "Find and return the object in system of class with id, null if not found"))
-
-(defmethod find-object ((system pool) class id)
+(defmethod find-object-with-id ((system pool) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
          (index (get-root-object system index-name)))
     (when index
       (gethash id index))))
-
-(defgeneric find-object-with-slot (system class slot value &optional test)
-  (:documentation "Find and return the object in system of class with slot equal to value, null if not found"))
 
 
 (defgeneric find-object-with-slot-use-index (system class index))
@@ -68,9 +64,9 @@
     (let* ((ids (alexandria:hash-table-values  index))
            (len (length ids)))
       (cond ((= len 0) nil)
-            ((= len 1) (list (find-object system class (first ids))))
+            ((= len 1) (list (find-object-with-id system class (first ids))))
             (t (mapcar #'(lambda (id)
-                           (find-object system class id))
+                           (find-object-with-id system class id))
                        ids))))))
 
 (defgeneric find-object-with-slot-full-scan (system class slot value test))
@@ -81,6 +77,8 @@
              (find-all-objects system class)))
 
 
+(defgeneric find-object-with-slot (system class slot value &optional test)
+  (:documentation "Find and return the object in system of class with slot equal to value, null if not found"))
 (defmethod find-object-with-slot ((system pool) class slot value &optional (test #'equalp))
   "Find and return the object in system of class with slot equal to value, null if not found
 オブジェクトのスロットの値を検索して、ヒツトしたものを返します。
@@ -188,7 +186,7 @@
 
 (defun tx-delete-object (system class id)
   "Delete the object of class with id from the system"
-  (let ((object (find-object system class id)))
+  (let ((object (find-object-with-id system class id)))
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class 'id)))
@@ -198,7 +196,7 @@
 
 (defun tx-change-object-slots (system class id slots-and-values)
   "Change some slots of the object of class with id in system using slots and values"
-  (let ((object (find-object system class id)))
+  (let ((object (find-object-with-id system class id)))
     (unless object (error "no object of class ~a with id ~d found in ~s" class id system))
     (loop :for (slot value) :in slots-and-values
        :do (when (slot-value-changed-p object slot value)
