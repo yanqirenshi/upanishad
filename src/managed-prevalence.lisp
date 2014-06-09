@@ -48,9 +48,21 @@
   (let ((root-name (get-objects-root-name class)))
     (get-root-object system root-name)))
 
+
+;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
 (defgeneric find-object-with-id (system class id)
   (:documentation "Find and return the object in system of class with id, null if not found"))
 (defmethod find-object-with-id ((system pool) class id)
+  "Find and return the object in system of class with id, null if not found"
+  (let* ((index-name (get-objects-slot-index-name class 'id))
+         (index (get-root-object system index-name)))
+    (when index
+      (gethash id index))))
+
+
+(defgeneric get-object-with-id (system class id)
+  (:documentation "Find and return the object in system of class with id, null if not found"))
+(defmethod get-object-with-id ((system pool) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
          (index (get-root-object system index-name)))

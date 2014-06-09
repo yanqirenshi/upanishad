@@ -4,6 +4,14 @@ cl-prevalence を自分用に変更したいのでフォークしました。
 
 ** Usage
 
+*** find-XXX と get-XXX
+オペレータの名前が find-XXX は 結果をリストで返します。
+get-XXX は 結果を atmo で返します。
+
+つまり get-XXX はユーニークなデータを取得するためのオペレータとなります。
+
+まだ、統一は出来ていませんが、そのうちします。
+
 ** Dependencies
 
 ** Installation
