@@ -66,6 +66,7 @@
    #:id
    #:find-all-objects
    #:find-object-with-id
+   #:get-object-with-id 
    #:find-object-with-slot
    #:tx-create-id-counter
    #:tx-create-object
