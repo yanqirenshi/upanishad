@@ -1,5 +1,6 @@
 (defpackage :upanishad-test
   (:use :cl :upanishad :5am :s-serialization)
+  (:nicknames :up-test)
   (:export
    #:run!
    #:upanishad-test))
