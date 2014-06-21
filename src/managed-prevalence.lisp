@@ -120,7 +120,7 @@
 (defun tx-remove-objects-slot-index (system class slot)
   "Remove an index for this object on this slot"
   (let ((index-name (get-objects-slot-index-name class slot)))
-    (unless (get-root-object system index-name)
+    (when (get-root-object system index-name)
       (remove-root-object system index-name))))
 
 (defun slot-index-xxx-add (index object slot)
