@@ -259,4 +259,25 @@
                  preferences)
         keys))))
 
+;;;;;
+;;;;; added iwasaki
+;;;;;
+
+;;
+(defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
+  (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
+(defmethod tx-remove-object-on-slot-index ((pool pool)
+                                           (obj  atman)
+                                           (slot-symbol symbol))
+  (let* ((obj-class (class-name (class-of obj)))
+         (index-name (get-objects-slot-index-name obj-class
+                                                  slot-symbol))
+         (index (get-root-object pool index-name)))
+    (when (and index (gethash (slot-value obj slot-symbol) index))
+      (remhash (get-id  obj)
+               (gethash (slot-value obj slot-symbol) index)))))
+
+
 ;;;; eof
+
+
