@@ -68,14 +68,14 @@
 ;; now do the test
 
 (test test-get-master-user
-  (let ((user (find-object-with-id *master-test-system* 'test-system-user *user-id*)))
+  (let ((user (get-object-with-id *master-test-system* 'test-system-user *user-id*)))
     (is (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 
 (test test-get-slave-user :depends-on '(and test-get-master-user)
       ;; Plato Wu,2009/02/27: because it need time to transfer data from master to slave?
       (sleep 1)
-      (let ((user (find-object-with-id *slave-test-system* 'test-system-user *user-id*)))
+      (let ((user (get-object-with-id *slave-test-system* 'test-system-user *user-id*)))
         (is (and (equal (get-username user) "billg")
                  (equal (get-password user) "windows")))))
 

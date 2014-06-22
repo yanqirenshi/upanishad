@@ -76,9 +76,9 @@
     (let* ((ids (alexandria:hash-table-values  index))
            (len (length ids)))
       (cond ((= len 0) nil)
-            ((= len 1) (list (find-object-with-id system class (first ids))))
+            ((= len 1) (list (get-object-with-id system class (first ids))))
             (t (mapcar #'(lambda (id)
-                           (find-object-with-id system class id))
+                           (get-object-with-id system class id))
                        ids))))))
 
 (defgeneric find-object-with-slot-full-scan (system class slot value test))
@@ -198,7 +198,7 @@
 
 (defun tx-delete-object (system class id)
   "Delete the object of class with id from the system"
-  (let ((object (find-object-with-id system class id)))
+  (let ((object (get-object-with-id system class id)))
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class 'id)))
@@ -208,7 +208,7 @@
 
 (defun tx-change-object-slots (system class id slots-and-values)
   "Change some slots of the object of class with id in system using slots and values"
-  (let ((object (find-object-with-id system class id)))
+  (let ((object (get-object-with-id system class id)))
     (unless object (error "no object of class ~a with id ~d found in ~s" class id system))
     (loop :for (slot value) :in slots-and-values
        :do (when (slot-value-changed-p object slot value)
