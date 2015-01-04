@@ -159,12 +159,13 @@
                                          #+ccl :sharing #+ccl nil
                                          :if-exists :append)))))
 
-(defmethod close-open-streams ((system pool) &key abort)
-  "Close all open stream associated with system (optionally aborting operations in progress)"
-  (with-slots (transaction-log-stream) system
-    (when transaction-log-stream
-      (close transaction-log-stream :abort abort)
-      (setf transaction-log-stream nil))))
+(defgeneric close-open-streams (pool &key abort)
+  (:method ((system pool) &key abort)
+    "Close all open stream associated with system (optionally aborting operations in progress)"
+    (with-slots (transaction-log-stream) system
+      (when transaction-log-stream
+        (close transaction-log-stream :abort abort)
+        (setf transaction-log-stream nil)))))
 
 (defmethod totally-destroy ((system pool) &key abort)
   "Totally destroy system from permanent storage by deleting any files used by the system, remove all root objects"
@@ -212,16 +213,16 @@
     (log-transaction system transaction)
     result))
 
-(defmethod log-transaction ((system pool) (transaction transaction))
-  "Log transaction for system"
-  (let ((out (get-transaction-log-stream system)))
-    (funcall (get-serializer system) transaction out (get-serialization-state system))
-    (terpri out)
-    (finish-output out)))
-
-(defmethod log-transaction :after ((system pool) (transaction transaction))
-  "Execute the transaction-hook"
-  (funcall (get-transaction-hook system) transaction))
+(defgeneric log-transaction (pool transaction)
+  (:method ((system pool) (transaction transaction))
+    "Log transaction for system"
+    (let ((out (get-transaction-log-stream system)))
+      (funcall (get-serializer system) transaction out (get-serialization-state system))
+      (terpri out)
+      (finish-output out)))
+  (:method :after ((system pool) (transaction transaction))
+           "Execute the transaction-hook"
+           (funcall (get-transaction-hook system) transaction)))
 
 (defmethod query ((system pool) function &rest args)
   "Execute an exclusive query function on a sytem"
@@ -328,13 +329,15 @@
             "~d~2,'0d~2,'0dT~2,'0d~2,'0d~2,'0d"
             year month date hour minute second)))
 
-(defmethod get-transaction-log-filename ((system pool) &optional suffix)
-  "Return the name of the transaction-log filename, optionally using a suffix"
-  (format nil "transaction-log~@[-~a~]" suffix))
+(defgeneric get-transaction-log-filename (pool &optional suffix)
+  (:method ((system pool) &optional suffix)
+    "Return the name of the transaction-log filename, optionally using a suffix"
+    (format nil "transaction-log~@[-~a~]" suffix)))
 
-(defmethod get-snapshot-filename ((system pool) &optional suffix)
-  "Return the name of the snapshot filename, optionally using a suffix"
-  (format nil "snapshot~@[-~a~]" suffix))
+(defgeneric get-snapshot-filename (pool &optional suffix)
+  (:method ((system pool) &optional suffix)
+    "Return the name of the snapshot filename, optionally using a suffix"
+    (format nil "snapshot~@[-~a~]" suffix)))
 
 ;;; Some file manipulation utilities
 

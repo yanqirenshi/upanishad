@@ -23,6 +23,25 @@
 
   :components
   ((:module "src"
+            ;;
+            ;; (start)
+            ;;   |
+            ;; package
+            ;;   |
+            ;; serialization
+            ;;   |
+            ;; prevalence
+            ;;   |
+            ;;   +----------------------+
+            ;;   |                      |
+            ;; managed-prevalence  master-slave
+            ;;   |                      |
+            ;; blob                     |
+            ;;   |                      |
+            ;;   +----------------------+
+            ;;   |
+            ;; (end)
+            ;;
             :components ((:file "package")
                          (:module "serialization"
                                   :components ((:file "serialization")

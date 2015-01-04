@@ -35,36 +35,43 @@
    (hashtable :reader get-hashtable :initform (make-hash-table :test 'eq :size 1024 :rehash-size 2.0))
    (known-slots :initform (make-hash-table))))
 
-(defmethod get-xml-parser-state ((serialization-state serialization-state))
-  (with-slots (xml-parser-state) serialization-state
-    (or xml-parser-state
-        (setf xml-parser-state (make-instance 's-xml:xml-parser-state
-					      :new-element-hook #'deserialize-xml-new-element
-					      :finish-element-hook #'deserialize-xml-finish-element
-					      :text-hook #'deserialize-xml-text)))))
+(defgeneric get-xml-parser-state (serialization-state)
+  (:method ((serialization-state serialization-state))
+    (with-slots (xml-parser-state) serialization-state
+      (or xml-parser-state
+          (setf xml-parser-state (make-instance 's-xml:xml-parser-state
+                                                :new-element-hook #'deserialize-xml-new-element
+                                                :finish-element-hook #'deserialize-xml-finish-element
+                                                :text-hook #'deserialize-xml-text))))))
 
-(defmethod reset ((serialization-state serialization-state))
-  (with-slots (hashtable counter) serialization-state
-    (clrhash hashtable)
-    (setf counter 0)))
+(defgeneric reset (serialization-state)
+  (:documentation "")
+  (:method ((serialization-state serialization-state))
+    (with-slots (hashtable counter) serialization-state
+      (clrhash hashtable)
+      (setf counter 0))))
 
 (defmethod reset-known-slots ((serialization-state serialization-state) &optional class)
   (with-slots (known-slots) serialization-state
     (if class
         (remhash (if (symbolp class) class (class-name class)) known-slots)
-      (clrhash known-slots))))
+        (clrhash known-slots))))
 
-(defmethod known-object-id ((serialization-state serialization-state) object)
-  (gethash object (get-hashtable serialization-state)))
+(defgeneric known-object-id (serialization-state object)
+  (:documentation "")
+  (:method ((serialization-state serialization-state) object)
+    (gethash object (get-hashtable serialization-state))))
 
-(defmethod set-known-object ((serialization-state serialization-state) object)
-  (setf (gethash object (get-hashtable serialization-state))
-        (incf (get-counter serialization-state))))
+(defgeneric set-known-object (serialization-state object)
+  (:documentation "")
+  (:method ((serialization-state serialization-state) object)
+    (setf (gethash object (get-hashtable serialization-state))
+          (incf (get-counter serialization-state)))))
 
 ;;; shared utilities
 
 ;; when printing symbols we always add the package and treat the symbol as internal
-;; so that the serialization is independent of future change in export status 
+;; so that the serialization is independent of future change in export status
 ;; we handling symbols in the common-lisp and keyword package more efficiently
 ;; some hacking to handle unprintable symbols is involved
 
@@ -75,7 +82,7 @@
 (defmethod serializable-slots ((object structure-object))
   #+openmcl
   (let* ((sd (gethash (class-name (class-of object)) ccl::%defstructs%))
-	 (slots (if sd (ccl::sd-slots sd))))
+         (slots (if sd (ccl::sd-slots sd))))
     (mapcar #'car (if (symbolp (caar slots)) slots (cdr slots))))
   #+cmu
   (mapcar #'pcl:slot-definition-name (pcl:class-slots (class-of object)))
@@ -95,9 +102,9 @@
 (defmethod serializable-slots ((object standard-object))
   #+openmcl
   (mapcar #'ccl:slot-definition-name
-	  (#-openmcl-native-threads ccl:class-instance-slots
-	   #+openmcl-native-threads ccl:class-slots
-	   (class-of object)))
+          (#-openmcl-native-threads ccl:class-instance-slots
+                                    #+openmcl-native-threads ccl:class-slots
+                                    (class-of object)))
   #+cmu
   (mapcar #'pcl:slot-definition-name (pcl:class-slots (class-of object)))
   #+sbcl
@@ -113,14 +120,16 @@
   #-(or openmcl cmu lispworks allegro sbcl clisp)
   (error "not yet implemented"))
 
-(defmethod get-serializable-slots ((serialization-state serialization-state) object)
-  (with-slots (known-slots) serialization-state
-    (let* ((class (class-name (class-of object)))
-	   (slots (gethash class known-slots)))
-      (when (not slots)
-	(setf slots (serializable-slots object))
-	(setf (gethash class known-slots) slots))
-      slots)))
+(defgeneric get-serializable-slots (serialization-state object)
+  (:documentation "")
+  (:method ((serialization-state serialization-state) object)
+    (with-slots (known-slots) serialization-state
+      (let* ((class (class-name (class-of object)))
+             (slots (gethash class known-slots)))
+        (when (not slots)
+          (setf slots (serializable-slots object))
+          (setf (gethash class known-slots) slots))
+        slots))))
 
 (defun sequence-type-and-length (sequence)
   (if (listp sequence)

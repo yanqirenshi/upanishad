@@ -112,16 +112,18 @@
     (delete-file (get-file blob)))
   (push :destroyed (get-keywords blob)))
 
-(defmethod size-from-file ((blob blob))
-  (let ((path (get-file blob)))
-    (if (probe-file path)
-        (with-open-file (in path :direction :input :element-type '(unsigned-byte 8))
-          (file-length in))
-        -1)))
+(defgeneric size-from-file (blob)
+  (:method ((blob blob))
+    (let ((path (get-file blob)))
+      (if (probe-file path)
+          (with-open-file (in path :direction :input :element-type '(unsigned-byte 8))
+            (file-length in))
+          -1))))
 
-(defmethod set-size-from-file ((blob blob))
-  (with-slots (size) blob
-    (setf size (size-from-file blob))))
+(defgeneric set-size-from-file (blob)
+  (:method ((blob blob))
+    (with-slots (size) blob
+      (setf size (size-from-file blob)))))
 
 (defmethod get-size :before ((blob blob))
   (with-slots (size) blob

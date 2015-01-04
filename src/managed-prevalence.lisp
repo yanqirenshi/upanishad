@@ -222,9 +222,10 @@
   "Initialize the id counter to 0"
   (setf (get-root-object system :id-counter) 0))
 
-(defmethod next-id ((system pool))
-  "Increment and return the next id"
-  (incf (get-root-object system :id-counter)))
+(defgeneric next-id (pool)
+  (:method ((system pool))
+    "Increment and return the next id"
+    (incf (get-root-object system :id-counter))))
 
 ;;; A generic persistent preferences mechanism
 
