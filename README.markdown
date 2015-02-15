@@ -36,9 +36,9 @@ mkdir ~/up
 
 | libraly    | description |
 |------------|-------------|
-| alexandria |             |
-| s-xml      |             |
-| s-sysdeps  |             |
+| [alexandria](https://common-lisp.net/project/alexandria/) |             |
+| [s-xml](https://common-lisp.net/project/s-xml/)      |             |
+| [s-sysdeps](https://github.com/svenvc/s-sysdeps)  |             |
 
 `qluickload` すれば気にする必要なし。
 
