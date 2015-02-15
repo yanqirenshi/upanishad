@@ -33,8 +33,9 @@ mkdir ~/up
 
 # Dependencies
 これだけ。
+
 | libraly    | description |
-|:-----------|:------------|
+|------------|-------------|
 | alexandria |             |
 | s-xml      |             |
 | s-sysdeps  |             |
