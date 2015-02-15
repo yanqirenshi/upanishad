@@ -15,37 +15,23 @@
 (in-package :upanishad)
 
 (defclass blob (atman)
-  ((name :accessor get-name :documentation "Return the descriptive name of blob"
+  ((name :accessor get-name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
          :initarg :name
          :initform "untitled")
    (size :reader get-size
+         :documentation "Return the size of blob in bytes. Set the mime-type string of blob."
          :initarg :size
          :initform -1)
    (mime-type :accessor get-mime-type
+              :documentation "Return the mime-type of blob as a string. Set the keywords list of blob"
               :initarg :mime-type
               :initform "application/octet-stream")
    (keywords :accessor get-keywords
+             :documentation "Return the list of keywords associated with blob"
              :initarg :keywords
              :initform '()))
   (:documentation "A blob is a file-like collection of bytes with related metadata"))
 
-(defgeneric (setf get-name) (name blob)
-  (:documentation "Set the descriptive name of blob"))
-
-(defgeneric get-size (blob)
-  (:documentation "Return the size of blob in bytes"))
-
-(defgeneric get-mime-type (blob)
-  (:documentation "Return the mime-type of blob as a string"))
-
-(defgeneric (setf get-mime-type) (mime-type blob)
-  (:documentation "Set the mime-type string of blob"))
-
-(defgeneric get-keywords (blob)
-  (:documentation "Return the list of keywords associated with blob"))
-
-(defgeneric (setf get-keywords) (keywords blob)
-  (:documentation "Set the keywords list of blob"))
 
 (defmethod print-object ((blob blob) stream)
   (print-unreadable-object
