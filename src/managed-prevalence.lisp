@@ -23,11 +23,12 @@
 ;; A generic object prevalence protocol handling objects with id
 
 (defclass atman ()
-  ((id :reader get-id :initarg :id :initform -1))
+  ((id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
+       :reader  get-id
+       :initarg :id
+       :initform -1))
   (:documentation "Superclass for objects with an id"))
 
-(defgeneric get-id (object)
-  (:documentation "Return an external, unique, immutable identifier for object (typically an integer)"))
 
 (defun get-objects-root-name (class)
   "Return the keyword symbol naming the root of instances of class"
