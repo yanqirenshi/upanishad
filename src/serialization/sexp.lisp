@@ -1,4 +1,3 @@
-
 (in-package :s-serialization)
 
 (defun serialize-sexp (object stream &optional (serialization-state (make-serialization-state)))
@@ -10,24 +9,21 @@
   "Read and return an s-expression serialized version of a lisp object from stream, optionally reusing a serialization state"
   (reset serialization-state)
   (let ((sexp (read stream nil :eof)))
-    (if (eq sexp :eof) 
+    (if (eq sexp :eof)
         nil
-      (deserialize-sexp-internal sexp (get-hashtable serialization-state)))))
-
-(defgeneric serialize-sexp-internal (object stream serialization-state)
-  (:documentation "Write a serialized version of object to stream using s-expressions"))
+        (deserialize-sexp-internal sexp (get-hashtable serialization-state)))))
 
 (defun print-symbol (symbol stream)
   (let ((package (symbol-package symbol))
-	(name (prin1-to-string symbol)))
+        (name (prin1-to-string symbol)))
     (cond ((eq package +cl-package+) (write-string "CL:" stream))
-	  ((eq package +keyword-package+) (write-char #\: stream))
-	  (package (s-xml:print-string-xml (package-name package) stream)
+          ((eq package +keyword-package+) (write-char #\: stream))
+          (package (s-xml:print-string-xml (package-name package) stream)
                    (write-string "::" stream))
           (t (write-string "#:" stream)))
     (if (char= (char name (1- (length name))) #\|)
         (write-string name stream :start (position #\| name))
-      (write-string name stream :start (1+ (or (position #\: name :from-end t) -1))))))
+        (write-string name stream :start (1+ (or (position #\: name :from-end t) -1))))))
 
 
 ;;;; SERIALIZATION
@@ -66,18 +62,18 @@
              (unless (zerop length)
                (write-string " :ELEMENTS (" stream)
                (map nil
-                    #'(lambda (element) 
+                    #'(lambda (element)
                         (write-string " " stream)
                         (serialize-sexp-internal element stream serialization-state))
                     object))
              (write-string " ) )" stream)))
-         (improper-list ()           
+         (improper-list ()
            (let ((id (set-known-object serialization-state object)))
              (write-string "(:CONS " stream)
              (prin1 id stream)
-             (write-char #\Space stream)        
+             (write-char #\Space stream)
              (serialize-sexp-internal (car object) stream serialization-state)
-             (write-char #\Space stream)                
+             (write-char #\Space stream)
              (serialize-sexp-internal (cdr object) stream serialization-state)
              (write-string " ) " stream))))
     (let ((id (known-object-id serialization-state object)))
@@ -95,10 +91,10 @@
 (defmethod serialize-sexp-internal ((object hash-table) stream serialization-state)
   (let ((id (known-object-id serialization-state object)))
     (if id
-	(progn
-	  (write-string "(:REF . " stream)
-	  (prin1 id stream)
-	  (write-string ")" stream))
+        (progn
+          (write-string "(:REF . " stream)
+          (prin1 id stream)
+          (write-string ")" stream))
         (let ((count (hash-table-count object)))
           (setf id (set-known-object serialization-state object))
           (write-string "(:HASH-TABLE " stream)
@@ -127,69 +123,69 @@
 (defmethod serialize-sexp-internal ((object structure-object) stream serialization-state)
   (let ((id (known-object-id serialization-state object)))
     (if id
-	(progn
-	  (write-string "(:REF . " stream)
-	  (prin1 id stream)
-	  (write-string ")" stream))
-      (let ((serializable-slots (get-serializable-slots serialization-state object)))
-	(setf id (set-known-object serialization-state object))
-	(write-string "(:STRUCT " stream)
-	(prin1 id stream)
-	(write-string " :CLASS " stream)
-	(print-symbol (class-name (class-of object)) stream)
-        (when serializable-slots
-          (write-string " :SLOTS (" stream)
-          (mapc #'(lambda (slot)
-                    (write-string " (" stream)
-                    (print-symbol slot stream)
-                    (write-string " . " stream)
-                    (serialize-sexp-internal (slot-value object slot) stream serialization-state)
-                    (write-string ")" stream))
-                serializable-slots))
-	(write-string " ) )" stream)))))
+        (progn
+          (write-string "(:REF . " stream)
+          (prin1 id stream)
+          (write-string ")" stream))
+        (let ((serializable-slots (get-serializable-slots serialization-state object)))
+          (setf id (set-known-object serialization-state object))
+          (write-string "(:STRUCT " stream)
+          (prin1 id stream)
+          (write-string " :CLASS " stream)
+          (print-symbol (class-name (class-of object)) stream)
+          (when serializable-slots
+            (write-string " :SLOTS (" stream)
+            (mapc #'(lambda (slot)
+                      (write-string " (" stream)
+                      (print-symbol slot stream)
+                      (write-string " . " stream)
+                      (serialize-sexp-internal (slot-value object slot) stream serialization-state)
+                      (write-string ")" stream))
+                  serializable-slots))
+          (write-string " ) )" stream)))))
 
 ;;; objects
 (defmethod serialize-sexp-internal ((object standard-object) stream serialization-state)
   (let ((id (known-object-id serialization-state object)))
     (if id
-	(progn
-	  (write-string "(:REF . " stream)
-	  (prin1 id stream)
-	  (write-string ")" stream))
-      (let ((serializable-slots (get-serializable-slots serialization-state object)))
-	(setf id (set-known-object serialization-state object))
-	(write-string "(:OBJECT " stream)
-	(prin1 id stream)
-	(write-string " :CLASS " stream)
-	(print-symbol (class-name (class-of object)) stream)
-        (when serializable-slots
-          (princ " :SLOTS (" stream)
-          (loop :for slot :in serializable-slots
-                :do (when (slot-boundp object slot)
-                      (write-string " (" stream)
-                      (print-symbol slot stream)
-                      (write-string " . " stream)
-                      (serialize-sexp-internal (slot-value object slot) stream serialization-state)
-                      (write-string ")" stream))))
-	(write-string " ) )" stream)))))
+        (progn
+          (write-string "(:REF . " stream)
+          (prin1 id stream)
+          (write-string ")" stream))
+        (let ((serializable-slots (get-serializable-slots serialization-state object)))
+          (setf id (set-known-object serialization-state object))
+          (write-string "(:OBJECT " stream)
+          (prin1 id stream)
+          (write-string " :CLASS " stream)
+          (print-symbol (class-name (class-of object)) stream)
+          (when serializable-slots
+            (princ " :SLOTS (" stream)
+            (loop :for slot :in serializable-slots
+               :do (when (slot-boundp object slot)
+                     (write-string " (" stream)
+                     (print-symbol slot stream)
+                     (write-string " . " stream)
+                     (serialize-sexp-internal (slot-value object slot) stream serialization-state)
+                     (write-string ")" stream))))
+          (write-string " ) )" stream)))))
 
 
 ;;;; DESERIALIZATION
 
 (defun deserialize-sexp-internal (sexp deserialized-objects)
-  (if (atom sexp) 
+  (if (atom sexp)
       sexp
       (ecase (first sexp)
         (:sequence (destructuring-bind (id &key class size elements) (rest sexp)
                      (let ((sequence (make-sequence class size)))
                        (setf (gethash id deserialized-objects) sequence)
-                       (map-into sequence 
-                                 #'(lambda (x) (deserialize-sexp-internal x deserialized-objects)) 
+                       (map-into sequence
+                                 #'(lambda (x) (deserialize-sexp-internal x deserialized-objects))
                                  elements))))
         (:hash-table (destructuring-bind (id &key test size rehash-size rehash-threshold entries) (rest sexp)
-                       (let ((hash-table (make-hash-table :size size 
-                                                          :test test 
-                                                          :rehash-size rehash-size 
+                       (let ((hash-table (make-hash-table :size size
+                                                          :test test
+                                                          :rehash-size rehash-size
                                                           :rehash-threshold rehash-threshold)))
                          (setf (gethash id deserialized-objects) hash-table)
                          (dolist (entry entries)
@@ -201,22 +197,22 @@
                      (setf (gethash id deserialized-objects) object)
                      (dolist (slot slots)
                        (when (slot-exists-p object (first slot))
-                         (setf (slot-value object (first slot)) 
+                         (setf (slot-value object (first slot))
                                (deserialize-sexp-internal (rest slot) deserialized-objects))))
                      object)))
         (:struct (destructuring-bind (id &key class slots) (rest sexp)
-                   (let ((object (funcall (intern (concatenate 'string "MAKE-" (symbol-name class)) 
+                   (let ((object (funcall (intern (concatenate 'string "MAKE-" (symbol-name class))
                                                   (symbol-package class)))))
                      (setf (gethash id deserialized-objects) object)
                      (dolist (slot slots)
                        (when (slot-exists-p object (first slot))
-                         (setf (slot-value object (first slot)) 
+                         (setf (slot-value object (first slot))
                                (deserialize-sexp-internal (rest slot) deserialized-objects))))
                      object)))
         (:cons (destructuring-bind (id cons-car cons-cdr) (rest sexp)
                  (let ((conspair (cons nil nil)))
                    (setf (gethash id deserialized-objects)
-                         conspair)                   
+                         conspair)
                    (rplaca conspair (deserialize-sexp-internal cons-car deserialized-objects))
                    (rplacd conspair (deserialize-sexp-internal cons-cdr deserialized-objects)))))
         (:ref (gethash (rest sexp) deserialized-objects)))))

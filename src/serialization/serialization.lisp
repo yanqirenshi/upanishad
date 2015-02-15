@@ -142,3 +142,11 @@
           (values :dotted-list nil)))
       (values :proper-sequence (length sequence))))
 
+
+;;;
+;;; sexp.lisp
+;;;
+(defgeneric serialize-sexp-internal (object stream serialization-state)
+  (:documentation "Write a serialized version of object to stream using s-expressions"))
+
+
