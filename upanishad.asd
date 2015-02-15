@@ -53,5 +53,7 @@
                          (:file "master-slave" :depends-on ("prevalence"))
                          (:file "blob"  :depends-on ("managed-prevalence"))
                          (:file "print" :depends-on ("master-slave" "blob")))))
-  :depends-on (:s-xml :s-sysdeps))
+  :depends-on (:alexandria
+	       :s-xml 
+	       :s-sysdeps))
 
