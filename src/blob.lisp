@@ -15,14 +15,19 @@
 (in-package :upanishad)
 
 (defclass blob (atman)
-  ((name :accessor get-name :initarg :name :initform "untitled")
-   (size :reader get-size :initarg :size :initform -1)
-   (mime-type :accessor get-mime-type :initarg :mime-type :initform "application/octet-stream")
-   (keywords :accessor get-keywords :initarg :keywords :initform '()))
+  ((name :accessor get-name :documentation "Return the descriptive name of blob"
+         :initarg :name
+         :initform "untitled")
+   (size :reader get-size
+         :initarg :size
+         :initform -1)
+   (mime-type :accessor get-mime-type
+              :initarg :mime-type
+              :initform "application/octet-stream")
+   (keywords :accessor get-keywords
+             :initarg :keywords
+             :initform '()))
   (:documentation "A blob is a file-like collection of bytes with related metadata"))
-
-(defgeneric get-name (blob)
-  (:documentation "Return the descriptive name of blob"))
 
 (defgeneric (setf get-name) (name blob)
   (:documentation "Set the descriptive name of blob"))
