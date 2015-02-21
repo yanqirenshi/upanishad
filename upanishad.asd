@@ -42,6 +42,8 @@
             ;;   |                      |
             ;;   +----------------------+
             ;;   |
+            ;; printer
+            ;;   |
             ;; (end)
             ;;
             :components ((:file "package")
@@ -55,7 +57,7 @@
                          (:file "managed-prevalence" :depends-on ("prevalence"))
                          (:file "master-slave"       :depends-on ("prevalence"))
                          (:file "blob"               :depends-on ("managed-prevalence"))
-                         (:file "print"              :depends-on ("master-slave" "blob")))))
+                         (:file "printer"            :depends-on ("master-slave" "blob")))))
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps))
