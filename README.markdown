@@ -7,12 +7,12 @@
 
 こんな人は使ってみてください。
 
-* CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズすんの面倒くせぇ。
+* CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズ処理書いたりすんの面倒くせぇ。
 * WindowsでRDB(MySQL)とかに接続すんのが上手くイカねぇ。イラつく。
 * DBも Common Lisp のみで完結させたい。
 
 そんなに学習コストもかからないと思います。
-わからんかったら Issue書くかメールして。
+わからんかったら Issue書くかメールしてつかぁさい。
 
 [Graph database](https://en.wikipedia.org/wiki/Graph_database)の [森羅万象](https://github.com/yanqirenshi/shinrabanshou) では永続化層にこの Upanishad を利用しています。
 
