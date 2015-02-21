@@ -67,61 +67,6 @@
 (defgeneric totally-destroy (system &key abort)
   (:documentation "Totally destroy system from permanent storage by deleting any files that we find"))
 
-;;; Classes
-
-(defclass pool ()
-  ((directory ;; :type pathname
-    :initarg :directory
-    :accessor get-directory)
-   (root-objects ;; :type hash-table
-    :accessor get-root-objects
-    :initform (make-hash-table :test 'eq))
-   (options ;; :type hash-table
-    :initform (make-hash-table :test 'eq))
-   (snapshot ;; :type pathname
-    :accessor get-snapshot)
-   (transaction-log ;; :type pathname
-    :accessor get-transaction-log)
-   (transaction-log-stream ;; :type stream
-    :accessor get-transaction-log-stream
-    :initform nil)
-   (serializer ;; type function
-    :accessor get-serializer
-    :initarg :serializer
-    :initform #'serialize-xml)
-   (deserializer ;; type function
-    :accessor get-deserializer
-    :initarg :deserializer
-    :initform #'deserialize-xml)
-   (file-extension ;; type string
-    :accessor get-file-extension
-    :initarg :file-extension
-    :initform "xml")
-   (serialization-state ;; type serialization-state
-    :reader get-serialization-state
-    :initform (make-serialization-state))
-   (transaction-hook ;; type function
-    :accessor get-transaction-hook
-    :initarg :transaction-hook
-    :initform #'identity))
-  (:documentation "Base Prevalence system implementation object"))
-
-(defclass guarded-pool (pool)
-  ((guard ;; :type function
-    :accessor get-guard
-    :initform #'(lambda (thunk) (funcall thunk))))
-  (:documentation "A Prevalence system with a guard thunk"))
-
-(defclass transaction ()
-  ((args ;; :type cons
-    :initarg :args
-    :accessor get-args
-    :initform nil)
-   (function ;; :type symbol
-    :initarg :function
-    :accessor get-function
-    :initform 'identity))
-  (:documentation "A simple Transaction object joining a function and its arguments"))
 
 ;;; Conditions
 

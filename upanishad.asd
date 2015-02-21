@@ -28,7 +28,9 @@
             ;;   |
             ;; package
             ;;   |
-            ;; serialization
+            ;; [serialization]
+            ;;   |
+            ;; class
             ;;   |
             ;; prevalence
             ;;   |
@@ -45,15 +47,16 @@
             :components ((:file "package")
                          (:module "serialization"
                                   :components ((:file "serialization")
-                                               (:file "xml" :depends-on ("serialization"))
+                                               (:file "xml"  :depends-on ("serialization"))
                                                (:file "sexp" :depends-on ("serialization")))
                                   :depends-on ("package"))
-                         (:file "prevalence" :depends-on ("serialization"))
+                         (:file "class"              :depends-on ("serialization"))
+                         (:file "prevalence"         :depends-on ("class"))
                          (:file "managed-prevalence" :depends-on ("prevalence"))
-                         (:file "master-slave" :depends-on ("prevalence"))
-                         (:file "blob"  :depends-on ("managed-prevalence"))
-                         (:file "print" :depends-on ("master-slave" "blob")))))
+                         (:file "master-slave"       :depends-on ("prevalence"))
+                         (:file "blob"               :depends-on ("managed-prevalence"))
+                         (:file "print"              :depends-on ("master-slave" "blob")))))
   :depends-on (:alexandria
-	       :s-xml 
-	       :s-sysdeps))
+               :s-xml
+               :s-sysdeps))
 

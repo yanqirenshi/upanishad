@@ -20,16 +20,6 @@
   `(execute ,(second transaction-call)
             (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
 
-;; A generic object prevalence protocol handling objects with id
-
-(defclass atman ()
-  ((id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
-       :reader  get-id
-       :initarg :id
-       :initform -1))
-  (:documentation "Superclass for objects with an id"))
-
-
 (defun get-objects-root-name (class)
   "Return the keyword symbol naming the root of instances of class"
   (let ((classname (if (symbolp class) (string class) (class-name class))))
