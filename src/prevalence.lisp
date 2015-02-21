@@ -43,18 +43,6 @@
 (defgeneric restore (system)
   (:documentation "Restore a system from permanent storage"))
 
-(defgeneric get-root-object (system name)
-  (:documentation "Retrieve a root object by symbol name from system"))
-
-(defgeneric (setf get-root-object) (value system name)
-  (:documentation "Set a symbol named root object of system to value"))
-
-(defgeneric get-option (system name)
-  (:documentation "Retrieve a named option from system"))
-
-(defgeneric (setf get-option) (value system name)
-  (:documentation "Set a named option of system to value"))
-
 (defgeneric remove-root-object (system name)
   (:documentation "Remove the root object by symbol name from system"))
 
@@ -66,6 +54,33 @@
 
 (defgeneric totally-destroy (system &key abort)
   (:documentation "Totally destroy system from permanent storage by deleting any files that we find"))
+
+
+;;; Generic functions
+(defgeneric get-root-object (pool name)
+  (:documentation "Retrieve a root object by symbol name from pool")
+  (:method ((pool pool) name)
+    (gethash name (get-root-objects pool))))
+
+
+(defgeneric (setf get-root-object) (value pool name)
+  (:documentation "Set a symbol named root object of pool to value")
+  (:method (value (pool pool) name)
+    (setf (gethash name (get-root-objects pool)) value)))
+
+
+(defgeneric get-option (pool name)
+  (:documentation "Retrieve a named option from pool")
+  (:method ((pool pool) name)
+    (with-slots (options) pool
+      (gethash name options))))
+
+
+(defgeneric (setf get-option) (value pool name)
+  (:documentation "Set a named option of pool to value")
+  (:method (value (pool pool) name)
+    (with-slots (options) pool
+      (setf (gethash name options) value))))
 
 
 ;;; Conditions
@@ -126,20 +141,6 @@
     (format stream "~a ~a"
             (get-function transaction)
             (or (get-args transaction) "()"))))
-
-(defmethod get-root-object ((system pool) name)
-  (gethash name (get-root-objects system)))
-
-(defmethod (setf get-root-object) (value (system pool) name)
-  (setf (gethash name (get-root-objects system)) value))
-
-(defmethod get-option ((system pool) name)
-  (with-slots (options) system
-    (gethash name options)))
-
-(defmethod (setf get-option) (value (system pool) name)
-  (with-slots (options) system
-    (setf (gethash name options) value)))
 
 (defmethod remove-root-object ((system pool) name)
   (remhash name (get-root-objects system)))

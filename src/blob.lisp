@@ -24,10 +24,17 @@
   "The directory in which to store the blob files")
 
 (defgeneric get-file (blob)
-  (:documentation "Return the pathname to the bytes of blob"))
+  ;; TODO: これは slot 操作じゃないので元にもどそう。
+  (:documentation "Return the pathname to the bytes of blob")
+  (:method ((blob blob))
+    (merge-pathnames (princ-to-string (get-id blob)) *blob-root*)))
 
-(defmethod get-file ((blob blob))
-  (merge-pathnames (princ-to-string (get-id blob)) *blob-root*))
+(defgeneric get-size (blob)
+  (:documentation "Return the pathname to the bytes of blob")
+  (:method :before ((blob blob))
+           (with-slots (size) blob
+             (when (eql size -1)
+               (setf size (size-from-file blob))))))
 
 (defun copy-stream (in out &optional (element-type '(unsigned-byte 8)))
   "Copy everything from in to out"
@@ -41,6 +48,8 @@
                        (write-sequence buffer out)
                        (read-chunks))))))
       (read-chunks))))
+
+
 
 (defgeneric fill-from-stream (blob binary-input-stream)
   (:documentation "Fill the blob's contents with the bytes from binary-input-stream"))
@@ -95,11 +104,6 @@
 (defgeneric set-size-from-file (blob)
   (:method ((blob blob))
     (with-slots (size) blob
-      (setf size (size-from-file blob)))))
-
-(defmethod get-size :before ((blob blob))
-  (with-slots (size) blob
-    (when (eql size -1)
       (setf size (size-from-file blob)))))
 
 ;;;; eof

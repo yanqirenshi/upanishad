@@ -39,6 +39,9 @@
 ;;;                                               +--------------+
 ;;;
 
+;;;
+;;; Class
+;;;
 (defclass brahman () ()
   (:documentation "思想的なもの。今んところ意味はないけぇ。"))
 
@@ -54,19 +57,20 @@
 
 
 (defclass blob (atman)
-  ((name :accessor get-name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
+  ((name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
+         :accessor get-name
          :initarg :name
          :initform "untitled")
-   (size :reader get-size
-         :documentation "Return the size of blob in bytes. Set the mime-type string of blob."
+   (size :documentation "Return the size of blob in bytes. Set the mime-type string of blob."
+         :reader get-size
          :initarg :size
          :initform -1)
-   (mime-type :accessor get-mime-type
-              :documentation "Return the mime-type of blob as a string. Set the keywords list of blob"
+   (mime-type :documentation "Return the mime-type of blob as a string. Set the keywords list of blob"
+              :accessor get-mime-type
               :initarg :mime-type
               :initform "application/octet-stream")
-   (keywords :accessor get-keywords
-             :documentation "Return the list of keywords associated with blob"
+   (keywords :documentation "Return the list of keywords associated with blob"
+             :accessor get-keywords
              :initarg :keywords
              :initform '()))
   (:documentation "A blob is a file-like collection of bytes with related metadata"))
@@ -130,3 +134,9 @@
     :accessor get-function
     :initform 'identity))
   (:documentation "A simple Transaction object joining a function and its arguments"))
+
+
+
+;;;
+;;; Getter / Setter
+;;;

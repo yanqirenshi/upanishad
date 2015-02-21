@@ -20,6 +20,14 @@
   `(execute ,(second transaction-call)
             (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
 
+(defgeneric get-preference (pool key)
+  (:documentation "Retrieve the value of the persistent preference stored under key in pool")
+  (:method get-preference ((pool pool) key)
+           "Retrieve the value of the persistent preference stored under key in pool"
+           (let ((preferences (get-root-object pool :preferences)))
+             (when preferences
+               (gethash key preferences)))))
+
 (defun get-objects-root-name (class)
   "Return the keyword symbol naming the root of instances of class"
   (let ((classname (if (symbolp class) (string class) (class-name class))))
@@ -219,16 +227,6 @@
     (incf (get-root-object system :id-counter))))
 
 ;;; A generic persistent preferences mechanism
-
-(defgeneric get-preference (system key)
-  (:documentation "Retrieve the value of the persistent preference stored under key in system"))
-
-(defmethod get-preference ((system pool) key)
-  "Retrieve the value of the persistent preference stored under key in system"
-  (let ((preferences (get-root-object system :preferences)))
-    (when preferences
-      (gethash key preferences))))
-
 (defun tx-set-preference (system key value)
   "Set the value of the persistent preference key in system"
   (let ((preferences (get-root-object system :preferences)))
