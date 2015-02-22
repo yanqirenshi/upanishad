@@ -12,18 +12,14 @@
   "The directory in which to store the blob files")
 
 
-(defgeneric get-file (blob)
-  (:documentation "Return the pathname to the bytes of blob")
-  (:method ((blob blob))
-    (merge-pathnames (princ-to-string (get-id blob)) *blob-root*)))
+(defmethod get-file ((blob blob))
+  (merge-pathnames (princ-to-string (get-id blob)) *blob-root*))
 
 
-(defgeneric get-size (blob)
-  (:documentation "Return the pathname to the bytes of blob")
-  (:method :before ((blob blob))
-           (with-slots (size) blob
-             (when (eql size -1)
-               (setf size (size-from-file blob))))))
+(defmethod get-size :before ((blob blob))
+  (with-slots (size) blob
+    (when (eql size -1)
+      (setf size (size-from-file blob)))))
 
 
 (defun copy-stream (in out &optional (element-type '(unsigned-byte 8)))
@@ -40,10 +36,6 @@
       (read-chunks))))
 
 
-(defgeneric fill-from-stream (blob binary-input-stream)
-  (:documentation "Fill the blob's contents with the bytes from binary-input-stream"))
-
-
 (defmethod fill-from-stream ((blob blob) binary-input-stream)
   "Fill the blob's contents with the bytes from binary-input-stream"
   (with-open-file (out (get-file blob)
@@ -54,20 +46,12 @@
     (copy-stream binary-input-stream out)))
 
 
-(defgeneric copy-to-stream (blob binary-output-stream)
-  (:documentation "Copy the bytes from blob to binary-output-stream"))
-
-
 (defmethod copy-to-stream ((blob blob) binary-output-stream)
   "Copy the bytes from blob to binary-output-stream"
   (with-open-file (in (get-file blob)
                       :direction :input
                       :element-type '(unsigned-byte 8))
     (copy-stream in binary-output-stream)))
-
-
-(defgeneric fill-from-file (blob pathname)
-  (:documentation "Fill the blob's contents with the bytes read from the binary file at pathname"))
 
 
 (defmethod fill-from-file ((blob blob) pathname)
@@ -80,29 +64,23 @@
         (get-keywords blob)))
 
 
-(defgeneric destroy (blob)
-  (:documentation "Completely destroy blob (removing its byte data file as well)"))
-
-
 (defmethod destroy ((blob blob))
   (when (probe-file (get-file blob))
     (delete-file (get-file blob)))
   (push :destroyed (get-keywords blob)))
 
 
-(defgeneric size-from-file (blob)
-  (:method ((blob blob))
-    (let ((path (get-file blob)))
-      (if (probe-file path)
-          (with-open-file (in path :direction :input :element-type '(unsigned-byte 8))
-            (file-length in))
-          -1))))
+(defmethod size-from-file ((blob blob))
+  (let ((path (get-file blob)))
+    (if (probe-file path)
+        (with-open-file (in path :direction :input :element-type '(unsigned-byte 8))
+          (file-length in))
+        -1)))
 
 
-(defgeneric set-size-from-file (blob)
-  (:method ((blob blob))
-    (with-slots (size) blob
-      (setf size (size-from-file blob)))))
+(defmethod set-size-from-file ((blob blob))
+  (with-slots (size) blob
+    (setf size (size-from-file blob))))
 
 
 #|

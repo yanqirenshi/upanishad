@@ -30,6 +30,8 @@
             ;;   |
             ;; [serialization]
             ;;   |
+            ;; generic-function
+            ;;   |
             ;; class
             ;;   |
             ;; prevalence
@@ -53,6 +55,7 @@
                                                (:file "sexp" :depends-on ("serialization")))
                                   :depends-on ("package"))
                          (:file "utility"            :depends-on ("serialization"))
+                         (:file "generic-function"   :depends-on ("utility"))
                          (:file "class"              :depends-on ("utility"))
                          (:file "prevalence"         :depends-on ("class"))
                          (:file "managed-prevalence" :depends-on ("prevalence"))

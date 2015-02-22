@@ -11,9 +11,9 @@
 ;;;;;  7. transaction
 ;;;;;  8. define Getter and Setter
 ;;;;;  9. Generic functions
+;;;;;
 
 (in-package :upanishad)
-
 
 ;;;
 ;;; 1. Class Graph
@@ -182,6 +182,10 @@
 
 ;;;
 ;;; 8. define Getter and Setter
+;;;
+;;; Description:
+;;;   以下は下位互換のための Getter / Setter なんよ。
+;;;   本当はやめたい。その内やめる。的なものじゃけぇ。
 ;;;
 
 ;; atman

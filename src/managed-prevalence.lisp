@@ -16,13 +16,11 @@
             (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
 
 
-(defgeneric get-preference (pool key)
-  (:documentation "Retrieve the value of the persistent preference stored under key in pool")
-  (:method ((pool pool) key)
-    "Retrieve the value of the persistent preference stored under key in pool"
-    (let ((preferences (get-root-object pool :preferences)))
-      (when preferences
-        (gethash key preferences)))))
+(defmethod get-preference ((pool pool) key)
+  "Retrieve the value of the persistent preference stored under key in pool"
+  (let ((preferences (get-root-object pool :preferences)))
+    (when preferences
+      (gethash key preferences))))
 
 
 (defun get-objects-root-name (class)
@@ -38,10 +36,6 @@
     (intern (concatenate 'string classname "-" slotname "-INDEX") :keyword)))
 
 
-(defgeneric find-all-objects (system class)
-  (:documentation "Return an unordered collection of all objects in system that are instances of class"))
-
-
 (defmethod find-all-objects ((system pool) class)
   "Return an unordered collection of all objects in system that are instances of class"
   (let ((root-name (get-objects-root-name class)))
@@ -49,8 +43,6 @@
 
 
 ;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
-(defgeneric find-object-with-id (system class id)
-  (:documentation "Find and return the object in system of class with id, null if not found"))
 (defmethod find-object-with-id ((system pool) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
@@ -59,8 +51,6 @@
       (gethash id index))))
 
 
-(defgeneric get-object-with-id (system class id)
-  (:documentation "Find and return the object in system of class with id, null if not found"))
 (defmethod get-object-with-id ((system pool) class id)
   "Find and return the object in system of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
@@ -69,7 +59,6 @@
       (gethash id index))))
 
 
-(defgeneric find-object-with-slot-use-index (system class index))
 (defmethod find-object-with-slot-use-index ((system pool) class index)
   (when index
     (let* ((ids (alexandria:hash-table-values  index))
@@ -81,7 +70,6 @@
                        ids))))))
 
 
-(defgeneric find-object-with-slot-full-scan (system class slot value test))
 (defmethod find-object-with-slot-full-scan ((system pool) class slot value test)
   "オブジェクトを全件検索します。"
   (remove-if #'(lambda (object)
@@ -89,8 +77,6 @@
              (find-all-objects system class)))
 
 
-(defgeneric find-object-with-slot (system class slot value &optional test)
-  (:documentation "Find and return the object in system of class with slot equal to value, null if not found"))
 (defmethod find-object-with-slot ((system pool) class slot value &optional (test #'equalp))
   "Find and return the object in system of class with slot equal to value, null if not found
 オブジェクトのスロットの値を検索して、ヒツトしたものを返します。
@@ -233,10 +219,9 @@
   (setf (get-root-object system :id-counter) 0))
 
 
-(defgeneric next-id (pool)
-  (:method ((system pool))
-    "Increment and return the next id"
-    (incf (get-root-object system :id-counter))))
+(defmethod next-id ((system pool))
+  "Increment and return the next id"
+  (incf (get-root-object system :id-counter)))
 
 
 ;;; A generic persistent preferences mechanism
@@ -247,10 +232,6 @@
       (setf preferences (make-hash-table)
             (get-root-object system :preferences) preferences))
     (setf (gethash key preferences) value)))
-
-
-(defgeneric all-preferences-keys (system)
-  (:documentation "Return a list of all persistent preference keys of system"))
 
 
 (defmethod all-preferences-keys ((system pool))
@@ -269,8 +250,6 @@
 ;;;
 ;;; 3. added iwasaki
 ;;;
-(defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
-  (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
 (defmethod tx-remove-object-on-slot-index ((pool pool)
                                            (obj  atman)
                                            (slot-symbol symbol))

@@ -31,70 +31,26 @@
   (make-instance 'transaction :function function :args args))
 
 
-(defgeneric execute (system object)
-  (:documentation "Ask for a transaction object to be executed on system with ACID properties"))
-
-
-(defgeneric execute-on (object system)
-  (:documentation "Ask for a transaction object to execute its changes in the context of system"))
-
-
-(defgeneric query (system function &rest args)
-  (:documentation "Ask for a query function to be executed on system with args"))
-
-
-(defgeneric snapshot (system)
-  (:documentation "Take a snapshot of a system"))
-
-
-(defgeneric restore (system)
-  (:documentation "Restore a system from permanent storage"))
-
-
-(defgeneric remove-root-object (system name)
-  (:documentation "Remove the root object by symbol name from system"))
-
-
-(defgeneric initiates-rollback (condition)
-  (:documentation "Return true when a condition initiates a rollback when thrown from a transaction"))
-
-
-(defgeneric backup (system &key directory)
-  (:documentation "Make backup copies of the current snapshot and transaction-log files"))
-
-
-(defgeneric totally-destroy (system &key abort)
-  (:documentation "Totally destroy system from permanent storage by deleting any files that we find"))
-
-
 
 ;;;
 ;;; 2. Generic functions
 ;;;
-(defgeneric get-root-object (pool name)
-  (:documentation "Retrieve a root object by symbol name from pool")
-  (:method ((pool pool) name)
-    (gethash name (get-root-objects pool))))
+(defmethod get-root-object ((pool pool) name)
+  (gethash name (get-root-objects pool)))
 
 
-(defgeneric (setf get-root-object) (value pool name)
-  (:documentation "Set a symbol named root object of pool to value")
-  (:method (value (pool pool) name)
-    (setf (gethash name (get-root-objects pool)) value)))
+(defmethod (setf get-root-object) (value (pool pool) name)
+  (setf (gethash name (get-root-objects pool)) value))
 
 
-(defgeneric get-option (pool name)
-  (:documentation "Retrieve a named option from pool")
-  (:method ((pool pool) name)
-    (with-slots (options) pool
-      (gethash name options))))
+(defmethod get-option ((pool pool) name)
+  (with-slots (options) pool
+    (gethash name options)))
 
 
-(defgeneric (setf get-option) (value pool name)
-  (:documentation "Set a named option of pool to value")
-  (:method (value (pool pool) name)
-    (with-slots (options) pool
-      (setf (gethash name options) value))))
+(defmethod (setf get-option) (value (pool pool) name)
+  (with-slots (options) pool
+    (setf (gethash name options) value)))
 
 
 
@@ -142,13 +98,12 @@
                                          :if-exists :append)))))
 
 
-(defgeneric close-open-streams (pool &key abort)
-  (:method ((system pool) &key abort)
-    "Close all open stream associated with system (optionally aborting operations in progress)"
-    (with-slots (transaction-log-stream) system
-      (when transaction-log-stream
-        (close transaction-log-stream :abort abort)
-        (setf transaction-log-stream nil)))))
+(defmethod close-open-streams ((system pool) &key abort)
+  "Close all open stream associated with system (optionally aborting operations in progress)"
+  (with-slots (transaction-log-stream) system
+    (when transaction-log-stream
+      (close transaction-log-stream :abort abort)
+      (setf transaction-log-stream nil))))
 
 
 (defmethod totally-destroy ((system pool) &key abort)
@@ -187,16 +142,17 @@
     result))
 
 
-(defgeneric log-transaction (pool transaction)
-  (:method ((system pool) (transaction transaction))
-    "Log transaction for system"
-    (let ((out (get-transaction-log-stream system)))
-      (funcall (get-serializer system) transaction out (get-serialization-state system))
-      (terpri out)
-      (finish-output out)))
-  (:method :after ((system pool) (transaction transaction))
-           "Execute the transaction-hook"
-           (funcall (get-transaction-hook system) transaction)))
+(defmethod log-transaction ((system pool) (transaction transaction))
+  "Log transaction for system"
+  (let ((out (get-transaction-log-stream system)))
+    (funcall (get-serializer system) transaction out (get-serialization-state system))
+    (terpri out)
+    (finish-output out)))
+
+
+(defmethod log-transaction :after ((system pool) (transaction transaction))
+  "Execute the transaction-hook"
+  (funcall (get-transaction-hook system) transaction))
 
 
 (defmethod query ((system pool) function &rest args)
@@ -317,16 +273,14 @@
             year month date hour minute second)))
 
 
-(defgeneric get-transaction-log-filename (pool &optional suffix)
-  (:method ((system pool) &optional suffix)
-    "Return the name of the transaction-log filename, optionally using a suffix"
-    (format nil "transaction-log~@[-~a~]" suffix)))
+(defmethod get-transaction-log-filename ((system pool) &optional suffix)
+  "Return the name of the transaction-log filename, optionally using a suffix"
+  (format nil "transaction-log~@[-~a~]" suffix))
 
 
-(defgeneric get-snapshot-filename (pool &optional suffix)
-  (:method ((system pool) &optional suffix)
-    "Return the name of the snapshot filename, optionally using a suffix"
-    (format nil "snapshot~@[-~a~]" suffix)))
+(defmethod get-snapshot-filename ((system pool) &optional suffix)
+  "Return the name of the snapshot filename, optionally using a suffix"
+  (format nil "snapshot~@[-~a~]" suffix))
 
 
 
