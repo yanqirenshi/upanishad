@@ -29,62 +29,73 @@
    #:snapshot
    #:restore
    #:backup
+   #:remove-root-object
    #:get-root-object
    #:get-option
-   #:remove-root-object
-   #:pool
-   #:guarded-pool
    #:get-guard
    #:transaction
    #:no-rollback-error
    #:initiates-rollback
    #:totally-destroy
-
-   #:print-transaction-log #:show-transaction-log #:print-snapshot #:transaction-log-tail
-
-   #:blob
+   #:print-transaction-log
+   #:show-transaction-log
+   #:print-snapshot
+   #:transaction-log-tail
    #:get-file
-   #:get-name
-   #:name
-   #:get-mime-type
-   #:mime-type
-   #:get-size
-   #:size
-   #:get-keywords
-   #:keywords
    #:*blob-root*
    #:copy-to-stream
    #:fill-from-stream
    #:fill-from-file
    #:destroy
-
    #:execute-transaction
-   #:atman
-   #:get-id
-   #:id
-   #:find-all-objects
-   #:find-object-with-id
-   #:get-object-with-id
-   #:find-object-with-slot
    #:tx-create-id-counter
    #:tx-create-object
    #:tx-delete-object
    #:tx-change-object-slots
+   #:tx-set-preference
+   #:tx-remove-object-on-slot-index
+   #:find-all-objects
+   #:find-object-with-id
+   #:get-object-with-id
+   #:find-object-with-slot
    #:get-preference
    #:all-preferences-keys
-   #:tx-set-preference
    #:index-on
    #:drop-index-on
-   #:tx-remove-object-on-slot-index
-
-   ;; Plato Wu,2009/02/28: Add for testing system.
    #:close-open-streams
    #:next-id
-
+   ;; master slave
    #:start-master-client
    #:stop-master-client
    #:start-slave-server
-   #:stop-slave-server)
+   #:stop-slave-server
+   ;;;
+   ;;; Class: pool and guarded-pool
+   ;;;
+   #:pool
+   #:guarded-pool
+   ;;;
+   ;;; Class: blob
+   ;;;
+   ;; slots
+   #:blob
+   #:name
+   #:size
+   #:mime-type
+   #:keywords
+   ;; getter / setter
+   #:get-name
+   #:get-mime-type
+   #:get-size
+   #:get-keywords
+   ;;;
+   ;;; Class: atman
+   ;;;
+   #:atman
+   ;; slots
+   #:id
+   ;; getter / setter
+   #:get-id)
   (:documentation "An implementation of Object Prevalence for Common Lisp"))
 
 
