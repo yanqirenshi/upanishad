@@ -2,9 +2,6 @@
 
 [cl-prevalence](https://common-lisp.net/project/cl-prevalence/) からフォークしたプロジェクトです。
 
-プロジェクト名は [ウパニシャッド](https://ja.wikipedia.org/wiki/%E3%82%A6%E3%83%91%E3%83%8B%E3%82%B7%E3%83%A3%E3%83%83%E3%83%89)哲学のアートマン思想([梵我一如](http://ja.wikipedia.org/wiki/%E3%82%A6%E3%83%91%E3%83%8B%E3%82%B7%E3%83%A3%E3%83%83%E3%83%89))に良く似ているところから来ています。
-まぁ、ヨギーなんで影響を受けているんです。
-
 こんな人は使ってみてください。
 
 * CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズ処理書いたりすんの面倒くせぇ。
@@ -13,8 +10,6 @@
 
 そんなに学習コストもかからないと思います。
 わからんかったら Issue書くかメールしてつかぁさい。
-
-[Graph database](https://en.wikipedia.org/wiki/Graph_database)の [森羅万象](https://github.com/yanqirenshi/shinrabanshou) では永続化層にこの Upanishad を利用しています。
 
 # Usage
 データを保管する(snapshotと言う)ためのディレクトリを作成したら。。。
