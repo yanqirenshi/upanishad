@@ -10,48 +10,48 @@
 ;;;;;  6. guarded-pool
 ;;;;;  7. transaction
 ;;;;;  8. define Getter and Setter
-;;;;;
+;;;;;  9. Generic functions
 
 (in-package :upanishad)
 
 
 ;;;
 ;;; 1. Class Graph
-                                        ;
-                                        ;   +---------+
-                                        ;   | brahman |
-                                        ;   |=========|
-                                        ;   |---------|
-                                        ;   +---------+
-                                        ;        ^
-                                        ;        |
-                                        ;        +------------------+--------------------------+
-                                        ;        |                  |                          |
-                                        ;   +---------+       +-------------+     +-------------------------+
-                                        ;   | atman   |       | transaction |     | pool                    |
-                                        ;   |=========|       |=============|     |=========================|
-                                        ;   |r id     |       |a args       |     |a directory              |
-                                        ;   |---------|       |a function   |     |a root-objects           |
-                                        ;   +---------+       |-------------|     |- options                |
-                                        ;        ^            +-------------+     |a snapshot               |
-                                        ;        |                                |a transaction-log        |
-                                        ;   +------------+                        |a transaction-log-stream |
-                                        ;   | blob       |                        |a serializer             |
-                                        ;   |============|                        |a deserializer           |
-                                        ;   |a name      |                        |a file-extension         |
-                                        ;   |r size      |                        |r serialization-state    |
-                                        ;   |a mime-type |                        |a transaction-hook       |
-                                        ;   |a keywords  |                        |-------------------------|
-                                        ;   |------------|                        +-------------------------+
-                                        ;   +------------+                                     ^
-                                        ;                                                      |
-                                        ;                                               +--------------+
-                                        ;                                               | guarded-pool |
-                                        ;                                               |==============|
-                                        ;                                               |a guard       |
-                                        ;                                               |--------------|
-                                        ;                                               +--------------+
-                                        ;
+;;
+;;   +---------+
+;;   | brahman |
+;;   |=========|
+;;   |---------|
+;;   +---------+
+;;        ^
+;;        |
+;;        +------------------+--------------------------+
+;;        |                  |                          |
+;;   +---------+       +-------------+     +-------------------------+
+;;   | atman   |       | transaction |     | pool                    |
+;;   |=========|       |=============|     |=========================|
+;;   |r id     |       |a args       |     |a directory              |
+;;   |---------|       |a function   |     |a root-objects           |
+;;   +---------+       |-------------|     |- options                |
+;;        ^            +-------------+     |a snapshot               |
+;;        |                                |a transaction-log        |
+;;   +------------+                        |a transaction-log-stream |
+;;   | blob       |                        |a serializer             |
+;;   |============|                        |a deserializer           |
+;;   |a name      |                        |a file-extension         |
+;;   |r size      |                        |r serialization-state    |
+;;   |a mime-type |                        |a transaction-hook       |
+;;   |a keywords  |                        |-------------------------|
+;;   |------------|                        +-------------------------+
+;;   +------------+                                     ^
+;;                                                      |
+;;                                               +--------------+
+;;                                               | guarded-pool |
+;;                                               |==============|
+;;                                               |a guard       |
+;;                                               |--------------|
+;;                                               +--------------+
+;;
 
 ;;;
 ;;; 2. Brahman
@@ -226,3 +226,50 @@
 (defwriter pool args)
 ;; (defreader pool function)
 ;; (defwriter pool function)
+
+
+
+;;;
+;;; 9. Generic functions
+;;;
+;; blob.lisp
+;; (defgeneric get-file (blob) ())
+;; (defgeneric get-size (blob) ())
+;; (defgeneric fill-from-stream (blob binary-input-stream) ())
+;; (defgeneric copy-to-stream (blob binary-output-stream) ())
+;; (defgeneric fill-from-file (blob pathname) ())
+;; (defgeneric destroy (blob) ())
+;; (defgeneric size-from-file (blob) ())
+;; (defgeneric set-size-from-file (blob) ())
+
+;; managed-prevalence.lisp
+;; (defgeneric get-preference (pool key) ())
+;; (defgeneric find-all-objects (system class) ())
+;; (defgeneric find-object-with-id (system class id) ())
+;; (defgeneric get-object-with-id (system class id) ())
+;; (defgeneric find-object-with-slot-use-index (system class index)) ())
+;; (defgeneric find-object-with-slot-full-scan (system class slot value test)) ())
+;; (defgeneric find-object-with-slot (system class slot value &optional test) ())
+;; (defgeneric next-id (pool) ())
+;; (defgeneric all-preferences-keys (system) ())
+;; (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol) ())
+
+;; prevalence.lisp
+;; (defgeneric execute (system object) ())
+;; (defgeneric execute-on (object system) ())
+;; (defgeneric query (system function &rest args) ())
+;; (defgeneric snapshot (system) ())
+;; (defgeneric restore (system) ())
+;; (defgeneric remove-root-object (system name) ())
+;; (defgeneric initiates-rollback (condition) ())
+;; (defgeneric backup (system &key directory) ())
+;; (defgeneric totally-destroy (system &key abort) ())
+;; (defgeneric get-root-object (pool name) ())
+;; (defgeneric (setf get-root-object) (value pool name) ())
+;; (defgeneric get-option (pool name) ())
+;; (defgeneric (setf get-option) (value pool name) ())
+;; (defgeneric close-open-streams (pool &key abort) ())
+;; (defgeneric log-transaction (pool transaction) ())
+;; (defgeneric get-transaction-log-filename (pool &optional suffix) ())
+;; (defgeneric get-snapshot-filename (pool &optional suffix) ())
+

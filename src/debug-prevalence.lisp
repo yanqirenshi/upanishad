@@ -1,14 +1,3 @@
-;;;;; -*- Mode: LISP -*-
-;;;;;
-;;;;; $Id$
-;;;;;
-;;;;; Some debugging routines for CL-PREVALENCE
-;;;;;
-;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;;
-;;;;; You are granted the rights to distribute and use this software
-;;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 ;;;;;
 ;;;;; Contents
 ;;;;;  1. the code for #'s-xml::echo-xml is in "echo.lisp" in S-XML's test code
@@ -57,3 +46,19 @@
                (push transaction transactions)))))
     (setf transactions (nreverse transactions))
     (nthcdr (max 0 (- (length transactions) count)) transactions)))
+
+
+
+#|
+-*- Mode: LISP -*-
+
+$Id$
+
+Some debugging routines for CL-PREVALENCE
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software
+as governed by the terms of the Lisp Lesser General Public License
+(http://opensource.franz.com/preamble.html), also known as the LLGPL.
+#|

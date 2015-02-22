@@ -1,14 +1,3 @@
-;;;;; -*- Mode: LISP -*-
-;;;;;
-;;;;; $Id$
-;;;;;
-;;;;; Package definitions for the CL-PREVALENCE project
-;;;;;
-;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;;
-;;;;; You are granted the rights to distribute and use this software
-;;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 ;;;;;
 ;;;;; Contents
 ;;;;;  1. Define package
@@ -98,3 +87,18 @@
    #:stop-slave-server)
   (:documentation "An implementation of Object Prevalence for Common Lisp"))
 
+
+
+#|
+-*- Mode: LISP -*-
+
+$Id$
+
+Package definitions for the CL-PREVALENCE project
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software
+as governed by the terms of the Lisp Lesser General Public License
+(http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#

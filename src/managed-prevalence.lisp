@@ -1,20 +1,9 @@
-;;;;; -*- mode: lisp -*-
-;;;;;
-;;;;; $Id$
-;;;;;
-;;;;; The code in this file adds another layer above plain object prevalence.
-;;;;; We manage objects with ids in an organized fashion, adding an id counter and preferences.
-;;;;;
-;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;;
-;;;;; You are granted the rights to distribute and use this software
-;;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 ;;;;;
 ;;;;; Contents
 ;;;;;  1. A convience macro
 ;;;;;  2. We use a simple id counter to generate unique object identifiers
 ;;;;;  3. added iwasaki
+;;;;;
 
 (in-package :upanishad)
 
@@ -292,3 +281,21 @@
     (when (and index (gethash (slot-value obj slot-symbol) index))
       (remhash (get-id  obj)
                (gethash (slot-value obj slot-symbol) index)))))
+
+
+
+
+#|
+-*- mode: lisp -*-
+
+$Id$
+
+The code in this file adds another layer above plain object prevalence.
+We manage objects with ids in an organized fashion, adding an id counter and preferences.
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software
+as governed by the terms of the Lisp Lesser General Public License
+(http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#

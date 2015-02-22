@@ -1,14 +1,3 @@
-;;;;; -*- mode: Lisp -*-
-;;;;;
-;;;;; $Id$
-;;;;;
-;;;;; Object Prevalence in Common Lisp
-;;;;;
-;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;;
-;;;;; You are granted the rights to distribute and use this software
-;;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 ;;;;;
 ;;;;; Contents
 ;;;;;  1. Public API: Functions and Generic Functions
@@ -393,3 +382,20 @@
 
 #-allegro
 (setf (documentation '(setf get-guard) 'function) "Set the guard function of a system")
+
+
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+Object Prevalence in Common Lisp
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software
+as governed by the terms of the Lisp Lesser General Public License
+(http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#
