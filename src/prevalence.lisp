@@ -1,25 +1,38 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Object Prevalence in Common Lisp
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;; -*- mode: Lisp -*-
+;;;;;
+;;;;; $Id$
+;;;;;
+;;;;; Object Prevalence in Common Lisp
+;;;;;
+;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+;;;;;
+;;;;; You are granted the rights to distribute and use this software
+;;;;; as governed by the terms of the Lisp Lesser General Public License
+;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;  1. Public API: Functions and Generic Functions
+;;;;;  2. Generic functions
+;;;;;  3. Conditions
+;;;;;  4. Implementation
+;;;;;  5. Some utilities
+;;;;;  6. Some file manipulation utilities
+;;;;;  7. from the serialization package
+;;;;;  8. extra documentation
+;;;;;
 
 (in-package :upanishad)
 
-;;; Public API: Functions and Generic Functions
-
+;;;
+;;; 1. Public API: Functions and Generic Functions
+;;;
 (defun make-pool (directory &key (pool-class 'pool) init-args)
   "Create and return a new prevalence system on directory. When the
   directory contains a valid snapshot and/or transaction log file, the
   system will be restored. Optionally specify the prevalence system's
   class."
   (apply #'make-instance pool-class :directory directory init-args))
+
 
 (defun make-transaction (function &rest args)
   "Create and return a new transaction specifying a function name and
@@ -28,35 +41,47 @@
   transaction in a re-entrant way."
   (make-instance 'transaction :function function :args args))
 
+
 (defgeneric execute (system object)
   (:documentation "Ask for a transaction object to be executed on system with ACID properties"))
+
 
 (defgeneric execute-on (object system)
   (:documentation "Ask for a transaction object to execute its changes in the context of system"))
 
+
 (defgeneric query (system function &rest args)
   (:documentation "Ask for a query function to be executed on system with args"))
+
 
 (defgeneric snapshot (system)
   (:documentation "Take a snapshot of a system"))
 
+
 (defgeneric restore (system)
   (:documentation "Restore a system from permanent storage"))
+
 
 (defgeneric remove-root-object (system name)
   (:documentation "Remove the root object by symbol name from system"))
 
+
 (defgeneric initiates-rollback (condition)
   (:documentation "Return true when a condition initiates a rollback when thrown from a transaction"))
 
+
 (defgeneric backup (system &key directory)
   (:documentation "Make backup copies of the current snapshot and transaction-log files"))
+
 
 (defgeneric totally-destroy (system &key abort)
   (:documentation "Totally destroy system from permanent storage by deleting any files that we find"))
 
 
-;;; Generic functions
+
+;;;
+;;; 2. Generic functions
+;;;
 (defgeneric get-root-object (pool name)
   (:documentation "Retrieve a root object by symbol name from pool")
   (:method ((pool pool) name)
@@ -83,20 +108,27 @@
       (setf (gethash name options) value))))
 
 
-;;; Conditions
 
+;;;
+;;; 3. Conditions
+;;;
 (define-condition no-rollback-error (error)
   ()
   (:documentation "Thrown by code inside a transaction to indicate that no rollback is needed"))
 
+
 (defmethod initiates-rollback ((condition condition))
   t)
+
 
 (defmethod initiates-rollback ((no-rollback-error no-rollback-error))
   nil)
 
-;;; Implementation
 
+
+;;;
+;;; 4. Implementation
+;;;
 (defmethod initialize-instance :after ((system pool) &rest initargs &key &allow-other-keys)
   "After a system is initialized, derive its file paths and try to restore it"
   (declare (ignore initargs))
@@ -110,6 +142,7 @@
                                                         directory)))
   (restore system))
 
+
 (defmethod get-transaction-log-stream :before ((system pool))
   (with-slots (transaction-log-stream) system
     (unless transaction-log-stream
@@ -119,6 +152,7 @@
                                          #+ccl :sharing #+ccl nil
                                          :if-exists :append)))))
 
+
 (defgeneric close-open-streams (pool &key abort)
   (:method ((system pool) &key abort)
     "Close all open stream associated with system (optionally aborting operations in progress)"
@@ -126,6 +160,7 @@
       (when transaction-log-stream
         (close transaction-log-stream :abort abort)
         (setf transaction-log-stream nil)))))
+
 
 (defmethod totally-destroy ((system pool) &key abort)
   "Totally destroy system from permanent storage by deleting any files used by the system, remove all root objects"
@@ -136,14 +171,17 @@
       (delete-file pathname)))
   (clrhash (get-root-objects system)))
 
+
 (defmethod print-object ((transaction transaction) stream)
   (print-unreadable-object (transaction stream :type t :identity t)
     (format stream "~a ~a"
             (get-function transaction)
             (or (get-args transaction) "()"))))
 
+
 (defmethod remove-root-object ((system pool) name)
   (remhash name (get-root-objects system)))
+
 
 (defmethod execute ((system pool) (transaction transaction))
   "Execute a transaction on a system and log it to the transaction log"
@@ -159,6 +197,7 @@
     (log-transaction system transaction)
     result))
 
+
 (defgeneric log-transaction (pool transaction)
   (:method ((system pool) (transaction transaction))
     "Log transaction for system"
@@ -170,14 +209,17 @@
            "Execute the transaction-hook"
            (funcall (get-transaction-hook system) transaction)))
 
+
 (defmethod query ((system pool) function &rest args)
   "Execute an exclusive query function on a sytem"
   (apply function (cons system args)))
+
 
 (defmethod execute-on ((transaction transaction) (system pool))
   "Execute a transaction itself in the context of a system"
   (apply (get-function transaction)
          (cons system (get-args transaction))))
+
 
 (defmethod snapshot ((system pool))
   "Write to whole system to persistent storage resetting the transaction log"
@@ -198,6 +240,7 @@
                                                   transaction-log))
       (delete-file transaction-log))))
 
+
 (defmethod backup ((system pool) &key directory)
   "Make backup copies of the current snapshot and transaction-log files"
   (let* ((timetag (timetag))
@@ -215,6 +258,7 @@
     (when (probe-file snapshot)
       (copy-file snapshot snapshot-backup))
     timetag))
+
 
 (defmethod restore ((system pool))
   "Load a system from persistent storage starting from the last snapshot and replaying the transaction log"
@@ -240,33 +284,41 @@
                    (execute-on transaction system)
                    (return)))))))))
 
+
 (defmethod execute ((system guarded-pool) (transaction transaction))
   "Execute a transaction on a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system transaction))))
+
 
 (defmethod query ((system guarded-pool) function &rest args)
   "Execute an exclusive query function on a sytem controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (apply function (cons system args)))))
 
+
 (defmethod snapshot ((system guarded-pool))
   "Make a snapshot of a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system))))
+
 
 (defmethod backup ((system guarded-pool) &key directory)
   "Do a backup on a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system directory))))
 
+
 (defmethod restore ((system guarded-pool))
   "Restore a system controlled by a guard"
   (funcall (get-guard system)
            #'(lambda () (call-next-method system))))
 
-;;; Some utilities
 
+
+;;;
+;;; 5. Some utilities
+;;;
 (defun timetag (&optional (universal-time (get-universal-time)))
   "Return a GMT string of universal-time as YYMMDDTHHMMSS"
   (multiple-value-bind (second minute hour date month year)
@@ -275,18 +327,23 @@
             "~d~2,'0d~2,'0dT~2,'0d~2,'0d~2,'0d"
             year month date hour minute second)))
 
+
 (defgeneric get-transaction-log-filename (pool &optional suffix)
   (:method ((system pool) &optional suffix)
     "Return the name of the transaction-log filename, optionally using a suffix"
     (format nil "transaction-log~@[-~a~]" suffix)))
+
 
 (defgeneric get-snapshot-filename (pool &optional suffix)
   (:method ((system pool) &optional suffix)
     "Return the name of the snapshot filename, optionally using a suffix"
     (format nil "snapshot~@[-~a~]" suffix)))
 
-;;; Some file manipulation utilities
 
+
+;;;
+;;; 6. Some file manipulation utilities
+;;;
 (defun truncate-file (file position)
   "Truncate the physical file at position by copying and replacing it"
   (let ((tmp-file (merge-pathnames (concatenate 'string "tmp-" (pathname-name file)) file))
@@ -307,6 +364,7 @@
     (rename-file tmp-file file))
   (format t ";; Notice: truncated transaction log at position ~d~%" position))
 
+
 (defun copy-file (source target)
   (let ((buffer (make-string 4096))
         (read-count 0))
@@ -317,16 +375,21 @@
            (write-sequence buffer out :end read-count)
            (when (< read-count 4096) (return)))))))
 
-;;; from the serialization package
 
+
+;;;
+;;; 7. from the serialization package
+;;;
 (defmethod reset-known-slots ((system pool) &optional class)
   (reset-known-slots (get-serialization-state system) class))
 
-;;; extra documentation
+
+
+;;;
+;;; 8. extra documentation
+;;;
 
 (setf (documentation 'get-guard 'function) "Access the guard function of a sytem")
 
 #-allegro
 (setf (documentation '(setf get-guard) 'function) "Set the guard function of a system")
-
-;;;; eof

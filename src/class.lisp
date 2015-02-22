@@ -1,82 +1,105 @@
+;;;;;
+;;;;; Defince Classes
+;;;;;
+;;;;; Contetns
+;;;;;  1. Class Graph
+;;;;;  2. Brahman
+;;;;;  3. Atman
+;;;;;  4. Blob
+;;;;;  5. pool
+;;;;;  6. guarded-pool
+;;;;;  7. transaction
+;;;;;  8. define Getter and Setter
+;;;;;
+
 (in-package :upanishad)
 
-;;;
-;;; Class Graph
-;;; -----------
-;;;
-;;;   +---------+
-;;;   | brahman |
-;;;   |=========|
-;;;   |---------|
-;;;   +---------+
-;;;        ^
-;;;        |
-;;;        +------------------+--------------------------+
-;;;        |                  |                          |
-;;;   +---------+       +-------------+     +-------------------------+
-;;;   | atman   |       | transaction |     | pool                    |
-;;;   |=========|       |=============|     |=========================|
-;;;   |  id     |       |  args       |     |  directory              |
-;;;   |---------|       |  function   |     |  root-objects           |
-;;;   +---------+       |-------------|     |  options                |
-;;;        ^            +-------------+     |  snapshot               |
-;;;        |                                |  transaction-log        |
-;;;   +-----------+                         |  transaction-log-stream |
-;;;   | blob      |                         |  serializer             |
-;;;   |===========|                         |  deserializer           |
-;;;   | name      |                         |  file-extension         |
-;;;   | size      |                         |  serialization-state    |
-;;;   | mime-type |                         |  transaction-hook       |
-;;;   | keywords  |                         |-------------------------|
-;;;   |-----------|                         +-------------------------+
-;;;   +-----------+                                      ^
-;;;                                                      |
-;;;                                               +--------------+
-;;;                                               | guarded-pool |
-;;;                                               |==============|
-;;;                                               | guard        |
-;;;                                               |--------------|
-;;;                                               +--------------+
-;;;
 
 ;;;
-;;; Class
+;;; 1. Class Graph
+                                        ;
+                                        ;   +---------+
+                                        ;   | brahman |
+                                        ;   |=========|
+                                        ;   |---------|
+                                        ;   +---------+
+                                        ;        ^
+                                        ;        |
+                                        ;        +------------------+--------------------------+
+                                        ;        |                  |                          |
+                                        ;   +---------+       +-------------+     +-------------------------+
+                                        ;   | atman   |       | transaction |     | pool                    |
+                                        ;   |=========|       |=============|     |=========================|
+                                        ;   |r id     |       |a args       |     |a directory              |
+                                        ;   |---------|       |a function   |     |a root-objects           |
+                                        ;   +---------+       |-------------|     |- options                |
+                                        ;        ^            +-------------+     |a snapshot               |
+                                        ;        |                                |a transaction-log        |
+                                        ;   +------------+                        |a transaction-log-stream |
+                                        ;   | blob       |                        |a serializer             |
+                                        ;   |============|                        |a deserializer           |
+                                        ;   |a name      |                        |a file-extension         |
+                                        ;   |r size      |                        |r serialization-state    |
+                                        ;   |a mime-type |                        |a transaction-hook       |
+                                        ;   |a keywords  |                        |-------------------------|
+                                        ;   |------------|                        +-------------------------+
+                                        ;   +------------+                                     ^
+                                        ;                                                      |
+                                        ;                                               +--------------+
+                                        ;                                               | guarded-pool |
+                                        ;                                               |==============|
+                                        ;                                               |a guard       |
+                                        ;                                               |--------------|
+                                        ;                                               +--------------+
+                                        ;
+
+;;;
+;;; 2. Brahman
 ;;;
 (defclass brahman () ()
   (:documentation "思想的なもの。今んところ意味はないけぇ。"))
 
 
 
+;;;
+;;; 3. Atman
+;;;
 (defclass atman (brahman)
   ((id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
-       :reader get-id
+       :reader id
        :initarg :id
        :initform -1))
   (:documentation "Superclass for objects with an id"))
 
 
 
+;;;
+;;; 4. Blob
+;;;
 (defclass blob (atman)
   ((name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
-         :accessor get-name
+         :accessor name
          :initarg :name
          :initform "untitled")
    (size :documentation "Return the size of blob in bytes. Set the mime-type string of blob."
-         :reader get-size
+         :reader size
          :initarg :size
          :initform -1)
    (mime-type :documentation "Return the mime-type of blob as a string. Set the keywords list of blob"
-              :accessor get-mime-type
+              :accessor mime-type
               :initarg :mime-type
               :initform "application/octet-stream")
    (keywords :documentation "Return the list of keywords associated with blob"
-             :accessor get-keywords
+             :accessor keywords
              :initarg :keywords
              :initform '()))
   (:documentation "A blob is a file-like collection of bytes with related metadata"))
 
 
 
+;;;
+;;; 5. pool
+;;;
 (defclass pool (brahman)
   ((directory
     :documentation ":type pathname"
@@ -84,7 +107,7 @@
     :initarg :directory)
    (root-objects
     :documentation ":type hash-table"
-    :accessor get-root-objects
+    :accessor root-objects
     :initform (make-hash-table :test 'eq))
    (options
     :documentation ":type hash-table"
@@ -94,52 +117,58 @@
     :accessor get-snapshot)
    (transaction-log
     :documentation ":type pathname"
-    :accessor get-transaction-log)
+    :accessor transaction-log)
    (transaction-log-stream
     :documentation ":type stream"
-    :accessor get-transaction-log-stream
+    :accessor transaction-log-stream
     :initform nil)
    (serializer
     :documentation ":type function"
-    :accessor get-serializer
+    :accessor serializer
     :initarg :serializer
     :initform #'serialize-xml)
    (deserializer
     :documentation ":type function"
-    :accessor get-deserializer
+    :accessor deserializer
     :initarg :deserializer
     :initform #'deserialize-xml)
    (file-extension
     :documentation ":type string"
-    :accessor get-file-extension
+    :accessor file-extension
     :initarg :file-extension
     :initform "xml")
    (serialization-state
     :documentation ":type serialization-state"
-    :reader get-serialization-state
+    :reader serialization-state
     :initform (make-serialization-state))
    (transaction-hook
     :documentation ":type function"
-    :accessor get-transaction-hook
+    :accessor transaction-hook
     :initarg :transaction-hook
     :initform #'identity))
   (:documentation "Base Prevalence system implementation object"))
 
 
 
+;;;
+;;; 6. guarded-pool
+;;;
 (defclass guarded-pool (pool)
   ((guard
     :documentation ":type function"
-    :accessor get-guard
+    :accessor guard
     :initform #'(lambda (thunk) (funcall thunk))))
   (:documentation "A Prevalence system with a guard thunk"))
 
 
 
+;;;
+;;; 7. transaction
+;;;
 (defclass transaction (brahman)
   ((args
     :documentation ":type cons"
-    :accessor get-args
+    :accessor args
     :initarg :args
     :initform nil)
    (function
@@ -152,23 +181,48 @@
 
 
 ;;;
-;;; Getter / Setter
+;;; 8. define Getter and Setter
 ;;;
 
-;; utility
-(defun getter-name (slot-name)
-  (intern (string-upcase (format nil "get-~a" slot-name))))
+;; atman
+(defreader atman id)
 
+;; blob
+(defreader blob name)
+(defwriter blob name)
+;; (defreader blob size)
+(defreader blob mime-type)
+(defwriter blob mime-type)
+(defreader blob keywords)
+(defwriter blob keywords)
 
-(defmacro defgetter (class-name slot-name &key (documentation ""))
-  `(defgeneric ,(getter-name slot-name) (obj)
-     (:documentation ,documentation)
-     (:method ((obj ,class-name))
-       (slot-value obj ',slot-name))))
+;; pool
+;; (defreader pool directory)
+;; (defwriter pool directory)
+(defreader pool root-objects)
+(defwriter pool root-objects)
+;; (defreader pool snapshot)
+;; (defwriter pool snapshot)
+(defreader pool transaction-log)
+(defwriter pool transaction-log)
+(defreader pool transaction-log-stream)
+(defwriter pool transaction-log-stream)
+(defreader pool serializer)
+(defwriter pool serializer)
+(defreader pool deserializer)
+(defwriter pool deserializer)
+(defreader pool file-extension)
+(defwriter pool file-extension)
+(defreader pool serialization-state)
+(defreader pool transaction-hook)
+(defwriter pool transaction-hook)
 
+;; guarded-pool
+(defreader pool guard)
+(defwriter pool guard)
 
-(defmacro defsetter (class-name slot-name &key (documentation ""))
-  `(defgeneric (setf ,(getter-name slot-name)) (value obj)
-     (:documentation ,documentation)
-     (:method (value (obj ,class-name))
-       (setf (slot-value obj ',slot-name) value))))
+;; transaction
+(defreader pool args)
+(defwriter pool args)
+;; (defreader pool function)
+;; (defwriter pool function)

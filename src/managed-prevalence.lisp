@@ -1,37 +1,46 @@
-;;;; -*- mode: lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; The code in this file adds another layer above plain object prevalence.
-;;;; We manage objects with ids in an organized fashion, adding an id counter and preferences.
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;; -*- mode: lisp -*-
+;;;;;
+;;;;; $Id$
+;;;;;
+;;;;; The code in this file adds another layer above plain object prevalence.
+;;;;; We manage objects with ids in an organized fashion, adding an id counter and preferences.
+;;;;;
+;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+;;;;;
+;;;;; You are granted the rights to distribute and use this software
+;;;;; as governed by the terms of the Lisp Lesser General Public License
+;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;  1. A convience macro
+;;;;;  2. We use a simple id counter to generate unique object identifiers
+;;;;;  3. added iwasaki
 
 (in-package :upanishad)
 
-;; A convience macro
-
+;;;
+;;; 1. A convience macro
+;;;
 (defmacro execute-transaction (transaction-call)
   "Create a transaction object from transaction-call and execute it"
   `(execute ,(second transaction-call)
             (make-transaction ',(first transaction-call) ,@(rest (rest transaction-call)))))
 
+
 (defgeneric get-preference (pool key)
   (:documentation "Retrieve the value of the persistent preference stored under key in pool")
-  (:method get-preference ((pool pool) key)
-           "Retrieve the value of the persistent preference stored under key in pool"
-           (let ((preferences (get-root-object pool :preferences)))
-             (when preferences
-               (gethash key preferences)))))
+  (:method ((pool pool) key)
+    "Retrieve the value of the persistent preference stored under key in pool"
+    (let ((preferences (get-root-object pool :preferences)))
+      (when preferences
+        (gethash key preferences)))))
+
 
 (defun get-objects-root-name (class)
   "Return the keyword symbol naming the root of instances of class"
   (let ((classname (if (symbolp class) (string class) (class-name class))))
     (intern (concatenate 'string classname "-ROOT") :keyword)))
+
 
 (defun get-objects-slot-index-name (class &optional (slot 'id))
   "Return the keyword symbol naming the specified index of instances of class."
@@ -39,8 +48,10 @@
         (slotname  (symbol-name slot)))
     (intern (concatenate 'string classname "-" slotname "-INDEX") :keyword)))
 
+
 (defgeneric find-all-objects (system class)
   (:documentation "Return an unordered collection of all objects in system that are instances of class"))
+
 
 (defmethod find-all-objects ((system pool) class)
   "Return an unordered collection of all objects in system that are instances of class"
@@ -80,6 +91,7 @@
                            (get-object-with-id system class id))
                        ids))))))
 
+
 (defgeneric find-object-with-slot-full-scan (system class slot value test))
 (defmethod find-object-with-slot-full-scan ((system pool) class slot value test)
   "オブジェクトを全件検索します。"
@@ -116,11 +128,13 @@
         (dolist (object (find-all-objects system class))
           (add-object-to-slot-index system class slot object))))))
 
+
 (defun tx-remove-objects-slot-index (system class slot)
   "Remove an index for this object on this slot"
   (let ((index-name (get-objects-slot-index-name class slot)))
     (when (get-root-object system index-name)
       (remove-root-object system index-name))))
+
 
 (defun slot-index-xxx-add (index object slot)
   (let ((id-map (gethash (slot-value object slot) index))
@@ -173,15 +187,18 @@
   (dolist (slot slots)
     (execute-transaction (tx-create-objects-slot-index system class slot test))))
 
+
 (defun drop-index-on (system class &optional slots)
   "Drop indexes on each of the slots provided"
   (dolist (slot slots)
     (execute-transaction (tx-remove-objects-slot-index system class slot))))
 
+
 (defun slot-value-changed-p (object slot value)
   "Return true when slot in object is not eql to value (or when the slot was unbound)"
   (or (not (slot-boundp object slot))
       (not (eql (slot-value object slot) value))))
+
 
 (defun tx-create-object (system class &optional slots-and-values)
   "Create a new object of class in system, assigning it a unique id, optionally setting some slots and values"
@@ -195,6 +212,7 @@
     (tx-change-object-slots system class id slots-and-values)
     object))
 
+
 (defun tx-delete-object (system class id)
   "Delete the object of class with id from the system"
   (let ((object (get-object-with-id system class id)))
@@ -204,6 +222,7 @@
           (setf (get-root-object system root-name) (delete object (get-root-object system root-name)))
           (remhash id (get-root-object system index-name)))
         (error "no object of class ~a with id ~d found in ~s" class id system))))
+
 
 (defun tx-change-object-slots (system class id slots-and-values)
   "Change some slots of the object of class with id in system using slots and values"
@@ -215,16 +234,21 @@
              (setf (slot-value object slot) value)
              (add-object-to-slot-index system class slot object)))))
 
-;; We use a simple id counter to generate unique object identifiers
 
+
+;;;
+;;; 2. We use a simple id counter to generate unique object identifiers
+;;;
 (defun tx-create-id-counter (system)
   "Initialize the id counter to 0"
   (setf (get-root-object system :id-counter) 0))
+
 
 (defgeneric next-id (pool)
   (:method ((system pool))
     "Increment and return the next id"
     (incf (get-root-object system :id-counter))))
+
 
 ;;; A generic persistent preferences mechanism
 (defun tx-set-preference (system key value)
@@ -235,8 +259,10 @@
             (get-root-object system :preferences) preferences))
     (setf (gethash key preferences) value)))
 
+
 (defgeneric all-preferences-keys (system)
   (:documentation "Return a list of all persistent preference keys of system"))
+
 
 (defmethod all-preferences-keys ((system pool))
   "Return a list of all persistent preference keys of system"
@@ -249,11 +275,11 @@
                  preferences)
         keys))))
 
-;;;;;
-;;;;; added iwasaki
-;;;;;
 
-;;
+
+;;;
+;;; 3. added iwasaki
+;;;
 (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
   (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
 (defmethod tx-remove-object-on-slot-index ((pool pool)
@@ -266,8 +292,3 @@
     (when (and index (gethash (slot-value obj slot-symbol) index))
       (remhash (get-id  obj)
                (gethash (slot-value obj slot-symbol) index)))))
-
-
-;;;; eof
-
-

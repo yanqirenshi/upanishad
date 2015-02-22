@@ -1,15 +1,23 @@
-;;;; -*- Mode: LISP -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Package definitions for the CL-PREVALENCE project
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;; -*- Mode: LISP -*-
+;;;;;
+;;;;; $Id$
+;;;;;
+;;;;; Package definitions for the CL-PREVALENCE project
+;;;;;
+;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+;;;;;
+;;;;; You are granted the rights to distribute and use this software
+;;;;; as governed by the terms of the Lisp Lesser General Public License
+;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;  1. Define package
+;;;;;  2. Utilities
+;;;;;
 
+;;;
+;;; 1. Define package
+;;;
 (defpackage :s-serialization
   (:use :cl)
   (:export
@@ -19,6 +27,7 @@
    #:make-serialization-state
    #:reset-known-slots)
   (:documentation "XML and s-expression based serialization for Common Lisp and CLOS"))
+
 
 (defpackage :upanishad
   (:use :cl :s-serialization)
@@ -89,4 +98,3 @@
    #:stop-slave-server)
   (:documentation "An implementation of Object Prevalence for Common Lisp"))
 
-;;;; eof

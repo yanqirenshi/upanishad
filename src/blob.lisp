@@ -1,18 +1,20 @@
-;;;; -*- Mode: LISP -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Blobs represent collections of bytes of a certain mime type,
-;;;; where the bytes themselves are stored automatically in an ordinary file.
-;;;; This helps to save memory for large collections of binary data.
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;; -*- Mode: LISP -*-
+;;;;;
+;;;;; $Id$
+;;;;;
+;;;;; Blobs represent collections of bytes of a certain mime type,
+;;;;; where the bytes themselves are stored automatically in an ordinary file.
+;;;;; This helps to save memory for large collections of binary data.
+;;;;;
+;;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+;;;;;
+;;;;; You are granted the rights to distribute and use this software
+;;;;; as governed by the terms of the Lisp Lesser General Public License
+;;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
 
 (in-package :upanishad)
+
 
 (defmethod print-object ((blob blob) stream)
   (print-unreadable-object
@@ -20,14 +22,16 @@
     (with-slots (id name mime-type) blob
       (format stream "#~d \"~a\" ~a" id name mime-type))))
 
+
 (defvar *blob-root* nil
   "The directory in which to store the blob files")
 
+
 (defgeneric get-file (blob)
-  ;; TODO: これは slot 操作じゃないので元にもどそう。
   (:documentation "Return the pathname to the bytes of blob")
   (:method ((blob blob))
     (merge-pathnames (princ-to-string (get-id blob)) *blob-root*)))
+
 
 (defgeneric get-size (blob)
   (:documentation "Return the pathname to the bytes of blob")
@@ -35,6 +39,7 @@
            (with-slots (size) blob
              (when (eql size -1)
                (setf size (size-from-file blob))))))
+
 
 (defun copy-stream (in out &optional (element-type '(unsigned-byte 8)))
   "Copy everything from in to out"
@@ -50,9 +55,9 @@
       (read-chunks))))
 
 
-
 (defgeneric fill-from-stream (blob binary-input-stream)
   (:documentation "Fill the blob's contents with the bytes from binary-input-stream"))
+
 
 (defmethod fill-from-stream ((blob blob) binary-input-stream)
   "Fill the blob's contents with the bytes from binary-input-stream"
@@ -63,8 +68,10 @@
                        :if-does-not-exist :create)
     (copy-stream binary-input-stream out)))
 
+
 (defgeneric copy-to-stream (blob binary-output-stream)
   (:documentation "Copy the bytes from blob to binary-output-stream"))
+
 
 (defmethod copy-to-stream ((blob blob) binary-output-stream)
   "Copy the bytes from blob to binary-output-stream"
@@ -73,8 +80,10 @@
                       :element-type '(unsigned-byte 8))
     (copy-stream in binary-output-stream)))
 
+
 (defgeneric fill-from-file (blob pathname)
   (:documentation "Fill the blob's contents with the bytes read from the binary file at pathname"))
+
 
 (defmethod fill-from-file ((blob blob) pathname)
   "Fill the blob's contents with the bytes read from the binary file at pathname"
@@ -85,13 +94,16 @@
                 (or (pathname-type pathname) ""))
         (get-keywords blob)))
 
+
 (defgeneric destroy (blob)
   (:documentation "Completely destroy blob (removing its byte data file as well)"))
+
 
 (defmethod destroy ((blob blob))
   (when (probe-file (get-file blob))
     (delete-file (get-file blob)))
   (push :destroyed (get-keywords blob)))
+
 
 (defgeneric size-from-file (blob)
   (:method ((blob blob))
@@ -101,9 +113,8 @@
             (file-length in))
           -1))))
 
+
 (defgeneric set-size-from-file (blob)
   (:method ((blob blob))
     (with-slots (size) blob
       (setf size (size-from-file blob)))))
-
-;;;; eof
