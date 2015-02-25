@@ -1,7 +1,5 @@
 [Object Prevalence](http://prevayler.org/) の Common Lips の実装です。
 
-[cl-prevalence](https://common-lisp.net/project/cl-prevalence/) からフォークしたプロジェクトです。
-
 こんな人は使ってみてください。
 
 * CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズ処理書いたりすんの面倒くせぇ。
@@ -23,12 +21,12 @@ mkdir ~/up
 ;; pool の開始 ※pool は db に脳内変換すると違和感がなくなります。
 (defvar *pool* (make-pool "~/up/"))
     ：
-  (いろいろな処理) ※準備中
+  ※いろいろな処理。 準備中
     ：
 ;; snapshot の実行。  ※snapshot は commit に脳内変換。
 (snapshot *test-system*)
     ：
-  (いろいろな処理) ※準備中
+  ※いろいろな処理。 準備中
     ：
 ;; restore の実行  ※restore は rollback に脳内変換。
 (restore *bank-system*)
@@ -38,16 +36,13 @@ mkdir ~/up
 ```
 
 # Dependencies
-これだけ。
 ほぼ、まじりっけなし。
 
 | libraly    | description |
 |------------|-------------|
-| [alexandria](https://common-lisp.net/project/alexandria/) |             |
-| [s-xml](https://common-lisp.net/project/s-xml/)      |             |
-| [s-sysdeps](https://github.com/svenvc/s-sysdeps)  |             |
-
-`qluickload` すれば気にする必要なし。
+| [alexandria](https://common-lisp.net/project/alexandria/) | あれ？ 使ってる？|
+| [s-xml](https://common-lisp.net/project/s-xml/)      |シリアライズ(XML)する時に利用。|
+| [s-sysdeps](https://github.com/svenvc/s-sysdeps)  |マスタとスレーブでソケット通信するのに利用。|
 
 # Installation
 飾りっけなし。
