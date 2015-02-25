@@ -251,7 +251,7 @@
 ;;; 3. added iwasaki
 ;;;
 (defmethod tx-remove-object-on-slot-index ((pool pool)
-                                           (obj  atman)
+                                           (obj  meme)
                                            (slot-symbol symbol))
   (let* ((obj-class (class-name (class-of obj)))
          (index-name (get-objects-slot-index-name obj-class

@@ -34,7 +34,7 @@
 
 ;; A Test CLOS class
 
-(defclass managed-person (atman)
+(defclass managed-person (meme)
   ((firstname :initarg :firstname :initform "" :accessor get-firstname)
    (lastname  :initarg :lastname  :initform "" :accessor get-lastname)))
 

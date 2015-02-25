@@ -28,7 +28,7 @@
 
 ;; a test object class
 
-(defclass test-system-user (atman)
+(defclass test-system-user (meme)
   ((username :accessor get-username :initarg :username :initform nil)
    (password :accessor get-password :initarg :password :initform nil)))
 

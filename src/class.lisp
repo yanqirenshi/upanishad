@@ -5,12 +5,12 @@
 ;;;;;  1. Class Graph
 ;;;;;  2. Brahman
 ;;;;;  3. Atman
-;;;;;  4. Blob
-;;;;;  5. pool
-;;;;;  6. guarded-pool
-;;;;;  7. transaction
-;;;;;  8. define Getter and Setter
-;;;;;  9. Generic functions
+;;;;;  4. Meme
+;;;;;  5. Blob
+;;;;;  6. pool
+;;;;;  7. guarded-pool
+;;;;;  8. transaction
+;;;;;  9. define Getter and Setter
 ;;;;;
 
 (in-package :upanishad)
@@ -25,39 +25,47 @@
 ;;   +---------+
 ;;        ^
 ;;        |
-;;        +------------------+--------------------------+
-;;        |                  |                          |
-;;   +---------+       +-------------+     +-------------------------+
-;;   | atman   |       | transaction |     | pool                    |
-;;   |=========|       |=============|     |=========================|
-;;   |r id     |       |a args       |     |a directory              |
-;;   |---------|       |a function   |     |a root-objects           |
-;;   +---------+       |-------------|     |- options                |
-;;        ^            +-------------+     |a snapshot               |
-;;        |                                |a transaction-log        |
-;;   +------------+                        |a transaction-log-stream |
-;;   | blob       |                        |a serializer             |
-;;   |============|                        |a deserializer           |
-;;   |a name      |                        |a file-extension         |
-;;   |r size      |                        |r serialization-state    |
-;;   |a mime-type |                        |a transaction-hook       |
-;;   |a keywords  |                        |-------------------------|
-;;   |------------|                        +-------------------------+
-;;   +------------+                                     ^
-;;                                                      |
-;;                                               +--------------+
-;;                                               | guarded-pool |
-;;                                               |==============|
-;;                                               |a guard       |
-;;                                               |--------------|
-;;                                               +--------------+
+;;        +--------------------------+-----------------------+
+;;        |                          |                       |
+;;   +---------+                     |                       |
+;;   | atman   |                     |                       |
+;;   |=========|                     |                       |
+;;   |r id     |                     |                       |
+;;   |---------|                     |                       |
+;;   +---------+                     |                       |
+;;        ^                          |                       |
+;;        |                          |                       |
+;;   +------------+     +-------------------------+    +-------------+
+;;   | meme       |     | pool                    |    | transaction |
+;;   |============|     |=========================|    |=============|
+;;   |------------|     |a directory              |    |a args       |
+;;   +------------+     |a root-objects           |    |a function   |
+;;        ^             |- options                |    |-------------|
+;;        |             |a snapshot               |    +-------------+
+;;   +------------+     |a transaction-log        |
+;;   | blob       |     |a transaction-log-stream |
+;;   |============|     |a serializer             |
+;;   |a name      |     |a deserializer           |
+;;   |r size      |     |a file-extension         |
+;;   |a mime-type |     |r serialization-state    |
+;;   |a keywords  |     |a transaction-hook       |
+;;   |------------|     |-------------------------|
+;;   +------------+     +-------------------------+
+;;                                   ^
+;;                                   |
+;;                            +--------------+
+;;                            | guarded-pool |
+;;                            |==============|
+;;                            |a guard       |
+;;                            |--------------|
+;;                            +--------------+
 ;;
 
 ;;;
 ;;; 2. Brahman
 ;;;
 (defclass brahman () ()
-  (:documentation "思想的なもの。今んところ意味はないけぇ。"))
+  (:documentation "思想的/象徴的なクラス。今んところ意味はないけぇ。"))
 
 
 
@@ -74,9 +82,18 @@
 
 
 ;;;
-;;; 4. Blob
+;;; 4. Meme
 ;;;
-(defclass blob (atman)
+(defclass meme (atman)
+  ()
+  (:documentation "このクラスも思想的/象徴的なクラスです。まぁぶっちゃけ不要なんですけど。"))
+
+
+
+;;;
+;;; 5. Blob
+;;;
+(defclass blob (meme)
   ((name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
          :accessor name
          :initarg :name
@@ -98,7 +115,7 @@
 
 
 ;;;
-;;; 5. pool
+;;; 6. pool
 ;;;
 (defclass pool (brahman)
   ((directory
@@ -151,7 +168,7 @@
 
 
 ;;;
-;;; 6. guarded-pool
+;;; 7. guarded-pool
 ;;;
 (defclass guarded-pool (pool)
   ((guard
@@ -163,7 +180,7 @@
 
 
 ;;;
-;;; 7. transaction
+;;; 8. transaction
 ;;;
 (defclass transaction (brahman)
   ((args
@@ -181,7 +198,7 @@
 
 
 ;;;
-;;; 8. define Getter and Setter
+;;; 9. define Getter and Setter
 ;;;
 ;;; Description:
 ;;;   以下は下位互換のための Getter / Setter なんよ。
