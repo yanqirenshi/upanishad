@@ -22,6 +22,7 @@
   (:use :cl :s-serialization)
   (:nicknames :up)
   (:export
+   #:pool-p
    #:make-pool
    #:make-transaction
    #:execute

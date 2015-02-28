@@ -78,6 +78,9 @@
 ;;;
 ;;; 2. Pool
 ;;;
+(defgeneric poolp (pool)
+  (:documentation ""))
+
 (defgeneric execute (pool object)
   (:documentation "Ask for a transaction object to be executed on pool with ACID properties"))
 

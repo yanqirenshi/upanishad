@@ -35,6 +35,10 @@
 ;;;
 ;;; 2. Generic functions
 ;;;
+(defmethod poolp ((pool pool)) t)
+
+(defmethod poolp (other) nil)
+
 (defmethod get-root-object ((pool pool) name)
   (gethash name (get-root-objects pool)))
 
