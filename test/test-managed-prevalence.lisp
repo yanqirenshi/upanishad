@@ -13,8 +13,6 @@
 ;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 (in-package :upanishad-test)
 
-(def-suite test-managed-prevalence :in upanishad-test)
-
 (in-suite test-managed-prevalence)
 
 (defparameter *test-system-directory* (pathname "/tmp/test-managed-prevalence-system/"))

@@ -12,8 +12,6 @@
 
 (in-package :upanishad-test)
 
-(def-suite test-master-slave :in upanishad-test)
-
 (in-suite test-master-slave)
 
 ;; the master and client systems themselves

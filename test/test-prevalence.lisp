@@ -12,8 +12,6 @@
 
 (in-package :upanishad-test)
 
-(def-suite test-prevalence :in upanishad-test)
-
 (in-suite test-prevalence)
 
 (defparameter *test-system-directory* (pathname "/tmp/test-prevalence-system/"))

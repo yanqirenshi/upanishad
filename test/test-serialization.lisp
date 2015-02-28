@@ -12,8 +12,6 @@
 
 (in-package :upanishad-test)
 
-(def-suite test-serialization :in upanishad-test)
-
 (in-suite test-serialization)
 
 (defun serialize-and-deserialize-xml (object)
