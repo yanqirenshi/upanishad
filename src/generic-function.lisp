@@ -2,15 +2,15 @@
 ;;;;; Defince Generic function
 ;;;;;
 ;;;;; Contents
-;;;;;  1. Managed prevalence
-;;;;;  2. Prevalence
+;;;;;  1. Managed pool
+;;;;;  2. Pool
 ;;;;;  3. blob
 ;;;;;
 
 (in-package :upanishad)
 
 ;;;
-;;; 1. Managed prevalence
+;;; 1. Managed pool
 ;;;
 (defgeneric get-preference (pool key)
   (:documentation "Retrieve the value of the persistent preference stored under key in pool"))
@@ -34,8 +34,38 @@
 (defgeneric find-object-with-slot (pool class slot value &optional test)
   (:documentation "Find and return the object in pool of class with slot equal to value, null if not found"))
 
+(defgeneric tx-create-objects-slot-index (pool class slot &optional test)
+  (:documentation "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"))
+
+(defgeneric tx-remove-objects-slot-index (pool class slot)
+  (:documentation "Remove an index for this object on this slot"))
+
+(defgeneric add-object-to-slot-index (pool class slot object)
+  (:documentation "スロット・インデックスにオブジェクトを登録します。"))
+
+(defgeneric remove-object-from-slot-index (pool class slot object)
+  (:documentation "スロット・インデックスからオブジェクトを削除します。"))
+
+(defgeneric index-on (pool class &optional slots test)
+  (:documentation "Create indexes on each of the slots provided."))
+
+(defgeneric drop-index-on (pool class &optional slots)
+  (:documentation "Drop indexes on each of the slots provided"))
+
+(defgeneric tx-create-object (pool class &optional slots-and-values)
+  (:documentation "Create a new object of class in pool, assigning it a unique id, optionally setting some slots and values"))
+
+(defgeneric tx-delete-object (pool class id)
+  (:documentation "Delete the object of class with id from the pool"))
+
+(defgeneric tx-change-object-slots (pool class id slots-and-values)
+  (:documentation "Change some slots of the object of class with id in pool using slots and values"))
+
+(defgeneric tx-create-id-counter (pool)
+  (:documentation "Initialize the id counter to 0"))
+
 (defgeneric next-id (pool)
-  (:documentation "執筆中"))
+  (:documentation "Increment and return the next id"))
 
 (defgeneric all-preferences-keys (pool)
   (:documentation "Return a list of all persistent preference keys of pool"))
@@ -46,7 +76,7 @@
 
 
 ;;;
-;;; 2. Prevalence
+;;; 2. Pool
 ;;;
 (defgeneric execute (pool object)
   (:documentation "Ask for a transaction object to be executed on pool with ACID properties"))

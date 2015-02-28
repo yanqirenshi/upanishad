@@ -2,7 +2,8 @@
 ;;;;; Contents
 ;;;;;  1. A convience macro
 ;;;;;  2. We use a simple id counter to generate unique object identifiers
-;;;;;  3. added iwasaki
+;;;;;  3. A generic persistent preferences mechanism
+;;;;;  4. added iwasaki
 ;;;;;
 
 (in-package :upanishad)
@@ -94,8 +95,7 @@
         (find-object-with-slot-full-scan pool class slot value test))))
 
 
-(defun tx-create-objects-slot-index (pool class slot &optional (test #'equalp))
-  "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"
+(defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
     (unless (get-root-object pool index-name)
       (let ((index (make-hash-table :test test)))
@@ -104,8 +104,7 @@
           (add-object-to-slot-index pool class slot object))))))
 
 
-(defun tx-remove-objects-slot-index (pool class slot)
-  "Remove an index for this object on this slot"
+(defmethod tx-remove-objects-slot-index ((pool pool) class slot)
   (let ((index-name (get-objects-slot-index-name class slot)))
     (when (get-root-object pool index-name)
       (remove-root-object pool index-name))))
@@ -125,8 +124,7 @@
       (setf (gethash id id-map) (get-id object)))))
 
 
-(defun add-object-to-slot-index (pool class slot object)
-  "スロット・インデックスにオブジェクトを登録します。"
+(defmethod add-object-to-slot-index ((pool pool) class slot object)
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index (get-root-object pool index-name)))
     (when (and index  (slot-boundp object slot))
@@ -148,8 +146,7 @@
         (remhash (slot-value object slot) index)))))
 
 
-(defun remove-object-from-slot-index (pool class slot object)
-  "スロット・インデックスからオブジェクトを削除します。"
+(defmethod remove-object-from-slot-index ((pool pool) class slot object)
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index (get-root-object pool index-name)))
     (when (and index (slot-boundp object slot))
@@ -157,14 +154,12 @@
       (slot-index-xxx-remove index object slot))))
 
 
-(defun index-on (pool class &optional slots (test 'equalp))
-  "Create indexes on each of the slots provided."
+(defmethod index-on ((pool pool) class &optional slots (test 'equalp))
   (dolist (slot slots)
     (execute-transaction (tx-create-objects-slot-index pool class slot test))))
 
 
-(defun drop-index-on (pool class &optional slots)
-  "Drop indexes on each of the slots provided"
+(defmethod drop-index-on ((pool pool) class &optional slots)
   (dolist (slot slots)
     (execute-transaction (tx-remove-objects-slot-index pool class slot))))
 
@@ -175,8 +170,7 @@
       (not (eql (slot-value object slot) value))))
 
 
-(defun tx-create-object (pool class &optional slots-and-values)
-  "Create a new object of class in pool, assigning it a unique id, optionally setting some slots and values"
+(defmethod tx-create-object ((pool pool) class &optional slots-and-values)
   (let* ((id (next-id pool))
          (object (make-instance class :id id))
          (index-name (get-objects-slot-index-name class 'id))
@@ -188,8 +182,7 @@
     object))
 
 
-(defun tx-delete-object (pool class id)
-  "Delete the object of class with id from the pool"
+(defmethod tx-delete-object ((pool pool) class id)
   (let ((object (get-object-with-id pool class id)))
     (if object
         (let ((root-name (get-objects-root-name class))
@@ -199,8 +192,7 @@
         (error "no object of class ~a with id ~d found in ~s" class id pool))))
 
 
-(defun tx-change-object-slots (pool class id slots-and-values)
-  "Change some slots of the object of class with id in pool using slots and values"
+(defmethod tx-change-object-slots ((pool pool) class id slots-and-values)
   (let ((object (get-object-with-id pool class id)))
     (unless object (error "no object of class ~a with id ~d found in ~s" class id pool))
     (loop :for (slot value) :in slots-and-values
@@ -214,18 +206,18 @@
 ;;;
 ;;; 2. We use a simple id counter to generate unique object identifiers
 ;;;
-(defun tx-create-id-counter (pool)
-  "Initialize the id counter to 0"
+(defmethod tx-create-id-counter ((pool pool))
   (setf (get-root-object pool :id-counter) 0))
 
 
 (defmethod next-id ((pool pool))
-  "Increment and return the next id"
   (incf (get-root-object pool :id-counter)))
 
 
-;;; A generic persistent preferences mechanism
-(defun tx-set-preference (pool key value)
+;;;
+;;; 3. A generic persistent preferences mechanism
+;;;
+(defmethod tx-set-preference ((pool pool) key value)
   "Set the value of the persistent preference key in pool"
   (let ((preferences (get-root-object pool :preferences)))
     (when (not preferences)
@@ -248,7 +240,7 @@
 
 
 ;;;
-;;; 3. added iwasaki
+;;; 4. added iwasaki
 ;;;
 (defmethod tx-remove-object-on-slot-index ((pool pool)
                                            (obj  meme)
