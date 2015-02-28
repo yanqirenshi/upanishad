@@ -34,15 +34,15 @@
             ;;   |
             ;; class
             ;;   |
-            ;; prevalence
+            ;; pool
             ;;   |
-            ;;   +----------------------+
-            ;;   |                      |
-            ;; managed-prevalence  master-slave
-            ;;   |                      |
-            ;; blob                     |
-            ;;   |                      |
-            ;;   +----------------------+
+            ;;   +-----------------+
+            ;;   |                 |
+            ;; managed-pool  master-slave
+            ;;   |                 |
+            ;; blob                |
+            ;;   |                 |
+            ;;   +-----------------+
             ;;   |
             ;; printer
             ;;   |
@@ -54,14 +54,14 @@
                                                (:file "xml"  :depends-on ("serialization"))
                                                (:file "sexp" :depends-on ("serialization")))
                                   :depends-on ("package"))
-                         (:file "utility"            :depends-on ("serialization"))
-                         (:file "generic-function"   :depends-on ("utility"))
-                         (:file "class"              :depends-on ("utility"))
-                         (:file "prevalence"         :depends-on ("class"))
-                         (:file "managed-prevalence" :depends-on ("prevalence"))
-                         (:file "master-slave"       :depends-on ("prevalence"))
-                         (:file "blob"               :depends-on ("managed-prevalence"))
-                         (:file "printer"            :depends-on ("master-slave" "blob")))))
+                         (:file "utility"          :depends-on ("serialization"))
+                         (:file "generic-function" :depends-on ("utility"))
+                         (:file "class"            :depends-on ("utility"))
+                         (:file "pool"             :depends-on ("class"))
+                         (:file "managed-pool"     :depends-on ("pool"))
+                         (:file "master-slave"     :depends-on ("pool"))
+                         (:file "blob"             :depends-on ("managed-pool"))
+                         (:file "printer"          :depends-on ("master-slave" "blob")))))
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps))
