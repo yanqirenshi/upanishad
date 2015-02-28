@@ -243,7 +243,5 @@
 (defwriter pool guard)
 
 ;; transaction
-(defreader pool args)
-(defwriter pool args)
 ;; (defreader pool function)
 ;; (defwriter pool function)

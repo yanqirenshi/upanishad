@@ -120,7 +120,7 @@
   (print-unreadable-object (transaction stream :type t :identity t)
     (format stream "~a ~a"
             (get-function transaction)
-            (or (get-args transaction) "()"))))
+            (or (args transaction) "()"))))
 
 
 (defmethod remove-root-object ((system pool) name)
@@ -163,7 +163,7 @@
 (defmethod execute-on ((transaction transaction) (system pool))
   "Execute a transaction itself in the context of a system"
   (apply (get-function transaction)
-         (cons system (get-args transaction))))
+         (cons system (args transaction))))
 
 
 (defmethod snapshot ((system pool))
