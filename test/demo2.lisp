@@ -1,7 +1,7 @@
 ;;;;;
 ;;;;; Contents
 ;;;;;   1. Domain Model
-;;;;;   2. Prevalence System
+;;;;;   2. Pool
 ;;;;;   3. Client Interface
 ;;;;;   4. Now some test code
 ;;;;;   5. a multi-processing example
@@ -39,9 +39,9 @@
   (with-slots (timestamp amount) account-entry
     (format stream "#<ACCOUNT-ENTRY ~a ~@d>" (date-time->string timestamp) amount)))
 
-;;; 2. Prevalence System
+;;; 2. Pool
 
-(defparameter *bank-system-location* (pathname "/tmp/demo2-prevalence-system/"))
+(defparameter *bank-system-location* (pathname "/tmp/demo2-pool/"))
 
 (defun tx-create-bank (system)
   (setf (get-root-object system :bank) (make-instance 'bank)))

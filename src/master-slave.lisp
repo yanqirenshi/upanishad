@@ -16,10 +16,10 @@
   t)
 
 
-(defun stop-master-client (prevalence-sytem)
+(defun stop-master-client (pool)
   "Stop a connection from pool"
   (with-slots (transaction-hook)
-      prevalence-sytem
+      pool
     (when transaction-hook
       (funcall transaction-hook :stop)
       (setf transaction-hook #'identity))))
@@ -29,7 +29,7 @@
   "Start a server on port accepting transactions to be executed on pool"
   (s-sysdeps:start-standard-server
    :port port
-   :name "prevalence-slave-server"
+   :name "upanishad-pool-slave-server"
    :connection-handler #'(lambda (stream)
                            (loop
                               (let ((transaction (funcall (get-deserializer pool)

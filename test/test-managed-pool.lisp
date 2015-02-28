@@ -8,13 +8,13 @@
 
 (in-package :upanishad-test)
 
-(in-suite test-managed-prevalence)
+(in-suite test-managed-pool)
 
-(defparameter *test-system-directory* (pathname "/tmp/test-managed-prevalence-system/"))
+(defparameter *test-system-directory* (pathname "/tmp/test-managed-pool/"))
 
 (defvar *test-system* nil)
 
-(test test-managed-prevalence-start
+(test test-managed-pool-start
   "Create a new prevalence system for testing purposes"
   (let ((directory *test-system-directory*))
     ;; Throw away any xml files that we find: we want to start from scratch

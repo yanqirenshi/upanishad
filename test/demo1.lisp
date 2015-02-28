@@ -27,7 +27,7 @@
   (let ((numbers (get-root-object system :numbers)))
     (push number (get-numbers-list numbers))))
 
-(defparameter *system-location* (pathname "/tmp/demo1-prevalence-system/")
+(defparameter *system-location* (pathname "/tmp/demo1-pool/")
   "Filesystem location of the prevalence system")
 
 (defun demo1 ()

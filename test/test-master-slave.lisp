@@ -1,26 +1,29 @@
 ;;;;;
 ;;;;; Contetns
-;;;;;  1. a test object class
-;;;;;  2. now do the test
+;;;;;  1. the master and client systems themselves
+;;;;;  2. a test object class
+;;;;;  3. now do the test
 ;;;;;
 
 (in-package :upanishad-test)
 
 (in-suite test-master-slave)
 
-;; the master and client systems themselves
+;;;
+;;; 1. the master and client systems themselves
+;;;
 
-(defparameter *master-test-system-directory* (pathname "/tmp/master-test-prevalence-system/"))
+(defparameter *master-test-system-directory* (pathname "/tmp/master-test-pool/"))
 
 (defvar *master-test-system* nil)
 
-(defparameter *slave-test-system-directory* (pathname "/tmp/slave-test-prevalence-system/"))
+(defparameter *slave-test-system-directory* (pathname "/tmp/slave-test-pool/"))
 
 (defvar *slave-test-system* nil)
 
 
 ;;;
-;;; 1. a test object class
+;;; 2. a test object class
 ;;;
 (defclass test-system-user (meme)
   ((username :accessor get-username :initarg :username :initform nil)
@@ -61,7 +64,7 @@
 
 
 ;;;
-;;; 2. now do the test
+;;; 3. now do the test
 ;;;
 (test test-get-master-user
   (let ((user (get-object-with-id *master-test-system* 'test-system-user *user-id*)))

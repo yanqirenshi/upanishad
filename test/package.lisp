@@ -9,17 +9,17 @@
 
 (def-suite upanishad-test)
 
-(def-suite test-managed-prevalence :in upanishad-test)
-(def-suite test-master-slave       :in upanishad-test)
-(def-suite test-prevalence         :in upanishad-test)
-(def-suite test-serialization      :in upanishad-test)
+(def-suite test-managed-pool  :in upanishad-test)
+(def-suite test-master-slave  :in upanishad-test)
+(def-suite test-pool          :in upanishad-test)
+(def-suite test-serialization :in upanishad-test)
 
 (defun run-all-test ()
   (progn (in-suite test-serialization)
          (upanishad-test:run!)
-         (in-suite test-prevalence)
+         (in-suite test-pool)
          (upanishad-test:run!)
-         (in-suite test-managed-prevalence)
+         (in-suite test-managed-pool)
          (upanishad-test:run!)
          (in-suite test-master-slave)
          (upanishad-test:run!)))

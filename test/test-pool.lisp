@@ -7,13 +7,13 @@
 
 (in-package :upanishad-test)
 
-(in-suite test-prevalence)
+(in-suite test-pool)
 
-(defparameter *test-system-directory* (pathname "/tmp/test-prevalence-system/"))
+(defparameter *test-system-directory* (pathname "/tmp/test-up-pool/"))
 
 (defvar *test-system* nil)
 
-(test test-prevalence-start
+(test test-pool-start
   "Create a new prevalence system for testing purposes"
   (let ((directory *test-system-directory*))
     ;; Throw away any xml files that we find: we want to start from scratch
