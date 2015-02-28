@@ -18,8 +18,10 @@
 
 (defvar *slave-test-system* nil)
 
-;; 1. a test object class
 
+;;;
+;;; 1. a test object class
+;;;
 (defclass test-system-user (meme)
   ((username :accessor get-username :initarg :username :initform nil)
    (password :accessor get-password :initarg :password :initform nil)))
@@ -55,10 +57,12 @@
                                                        (password "windows"))))))
     (setf *user-id* (get-id user)))
   (is-true *user-id*)
-  *user-id*
-  )
-;; 2. now do the test
+  *user-id*)
 
+
+;;;
+;;; 2. now do the test
+;;;
 (test test-get-master-user
   (let ((user (get-object-with-id *master-test-system* 'test-system-user *user-id*)))
     (is (and (equal (get-username user) "billg")
@@ -78,8 +82,7 @@
   (stop-slave-server *slave-server-name*)
 
   (close-open-streams *master-test-system*)
-  (close-open-streams *slave-test-system*)
-  )
+  (close-open-streams *slave-test-system*))
 
 
 
