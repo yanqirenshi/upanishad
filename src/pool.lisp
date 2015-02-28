@@ -25,7 +25,7 @@
 
 (defun make-transaction (function &rest args)
   "Create and return a new transaction specifying a function name and
-  an argument list. The function should accept the system instance
+  an argument list. The function should accept the pool instance
   prepended to the argument list as arguments and implement the actual
   transaction in a re-entrant way."
   (make-instance 'transaction :function function :args args))
@@ -74,46 +74,46 @@
 ;;;
 ;;; 4. Implementation
 ;;;
-(defmethod initialize-instance :after ((system pool) &rest initargs &key &allow-other-keys)
-  "After a system is initialized, derive its file paths and try to restore it"
+(defmethod initialize-instance :after ((pool pool) &rest initargs &key &allow-other-keys)
+  "After a pool is initialized, derive its file paths and try to restore it"
   (declare (ignore initargs))
-  (with-slots (directory) system
+  (with-slots (directory) pool
     (ensure-directories-exist directory)
-    (setf (get-snapshot system) (merge-pathnames (make-pathname :name (get-snapshot-filename system)
-                                                                :type (get-file-extension system))
-                                                 directory)
-          (get-transaction-log system) (merge-pathnames (make-pathname :name (get-transaction-log-filename system)
-                                                                       :type (get-file-extension system))
-                                                        directory)))
-  (restore system))
+    (setf (get-snapshot pool) (merge-pathnames (make-pathname :name (get-snapshot-filename pool)
+                                                              :type (get-file-extension pool))
+                                               directory)
+          (get-transaction-log pool) (merge-pathnames (make-pathname :name (get-transaction-log-filename pool)
+                                                                     :type (get-file-extension pool))
+                                                      directory)))
+  (restore pool))
 
 
-(defmethod get-transaction-log-stream :before ((system pool))
-  (with-slots (transaction-log-stream) system
+(defmethod get-transaction-log-stream :before ((pool pool))
+  (with-slots (transaction-log-stream) pool
     (unless transaction-log-stream
-      (setf transaction-log-stream (open (get-transaction-log system)
+      (setf transaction-log-stream (open (get-transaction-log pool)
                                          :direction :output
                                          :if-does-not-exist :create
                                          #+ccl :sharing #+ccl nil
                                          :if-exists :append)))))
 
 
-(defmethod close-open-streams ((system pool) &key abort)
-  "Close all open stream associated with system (optionally aborting operations in progress)"
-  (with-slots (transaction-log-stream) system
+(defmethod close-open-streams ((pool pool) &key abort)
+  "Close all open stream associated with pool (optionally aborting operations in progress)"
+  (with-slots (transaction-log-stream) pool
     (when transaction-log-stream
       (close transaction-log-stream :abort abort)
       (setf transaction-log-stream nil))))
 
 
-(defmethod totally-destroy ((system pool) &key abort)
-  "Totally destroy system from permanent storage by deleting any files used by the system, remove all root objects"
-  (close-open-streams system :abort abort)
-  (when (probe-file (get-directory system))
-    (dolist (pathname (directory (merge-pathnames (make-pathname :name :wild :type (get-file-extension system))
-                                                  (get-directory system))))
+(defmethod totally-destroy ((pool pool) &key abort)
+  "Totally destroy pool from permanent storage by deleting any files used by the pool, remove all root objects"
+  (close-open-streams pool :abort abort)
+  (when (probe-file (get-directory pool))
+    (dolist (pathname (directory (merge-pathnames (make-pathname :name :wild :type (get-file-extension pool))
+                                                  (get-directory pool))))
       (delete-file pathname)))
-  (clrhash (get-root-objects system)))
+  (clrhash (get-root-objects pool)))
 
 
 (defmethod print-object ((transaction transaction) stream)
@@ -123,81 +123,81 @@
             (or (args transaction) "()"))))
 
 
-(defmethod remove-root-object ((system pool) name)
-  (remhash name (get-root-objects system)))
+(defmethod remove-root-object ((pool pool) name)
+  (remhash name (get-root-objects pool)))
 
 
-(defmethod execute ((system pool) (transaction transaction))
-  "Execute a transaction on a system and log it to the transaction log"
+(defmethod execute ((pool pool) (transaction transaction))
+  "Execute a transaction on a pool and log it to the transaction log"
   (let ((result
          (handler-bind ((error #'(lambda (condition)
-                                   (when (and (get-option system :rollback-on-error)
+                                   (when (and (get-option pool :rollback-on-error)
                                               (initiates-rollback condition))
                                      (format *standard-output*
-                                             ";; Notice: system rollback/restore due to error (~a)~%"
+                                             ";; Notice: pool rollback/restore due to error (~a)~%"
                                              condition)
-                                     (restore system)))))
-           (execute-on transaction system))))
-    (log-transaction system transaction)
+                                     (restore pool)))))
+           (execute-on transaction pool))))
+    (log-transaction pool transaction)
     result))
 
 
-(defmethod log-transaction ((system pool) (transaction transaction))
-  "Log transaction for system"
-  (let ((out (get-transaction-log-stream system)))
-    (funcall (get-serializer system) transaction out (get-serialization-state system))
+(defmethod log-transaction ((pool pool) (transaction transaction))
+  "Log transaction for pool"
+  (let ((out (get-transaction-log-stream pool)))
+    (funcall (get-serializer pool) transaction out (get-serialization-state pool))
     (terpri out)
     (finish-output out)))
 
 
-(defmethod log-transaction :after ((system pool) (transaction transaction))
+(defmethod log-transaction :after ((pool pool) (transaction transaction))
   "Execute the transaction-hook"
-  (funcall (get-transaction-hook system) transaction))
+  (funcall (get-transaction-hook pool) transaction))
 
 
-(defmethod query ((system pool) function &rest args)
+(defmethod query ((pool pool) function &rest args)
   "Execute an exclusive query function on a sytem"
-  (apply function (cons system args)))
+  (apply function (cons pool args)))
 
 
-(defmethod execute-on ((transaction transaction) (system pool))
-  "Execute a transaction itself in the context of a system"
+(defmethod execute-on ((transaction transaction) (pool pool))
+  "Execute a transaction itself in the context of a pool"
   (apply (get-function transaction)
-         (cons system (args transaction))))
+         (cons pool (args transaction))))
 
 
-(defmethod snapshot ((system pool))
-  "Write to whole system to persistent storage resetting the transaction log"
+(defmethod snapshot ((pool pool))
+  "Write to whole pool to persistent storage resetting the transaction log"
   (let ((timetag (timetag))
-        (transaction-log (get-transaction-log system))
-        (snapshot (get-snapshot system)))
-    (close-open-streams system)
+        (transaction-log (get-transaction-log pool))
+        (snapshot (get-snapshot pool)))
+    (close-open-streams pool)
     (when (probe-file snapshot)
-      (copy-file snapshot (merge-pathnames (make-pathname :name (get-snapshot-filename system timetag)
-                                                          :type (get-file-extension system))
+      (copy-file snapshot (merge-pathnames (make-pathname :name (get-snapshot-filename pool timetag)
+                                                          :type (get-file-extension pool))
                                            snapshot)))
     (with-open-file (out snapshot
                          :direction :output :if-does-not-exist :create :if-exists :supersede)
-      (funcall (get-serializer system) (get-root-objects system) out (get-serialization-state system)))
+      (funcall (get-serializer pool) (get-root-objects pool) out (get-serialization-state pool)))
     (when (probe-file transaction-log)
-      (copy-file transaction-log (merge-pathnames (make-pathname :name (get-transaction-log-filename system timetag)
-                                                                 :type (get-file-extension system))
+      (copy-file transaction-log (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
+                                                                 :type (get-file-extension pool))
                                                   transaction-log))
       (delete-file transaction-log))))
 
 
-(defmethod backup ((system pool) &key directory)
+(defmethod backup ((pool pool) &key directory)
   "Make backup copies of the current snapshot and transaction-log files"
   (let* ((timetag (timetag))
-         (transaction-log (get-transaction-log system))
-         (snapshot (get-snapshot system))
-         (transaction-log-backup (merge-pathnames (make-pathname :name (get-transaction-log-filename system timetag)
-                                                                 :type (get-file-extension system))
+         (transaction-log (get-transaction-log pool))
+         (snapshot (get-snapshot pool))
+         (transaction-log-backup (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
+                                                                 :type (get-file-extension pool))
                                                   (or directory transaction-log)))
-         (snapshot-backup (merge-pathnames (make-pathname :name (get-snapshot-filename system timetag)
-                                                          :type (get-file-extension system))
+         (snapshot-backup (merge-pathnames (make-pathname :name (get-snapshot-filename pool timetag)
+                                                          :type (get-file-extension pool))
                                            (or directory snapshot))))
-    (close-open-streams system)
+    (close-open-streams pool)
     (when (probe-file transaction-log)
       (copy-file transaction-log transaction-log-backup))
     (when (probe-file snapshot)
@@ -205,59 +205,59 @@
     timetag))
 
 
-(defmethod restore ((system pool))
-  "Load a system from persistent storage starting from the last snapshot and replaying the transaction log"
-  (clrhash (get-root-objects system))
-  (close-open-streams system)
-  (when (probe-file (get-snapshot system))
-    (with-open-file (in (get-snapshot system) :direction :input)
-      (setf (get-root-objects system) (funcall (get-deserializer system) in (get-serialization-state system)))))
-  (when (probe-file (get-transaction-log system))
+(defmethod restore ((pool pool))
+  "Load a pool from persistent storage starting from the last snapshot and replaying the transaction log"
+  (clrhash (get-root-objects pool))
+  (close-open-streams pool)
+  (when (probe-file (get-snapshot pool))
+    (with-open-file (in (get-snapshot pool) :direction :input)
+      (setf (get-root-objects pool) (funcall (get-deserializer pool) in (get-serialization-state pool)))))
+  (when (probe-file (get-transaction-log pool))
     (let ((position 0))
       (handler-bind ((s-xml:xml-parser-error
                       #'(lambda (condition)
                           (format *standard-output*
                                   ";; Warning: error during transaction log restore: ~s~%"
                                   condition)
-                          (truncate-file (get-transaction-log system) position)
+                          (truncate-file (get-transaction-log pool) position)
                           (return-from restore))))
-        (with-open-file (in (get-transaction-log system) :direction :input)
+        (with-open-file (in (get-transaction-log pool) :direction :input)
           (loop
-             (let ((transaction (funcall (get-deserializer system) in (get-serialization-state system))))
+             (let ((transaction (funcall (get-deserializer pool) in (get-serialization-state pool))))
                (setf position (file-position in))
                (if transaction
-                   (execute-on transaction system)
+                   (execute-on transaction pool)
                    (return)))))))))
 
 
-(defmethod execute ((system guarded-pool) (transaction transaction))
-  "Execute a transaction on a system controlled by a guard"
-  (funcall (get-guard system)
-           #'(lambda () (call-next-method system transaction))))
+(defmethod execute ((pool guarded-pool) (transaction transaction))
+  "Execute a transaction on a pool controlled by a guard"
+  (funcall (get-guard pool)
+           #'(lambda () (call-next-method pool transaction))))
 
 
-(defmethod query ((system guarded-pool) function &rest args)
+(defmethod query ((pool guarded-pool) function &rest args)
   "Execute an exclusive query function on a sytem controlled by a guard"
-  (funcall (get-guard system)
-           #'(lambda () (apply function (cons system args)))))
+  (funcall (get-guard pool)
+           #'(lambda () (apply function (cons pool args)))))
 
 
-(defmethod snapshot ((system guarded-pool))
-  "Make a snapshot of a system controlled by a guard"
-  (funcall (get-guard system)
-           #'(lambda () (call-next-method system))))
+(defmethod snapshot ((pool guarded-pool))
+  "Make a snapshot of a pool controlled by a guard"
+  (funcall (get-guard pool)
+           #'(lambda () (call-next-method pool))))
 
 
-(defmethod backup ((system guarded-pool) &key directory)
-  "Do a backup on a system controlled by a guard"
-  (funcall (get-guard system)
-           #'(lambda () (call-next-method system directory))))
+(defmethod backup ((pool guarded-pool) &key directory)
+  "Do a backup on a pool controlled by a guard"
+  (funcall (get-guard pool)
+           #'(lambda () (call-next-method pool directory))))
 
 
-(defmethod restore ((system guarded-pool))
-  "Restore a system controlled by a guard"
-  (funcall (get-guard system)
-           #'(lambda () (call-next-method system))))
+(defmethod restore ((pool guarded-pool))
+  "Restore a pool controlled by a guard"
+  (funcall (get-guard pool)
+           #'(lambda () (call-next-method pool))))
 
 
 
@@ -273,12 +273,12 @@
             year month date hour minute second)))
 
 
-(defmethod get-transaction-log-filename ((system pool) &optional suffix)
+(defmethod get-transaction-log-filename ((pool pool) &optional suffix)
   "Return the name of the transaction-log filename, optionally using a suffix"
   (format nil "transaction-log~@[-~a~]" suffix))
 
 
-(defmethod get-snapshot-filename ((system pool) &optional suffix)
+(defmethod get-snapshot-filename ((pool pool) &optional suffix)
   "Return the name of the snapshot filename, optionally using a suffix"
   (format nil "snapshot~@[-~a~]" suffix))
 
@@ -323,8 +323,8 @@
 ;;;
 ;;; 7. from the serialization package
 ;;;
-(defmethod reset-known-slots ((system pool) &optional class)
-  (reset-known-slots (get-serialization-state system) class))
+(defmethod reset-known-slots ((pool pool) &optional class)
+  (reset-known-slots (get-serialization-state pool) class))
 
 
 
@@ -335,7 +335,7 @@
 (setf (documentation 'get-guard 'function) "Access the guard function of a sytem")
 
 #-allegro
-(setf (documentation '(setf get-guard) 'function) "Set the guard function of a system")
+(setf (documentation '(setf get-guard) 'function) "Set the guard function of a pool")
 
 
 

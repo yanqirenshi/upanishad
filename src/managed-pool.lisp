@@ -36,49 +36,49 @@
     (intern (concatenate 'string classname "-" slotname "-INDEX") :keyword)))
 
 
-(defmethod find-all-objects ((system pool) class)
-  "Return an unordered collection of all objects in system that are instances of class"
+(defmethod find-all-objects ((pool pool) class)
+  "Return an unordered collection of all objects in pool that are instances of class"
   (let ((root-name (get-objects-root-name class)))
-    (get-root-object system root-name)))
+    (get-root-object pool root-name)))
 
 
 ;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
-(defmethod find-object-with-id ((system pool) class id)
-  "Find and return the object in system of class with id, null if not found"
+(defmethod find-object-with-id ((pool pool) class id)
+  "Find and return the object in pool of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
-         (index (get-root-object system index-name)))
+         (index (get-root-object pool index-name)))
     (when index
       (gethash id index))))
 
 
-(defmethod get-object-with-id ((system pool) class id)
-  "Find and return the object in system of class with id, null if not found"
+(defmethod get-object-with-id ((pool pool) class id)
+  "Find and return the object in pool of class with id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class 'id))
-         (index (get-root-object system index-name)))
+         (index (get-root-object pool index-name)))
     (when index
       (gethash id index))))
 
 
-(defmethod find-object-with-slot-use-index ((system pool) class index)
+(defmethod find-object-with-slot-use-index ((pool pool) class index)
   (when index
     (let* ((ids (alexandria:hash-table-values  index))
            (len (length ids)))
       (cond ((= len 0) nil)
-            ((= len 1) (list (get-object-with-id system class (first ids))))
+            ((= len 1) (list (get-object-with-id pool class (first ids))))
             (t (mapcar #'(lambda (id)
-                           (get-object-with-id system class id))
+                           (get-object-with-id pool class id))
                        ids))))))
 
 
-(defmethod find-object-with-slot-full-scan ((system pool) class slot value test)
+(defmethod find-object-with-slot-full-scan ((pool pool) class slot value test)
   "オブジェクトを全件検索します。"
   (remove-if #'(lambda (object)
                  (not (funcall test value (slot-value object slot))))
-             (find-all-objects system class)))
+             (find-all-objects pool class)))
 
 
-(defmethod find-object-with-slot ((system pool) class slot value &optional (test #'equalp))
-  "Find and return the object in system of class with slot equal to value, null if not found
+(defmethod find-object-with-slot ((pool pool) class slot value &optional (test #'equalp))
+  "Find and return the object in pool of class with slot equal to value, null if not found
 オブジェクトのスロットの値を検索して、ヒツトしたものを返します。
 対象のスロットにインデックスが貼られている場合はインデックスを利用して検索します。
 インデックスが存在しない場合は 全件検索します。
@@ -86,29 +86,29 @@
 返す値はリスト形式で返します。なもんで、存在しない場合は nil を返します。
 "
   (let* ((index-name (get-objects-slot-index-name class slot))
-         (index      (get-root-object system index-name)))
+         (index      (get-root-object pool index-name)))
     (if index
         ;; index が存在した場合は index で検索する。
-        (find-object-with-slot-use-index system class (gethash value index))
+        (find-object-with-slot-use-index pool class (gethash value index))
         ;; index が存在しない場合は全部検索します。
-        (find-object-with-slot-full-scan system class slot value test))))
+        (find-object-with-slot-full-scan pool class slot value test))))
 
 
-(defun tx-create-objects-slot-index (system class slot &optional (test #'equalp))
+(defun tx-create-objects-slot-index (pool class slot &optional (test #'equalp))
   "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"
   (let ((index-name (get-objects-slot-index-name class slot)))
-    (unless (get-root-object system index-name)
+    (unless (get-root-object pool index-name)
       (let ((index (make-hash-table :test test)))
-        (setf (get-root-object system index-name) index)
-        (dolist (object (find-all-objects system class))
-          (add-object-to-slot-index system class slot object))))))
+        (setf (get-root-object pool index-name) index)
+        (dolist (object (find-all-objects pool class))
+          (add-object-to-slot-index pool class slot object))))))
 
 
-(defun tx-remove-objects-slot-index (system class slot)
+(defun tx-remove-objects-slot-index (pool class slot)
   "Remove an index for this object on this slot"
   (let ((index-name (get-objects-slot-index-name class slot)))
-    (when (get-root-object system index-name)
-      (remove-root-object system index-name))))
+    (when (get-root-object pool index-name)
+      (remove-root-object pool index-name))))
 
 
 (defun slot-index-xxx-add (index object slot)
@@ -125,10 +125,10 @@
       (setf (gethash id id-map) (get-id object)))))
 
 
-(defun add-object-to-slot-index (system class slot object)
+(defun add-object-to-slot-index (pool class slot object)
   "スロット・インデックスにオブジェクトを登録します。"
   (let* ((index-name (get-objects-slot-index-name class slot))
-         (index (get-root-object system index-name)))
+         (index (get-root-object pool index-name)))
     (when (and index  (slot-boundp object slot))
       ;; 登録は実質こちらでやってます。
       (slot-index-xxx-add index object slot))))
@@ -148,25 +148,25 @@
         (remhash (slot-value object slot) index)))))
 
 
-(defun remove-object-from-slot-index (system class slot object)
+(defun remove-object-from-slot-index (pool class slot object)
   "スロット・インデックスからオブジェクトを削除します。"
   (let* ((index-name (get-objects-slot-index-name class slot))
-         (index (get-root-object system index-name)))
+         (index (get-root-object pool index-name)))
     (when (and index (slot-boundp object slot))
       ;; 削除は実質こちらでやってます。
       (slot-index-xxx-remove index object slot))))
 
 
-(defun index-on (system class &optional slots (test 'equalp))
+(defun index-on (pool class &optional slots (test 'equalp))
   "Create indexes on each of the slots provided."
   (dolist (slot slots)
-    (execute-transaction (tx-create-objects-slot-index system class slot test))))
+    (execute-transaction (tx-create-objects-slot-index pool class slot test))))
 
 
-(defun drop-index-on (system class &optional slots)
+(defun drop-index-on (pool class &optional slots)
   "Drop indexes on each of the slots provided"
   (dolist (slot slots)
-    (execute-transaction (tx-remove-objects-slot-index system class slot))))
+    (execute-transaction (tx-remove-objects-slot-index pool class slot))))
 
 
 (defun slot-value-changed-p (object slot value)
@@ -175,68 +175,68 @@
       (not (eql (slot-value object slot) value))))
 
 
-(defun tx-create-object (system class &optional slots-and-values)
-  "Create a new object of class in system, assigning it a unique id, optionally setting some slots and values"
-  (let* ((id (next-id system))
+(defun tx-create-object (pool class &optional slots-and-values)
+  "Create a new object of class in pool, assigning it a unique id, optionally setting some slots and values"
+  (let* ((id (next-id pool))
          (object (make-instance class :id id))
          (index-name (get-objects-slot-index-name class 'id))
-         (index (or (get-root-object system index-name)
-                    (setf (get-root-object system index-name) (make-hash-table)))))
-    (push object (get-root-object system (get-objects-root-name class)))
+         (index (or (get-root-object pool index-name)
+                    (setf (get-root-object pool index-name) (make-hash-table)))))
+    (push object (get-root-object pool (get-objects-root-name class)))
     (setf (gethash id index) object)
-    (tx-change-object-slots system class id slots-and-values)
+    (tx-change-object-slots pool class id slots-and-values)
     object))
 
 
-(defun tx-delete-object (system class id)
-  "Delete the object of class with id from the system"
-  (let ((object (get-object-with-id system class id)))
+(defun tx-delete-object (pool class id)
+  "Delete the object of class with id from the pool"
+  (let ((object (get-object-with-id pool class id)))
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class 'id)))
-          (setf (get-root-object system root-name) (delete object (get-root-object system root-name)))
-          (remhash id (get-root-object system index-name)))
-        (error "no object of class ~a with id ~d found in ~s" class id system))))
+          (setf (get-root-object pool root-name) (delete object (get-root-object pool root-name)))
+          (remhash id (get-root-object pool index-name)))
+        (error "no object of class ~a with id ~d found in ~s" class id pool))))
 
 
-(defun tx-change-object-slots (system class id slots-and-values)
-  "Change some slots of the object of class with id in system using slots and values"
-  (let ((object (get-object-with-id system class id)))
-    (unless object (error "no object of class ~a with id ~d found in ~s" class id system))
+(defun tx-change-object-slots (pool class id slots-and-values)
+  "Change some slots of the object of class with id in pool using slots and values"
+  (let ((object (get-object-with-id pool class id)))
+    (unless object (error "no object of class ~a with id ~d found in ~s" class id pool))
     (loop :for (slot value) :in slots-and-values
        :do (when (slot-value-changed-p object slot value)
-             (remove-object-from-slot-index system class slot object)
+             (remove-object-from-slot-index pool class slot object)
              (setf (slot-value object slot) value)
-             (add-object-to-slot-index system class slot object)))))
+             (add-object-to-slot-index pool class slot object)))))
 
 
 
 ;;;
 ;;; 2. We use a simple id counter to generate unique object identifiers
 ;;;
-(defun tx-create-id-counter (system)
+(defun tx-create-id-counter (pool)
   "Initialize the id counter to 0"
-  (setf (get-root-object system :id-counter) 0))
+  (setf (get-root-object pool :id-counter) 0))
 
 
-(defmethod next-id ((system pool))
+(defmethod next-id ((pool pool))
   "Increment and return the next id"
-  (incf (get-root-object system :id-counter)))
+  (incf (get-root-object pool :id-counter)))
 
 
 ;;; A generic persistent preferences mechanism
-(defun tx-set-preference (system key value)
-  "Set the value of the persistent preference key in system"
-  (let ((preferences (get-root-object system :preferences)))
+(defun tx-set-preference (pool key value)
+  "Set the value of the persistent preference key in pool"
+  (let ((preferences (get-root-object pool :preferences)))
     (when (not preferences)
       (setf preferences (make-hash-table)
-            (get-root-object system :preferences) preferences))
+            (get-root-object pool :preferences) preferences))
     (setf (gethash key preferences) value)))
 
 
-(defmethod all-preferences-keys ((system pool))
-  "Return a list of all persistent preference keys of system"
-  (let ((preferences (get-root-object system :preferences)))
+(defmethod all-preferences-keys ((pool pool))
+  "Return a list of all persistent preference keys of pool"
+  (let ((preferences (get-root-object pool :preferences)))
     (when preferences
       (let (keys)
         (maphash #'(lambda (key value)

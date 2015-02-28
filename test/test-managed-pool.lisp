@@ -3,27 +3,27 @@
 ;;;;;  1. A Test CLOS class
 ;;;;;  2. Convenience function
 ;;;;;  3. Some basic functions to construct transactions from
-;;;;;  4. A place to store our test managed-person's id outside of the system
+;;;;;  4. A place to store our test managed-person's id outside of the pool
 ;;;;;
 
 (in-package :upanishad-test)
 
 (in-suite test-managed-pool)
 
-(defparameter *test-system-directory* (pathname "/tmp/test-managed-pool/"))
+(defparameter *test-pool-directory* (pathname "/tmp/test-managed-pool/"))
 
-(defvar *test-system* nil)
+(defvar *test-pool* nil)
 
 (test test-managed-pool-start
-  "Create a new prevalence system for testing purposes"
-  (let ((directory *test-system-directory*))
+  "Create a new prevalence pool for testing purposes"
+  (let ((directory *test-pool-directory*))
     ;; Throw away any xml files that we find: we want to start from scratch
     (when (probe-file directory)
       (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
         (delete-file pathname)))
-    (setf *test-system* (make-pool directory))
-    (is-true *test-system*)
-    (index-on *test-system* 'managed-person '(firstname lastname) 'equal)))
+    (setf *test-pool* (make-pool directory))
+    (is-true *test-pool*)
+    (index-on *test-pool* 'managed-person '(firstname lastname) 'equal)))
 
 ;; 1. A Test CLOS class
 
@@ -33,11 +33,11 @@
 
 (defmethod (setf get-firstname) (value (managed-person managed-person))
   (execute-transaction
-   (tx-change-object-slots *test-system* 'managed-person (get-id managed-person) (list (list 'firstname value)))))
+   (tx-change-object-slots *test-pool* 'managed-person (get-id managed-person) (list (list 'firstname value)))))
 
 (defmethod (setf get-lastname) (value (managed-person managed-person))
   (execute-transaction
-   (tx-change-object-slots *test-system* 'managed-person (get-id managed-person) (list (list 'lastname value)))))
+   (tx-change-object-slots *test-pool* 'managed-person (get-id managed-person) (list (list 'lastname value)))))
 
 ;; 2. Convenience function
 
@@ -51,22 +51,22 @@
 (defun make-managed-person (&rest slots)
   (let ((slots-and-values (pairify slots)))
     (execute-transaction
-     (tx-create-object *test-system* 'managed-person slots-and-values))))
+     (tx-create-object *test-pool* 'managed-person slots-and-values))))
 
 (defun get-managed-person (slot value)
-  (first (find-object-with-slot *test-system* 'managed-person slot value)))
+  (first (find-object-with-slot *test-pool* 'managed-person slot value)))
 
 (defun delete-managed-person (managed-person)
   (execute-transaction
-   (tx-delete-object *test-system* 'managed-person (get-id managed-person))))
+   (tx-delete-object *test-pool* 'managed-person (get-id managed-person))))
 
 (test test-create-counter
   "Create a new id counter"
-  (execute-transaction (tx-create-id-counter *test-system*))
-  (is (zerop (get-root-object *test-system* :id-counter))))
+  (execute-transaction (tx-create-id-counter *test-pool*))
+  (is (zerop (get-root-object *test-pool* :id-counter))))
 
 
-;; 4. A place to store our test managed-person's id outside of the system
+;; 4. A place to store our test managed-person's id outside of the pool
 
 (defvar *jlp*)
 
@@ -85,7 +85,7 @@
     (setf *jlp* (get-id managed-person))))
 
 (test test-get-managed-person
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -99,9 +99,9 @@
 (test test-get-managed-person-restart
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the transaction log"
-  (close-open-streams *test-system*)
-  (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
+  (close-open-streams *test-pool*)
+  (setf *test-pool* (make-pool *test-pool-directory*))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -113,9 +113,9 @@
     (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
 (test test-get-managed-person-snapshot
-  "Create a snapshot of our test system"
-  (snapshot *test-system*)
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
+  "Create a snapshot of our test pool"
+  (snapshot *test-pool*)
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -129,9 +129,9 @@
 (test test-get-managed-person-restart-snapshot
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the snapshot"
-  (close-open-streams *test-system*)
-  (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
+  (close-open-streams *test-pool*)
+  (setf *test-pool* (make-pool *test-pool-directory*))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -155,7 +155,7 @@
     (setf *kj* (get-id managed-person))))
 
 (test test-get-managed-person-1
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *kj*)))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
@@ -165,9 +165,9 @@
 (test test-get-managed-person-restart-1
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using both the snapshot and the transaction log"
-  (close-open-streams *test-system*)
-  (setf *test-system* (make-pool *test-system-directory*))
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
+  (close-open-streams *test-pool*)
+  (setf *test-pool* (make-pool *test-pool-directory*))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
@@ -179,7 +179,7 @@
     (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
 (test test-get-managed-person-restart-2
-  (let ((managed-person (get-object-with-id *test-system* 'managed-person *kj*)))
+  (let ((managed-person (get-object-with-id *test-pool* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
@@ -190,11 +190,11 @@
   (mapcar #'(lambda (pair)
               (make-managed-person 'firstname (first pair) 'lastname (second pair)))
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
-  (is (= (length (find-all-objects *test-system* 'managed-person)) 5))
+  (is (= (length (find-all-objects *test-pool* 'managed-person)) 5))
   (mapcar #'(lambda (pair)
               (delete-managed-person (get-managed-person 'firstname (first pair))))
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
-  (is (= (length (find-all-objects *test-system* 'managed-person)) 2)))
+  (is (= (length (find-all-objects *test-pool* 'managed-person)) 2)))
 
 (defvar *managed-guard*)
 
@@ -205,10 +205,10 @@
 (test test-managed-guarded
   "testing a managed-guarded prevalence system
    [Not sure that we need the below test here -- RRR]"
-  (close-open-streams *test-system*)
-  (setf *test-system* (make-pool *test-system-directory*
-                                 :pool-class 'guarded-pool))
-  (setf (get-guard *test-system*) #'managed-guard)
+  (close-open-streams *test-pool*)
+  (setf *test-pool* (make-pool *test-pool-directory*
+                               :pool-class 'guarded-pool))
+  (setf (get-guard *test-pool*) #'managed-guard)
   (let (new-managed-person)
     (setf *managed-guard* nil)
     (setf new-managed-person (make-managed-person 'firstname "John" 'lastname "Doe"))

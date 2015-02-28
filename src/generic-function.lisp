@@ -15,30 +15,30 @@
 (defgeneric get-preference (pool key)
   (:documentation "Retrieve the value of the persistent preference stored under key in pool"))
 
-(defgeneric find-all-objects (system class)
-  (:documentation "Return an unordered collection of all objects in system that are instances of class"))
+(defgeneric find-all-objects (pool class)
+  (:documentation "Return an unordered collection of all objects in pool that are instances of class"))
 
 ;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
-(defgeneric find-object-with-id (system class id)
-  (:documentation "Find and return the object in system of class with id, null if not found"))
+(defgeneric find-object-with-id (pool class id)
+  (:documentation "Find and return the object in pool of class with id, null if not found"))
 
-(defgeneric get-object-with-id (system class id)
-  (:documentation "Find and return the object in system of class with id, null if not found"))
+(defgeneric get-object-with-id (pool class id)
+  (:documentation "Find and return the object in pool of class with id, null if not found"))
 
-(defgeneric find-object-with-slot-use-index (system class index)
+(defgeneric find-object-with-slot-use-index (pool class index)
   (:documentation "執筆中"))
 
-(defgeneric find-object-with-slot-full-scan (system class slot value test)
+(defgeneric find-object-with-slot-full-scan (pool class slot value test)
   (:documentation "執筆中"))
 
-(defgeneric find-object-with-slot (system class slot value &optional test)
-  (:documentation "Find and return the object in system of class with slot equal to value, null if not found"))
+(defgeneric find-object-with-slot (pool class slot value &optional test)
+  (:documentation "Find and return the object in pool of class with slot equal to value, null if not found"))
 
 (defgeneric next-id (pool)
   (:documentation "執筆中"))
 
-(defgeneric all-preferences-keys (system)
-  (:documentation "Return a list of all persistent preference keys of system"))
+(defgeneric all-preferences-keys (pool)
+  (:documentation "Return a list of all persistent preference keys of pool"))
 
 (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
   (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
@@ -48,32 +48,32 @@
 ;;;
 ;;; 2. Prevalence
 ;;;
-(defgeneric execute (system object)
-  (:documentation "Ask for a transaction object to be executed on system with ACID properties"))
+(defgeneric execute (pool object)
+  (:documentation "Ask for a transaction object to be executed on pool with ACID properties"))
 
-(defgeneric execute-on (object system)
-  (:documentation "Ask for a transaction object to execute its changes in the context of system"))
+(defgeneric execute-on (object pool)
+  (:documentation "Ask for a transaction object to execute its changes in the context of pool"))
 
-(defgeneric query (system function &rest args)
-  (:documentation "Ask for a query function to be executed on system with args"))
+(defgeneric query (pool function &rest args)
+  (:documentation "Ask for a query function to be executed on pool with args"))
 
-(defgeneric snapshot (system)
-  (:documentation "Take a snapshot of a system"))
+(defgeneric snapshot (pool)
+  (:documentation "Take a snapshot of a pool"))
 
-(defgeneric restore (system)
-  (:documentation "Restore a system from permanent storage"))
+(defgeneric restore (pool)
+  (:documentation "Restore a pool from permanent storage"))
 
-(defgeneric remove-root-object (system name)
-  (:documentation "Remove the root object by symbol name from system"))
+(defgeneric remove-root-object (pool name)
+  (:documentation "Remove the root object by symbol name from pool"))
 
 (defgeneric initiates-rollback (condition)
   (:documentation "Return true when a condition initiates a rollback when thrown from a transaction"))
 
-(defgeneric backup (system &key directory)
+(defgeneric backup (pool &key directory)
   (:documentation "Make backup copies of the current snapshot and transaction-log files"))
 
-(defgeneric totally-destroy (system &key abort)
-  (:documentation "Totally destroy system from permanent storage by deleting any files that we find"))
+(defgeneric totally-destroy (pool &key abort)
+  (:documentation "Totally destroy pool from permanent storage by deleting any files that we find"))
 
 (defgeneric get-root-object (pool name)
   (:documentation "Retrieve a root object by symbol name from pool"))

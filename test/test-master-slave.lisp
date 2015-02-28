@@ -13,19 +13,19 @@
 ;;; 1. the master and client systems themselves
 ;;;
 
-(defparameter *master-test-system-directory* (pathname "/tmp/master-test-pool/"))
+(defparameter *master-test-pool-directory* (pathname "/tmp/master-test-pool/"))
 
-(defvar *master-test-system* nil)
+(defvar *master-test-pool* nil)
 
-(defparameter *slave-test-system-directory* (pathname "/tmp/slave-test-pool/"))
+(defparameter *slave-test-pool-directory* (pathname "/tmp/slave-test-pool/"))
 
-(defvar *slave-test-system* nil)
+(defvar *slave-test-pool* nil)
 
 
 ;;;
 ;;; 2. a test object class
 ;;;
-(defclass test-system-user (meme)
+(defclass test-pool-user (meme)
   ((username :accessor get-username :initarg :username :initform nil)
    (password :accessor get-password :initarg :password :initform nil)))
 
@@ -36,26 +36,26 @@
 (test test-master-slave-start
   "setup both systems (clearing anything we find)
   setup the slave server and the master to slave connection"
-  (when *master-test-system*
-    (totally-destroy *master-test-system*))
+  (when *master-test-pool*
+    (totally-destroy *master-test-pool*))
 
-  (setf *master-test-system* (make-pool *master-test-system-directory*))
-  (is-true *master-test-system*)
-  (totally-destroy *master-test-system*)
-  (execute-transaction (tx-create-id-counter *master-test-system*))
+  (setf *master-test-pool* (make-pool *master-test-pool-directory*))
+  (is-true *master-test-pool*)
+  (totally-destroy *master-test-pool*)
+  (execute-transaction (tx-create-id-counter *master-test-pool*))
 
-  (when *slave-test-system*
-    (totally-destroy *slave-test-system*))
-  (setf *slave-test-system* (make-pool *slave-test-system-directory*))
-  (is-true *slave-test-system*)
-  (totally-destroy *slave-test-system*)
-  (execute-transaction (tx-create-id-counter *slave-test-system*))
-  (setf *slave-server-name* (start-slave-server *slave-test-system*))
+  (when *slave-test-pool*
+    (totally-destroy *slave-test-pool*))
+  (setf *slave-test-pool* (make-pool *slave-test-pool-directory*))
+  (is-true *slave-test-pool*)
+  (totally-destroy *slave-test-pool*)
+  (execute-transaction (tx-create-id-counter *slave-test-pool*))
+  (setf *slave-server-name* (start-slave-server *slave-test-pool*))
   (is-true *slave-server-name*)
 
-  (start-master-client *master-test-system*)
-  (let ((user (execute-transaction (tx-create-object *master-test-system*
-                                                     'test-system-user
+  (start-master-client *master-test-pool*)
+  (let ((user (execute-transaction (tx-create-object *master-test-pool*
+                                                     'test-pool-user
                                                      '((username "billg")
                                                        (password "windows"))))))
     (setf *user-id* (get-id user)))
@@ -67,25 +67,25 @@
 ;;; 3. now do the test
 ;;;
 (test test-get-master-user
-  (let ((user (get-object-with-id *master-test-system* 'test-system-user *user-id*)))
+  (let ((user (get-object-with-id *master-test-pool* 'test-pool-user *user-id*)))
     (is (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 
 (test test-get-slave-user :depends-on '(and test-get-master-user)
       ;; Plato Wu,2009/02/27: because it need time to transfer data from master to slave?
       (sleep 1)
-      (let ((user (get-object-with-id *slave-test-system* 'test-system-user *user-id*)))
+      (let ((user (get-object-with-id *slave-test-pool* 'test-pool-user *user-id*)))
         (is (and (equal (get-username user) "billg")
                  (equal (get-password user) "windows")))))
 
 (test test-master-slave-end
   " stop the master-slave connection and slave server
   tidy up a bit"
-  (stop-master-client *master-test-system*)
+  (stop-master-client *master-test-pool*)
   (stop-slave-server *slave-server-name*)
 
-  (close-open-streams *master-test-system*)
-  (close-open-streams *slave-test-system*))
+  (close-open-streams *master-test-pool*)
+  (close-open-streams *slave-test-pool*))
 
 
 

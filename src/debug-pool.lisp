@@ -8,39 +8,39 @@
 ;;;
 ;;; 1. the code for #'s-xml::echo-xml is in "echo.lisp" in S-XML's test code
 ;;;
-(defun print-transaction-log (system)
-  "Echo the XML making up the transaction log of system to t"
-  (with-open-file (in (get-transaction-log system) :direction :input)
+(defun print-transaction-log (pool)
+  "Echo the XML making up the transaction log of pool to t"
+  (with-open-file (in (get-transaction-log pool) :direction :input)
     (loop
        (let ((transaction (s-xml::echo-xml in *standard-output*)))
          (when (null transaction) (return)))))
   t)
 
 
-(defun show-transaction-log (system)
-  "Print the transaction objects making up the transaction log of system to t"
-  (with-open-file (in (get-transaction-log system) :direction :input)
+(defun show-transaction-log (pool)
+  "Print the transaction objects making up the transaction log of pool to t"
+  (with-open-file (in (get-transaction-log pool) :direction :input)
     (loop
-       (let ((transaction (deserialize-xml in (get-serialization-state system))))
+       (let ((transaction (deserialize-xml in (get-serialization-state pool))))
          (if (null transaction)
              (return)
              (format t "~a~%" transaction)))))
   t)
 
 
-(defun print-snapshot (system)
-  "Echo the XML making up the snapshot of system to t"
-  (with-open-file (in (get-snapshot system) :direction :input)
+(defun print-snapshot (pool)
+  "Echo the XML making up the snapshot of pool to t"
+  (with-open-file (in (get-snapshot pool) :direction :input)
     (s-xml::echo-xml in *standard-output*))
   t)
 
 
-(defun transaction-log-tail (system &optional (count 8))
-  "Return a list of the count last transaction objects of system"
+(defun transaction-log-tail (pool &optional (count 8))
+  "Return a list of the count last transaction objects of pool"
   (let (transactions)
-    (with-open-file (in (get-transaction-log system) :direction :input)
+    (with-open-file (in (get-transaction-log pool) :direction :input)
       (loop
-         (let ((transaction (deserialize-xml in (get-serialization-state system))))
+         (let ((transaction (deserialize-xml in (get-serialization-state pool))))
            (if (null transaction)
                (return)
                (push transaction transactions)))))
