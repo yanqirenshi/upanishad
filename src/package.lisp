@@ -89,6 +89,10 @@
    #:get-size
    #:get-keywords
    ;;;
+   ;;; Class: meme
+   ;;;
+   #:meme
+   ;;;
    ;;; Class: atman
    ;;;
    #:atman

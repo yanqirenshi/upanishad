@@ -1,18 +1,14 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; A Common Lisp version of the the Java Prevalyer demo2 example
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;   1. Domain Model
+;;;;;   2. Prevalence System
+;;;;;   3. Client Interface
+;;;;;   4. Now some test code
+;;;;;   5. a multi-processing example
 
 (in-package :upanishad)
 
-;;; Domain Model
+;;; 1. Domain Model
 
 (defclass bank ()
   ((accounts-by-number :accessor get-accounts-by-number :initform (make-hash-table :test 'eql))
@@ -43,7 +39,7 @@
   (with-slots (timestamp amount) account-entry
     (format stream "#<ACCOUNT-ENTRY ~a ~@d>" (date-time->string timestamp) amount)))
 
-;;; Prevalence System
+;;; 2. Prevalence System
 
 (defparameter *bank-system-location* (pathname "/tmp/demo2-prevalence-system/"))
 
@@ -175,7 +171,7 @@
              (get-accounts-by-number bank))
     accounts))
 
-;;; Now some test code
+;;; 4. Now some test code
 
 (defun bank-test-1 ()
   (let ((test-1 (get-number (create-account "Test Account 1")))
@@ -298,7 +294,7 @@
     (delete-account account-number)
     (setf (get-option *bank-system* :rollback-on-error) nil)))
 
-;;; a multi-processing example
+;;; 5. a multi-processing example
 
 (defparameter *bank-system-lock*
   (make-process-lock "bank-system-lock"))
@@ -353,4 +349,18 @@
   (sleep 1)
   (spawn-process "invariant" #'bank-test-5-invariant))
 
-;;;; eof
+
+
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+A Common Lisp version of the the Java Prevalyer demo2 example
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#

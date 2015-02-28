@@ -1,15 +1,3 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; A Common Lisp version of the the Java Prevalyer demo1 example
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
-
 (in-package :upanishad)
 
 (defun prime-p (n)
@@ -84,4 +72,16 @@
     (setf system (time (make-pool *system-location*)))
     (close-open-streams system)))
 
-;;;; eof
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+A Common Lisp version of the the Java Prevalyer demo1 example
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#

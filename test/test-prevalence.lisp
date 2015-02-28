@@ -1,14 +1,9 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Testing Object Prevalence in Common Lisp
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;   1. A Test CLOS class
+;;;;;   2. Some basic functions to construct transactions from
+;;;;;   3. A place to store our test person's id outside of the system
+;;;;;
 
 (in-package :upanishad-test)
 
@@ -27,14 +22,15 @@
         (delete-file pathname)))
     (setf *test-system* (make-pool directory))
     (is-true *test-system*)))
-;; A Test CLOS class
+
+;; 1. A Test CLOS class
 
 (defclass person ()
   ((id :initarg :id :accessor get-id)
    (firstname :initarg :firstname :accessor get-firstname)
    (lastname :initarg :lastname :accessor get-lastname)))
 
-;; Some basic functions to construct transactions from
+;; 2. Some basic functions to construct transactions from
 
 (defun tx-create-persons-root (system)
   (setf (get-root-object system :persons) (make-hash-table)))
@@ -59,7 +55,7 @@
   (execute *test-system* (make-transaction 'tx-create-persons-root))
   (is (hash-table-p (get-root-object *test-system* :persons))))
 
-;; A place to store our test person's id outside of the system
+;; 3. A place to store our test person's id outside of the system
 (defvar *jlp*)
 
 (test test-create-person
@@ -168,4 +164,17 @@
     (execute *test-system* (make-transaction 'tx-delete-person (get-id new-person)))
     (is-true *guard*)))
 
-;;; eof
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+Testing Object Prevalence in Common Lisp
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#
+

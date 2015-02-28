@@ -1,14 +1,8 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Testing a master-slave connection between two prevalence system (on the same host)
-;;;;
-;;;; Copyright (C) 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contetns
+;;;;;  1. a test object class
+;;;;;  2. now do the test
+;;;;;
 
 (in-package :upanishad-test)
 
@@ -24,7 +18,7 @@
 
 (defvar *slave-test-system* nil)
 
-;; a test object class
+;; 1. a test object class
 
 (defclass test-system-user (meme)
   ((username :accessor get-username :initarg :username :initform nil)
@@ -63,7 +57,7 @@
   (is-true *user-id*)
   *user-id*
   )
-;; now do the test
+;; 2. now do the test
 
 (test test-get-master-user
   (let ((user (get-object-with-id *master-test-system* 'test-system-user *user-id*)))
@@ -86,4 +80,18 @@
   (close-open-streams *master-test-system*)
   (close-open-streams *slave-test-system*)
   )
-;;;; eof
+
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+Testing a master-slave connection between two prevalence system (on the same host)
+
+Copyright (C) 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#
+

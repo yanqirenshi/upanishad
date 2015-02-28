@@ -1,16 +1,11 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Testing Managed Object Prevalence in Common Lisp
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;; Altered for managed prevalence testing; Sept 2004,
-;;;;  Randall Randall, RandallSquared
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;  1. A Test CLOS class
+;;;;;  2. Convenience function
+;;;;;  3. Some basic functions to construct transactions from
+;;;;;  4. A place to store our test managed-person's id outside of the system
+;;;;;
+
 (in-package :upanishad-test)
 
 (in-suite test-managed-prevalence)
@@ -30,7 +25,7 @@
     (is-true *test-system*)
     (index-on *test-system* 'managed-person '(firstname lastname) 'equal)))
 
-;; A Test CLOS class
+;; 1. A Test CLOS class
 
 (defclass managed-person (meme)
   ((firstname :initarg :firstname :initform "" :accessor get-firstname)
@@ -44,22 +39,22 @@
   (execute-transaction
    (tx-change-object-slots *test-system* 'managed-person (get-id managed-person) (list (list 'lastname value)))))
 
-;; convenience function
+;; 2. Convenience function
 
 (defun pairify (list)
   (when list (concatenate 'list
                           (list (subseq list 0 2))
                           (pairify (rest (rest list))))))
 
-;; Some basic functions to construct transactions from
+;; 3. Some basic functions to construct transactions from
 
 (defun make-managed-person (&rest slots)
   (let ((slots-and-values (pairify slots)))
     (execute-transaction
      (tx-create-object *test-system* 'managed-person slots-and-values))))
 
-(defun find-managed-person (slot value)
-  (find-object-with-slot *test-system* 'managed-person slot value))
+(defun get-managed-person (slot value)
+  (first (find-object-with-slot *test-system* 'managed-person slot value)))
 
 (defun delete-managed-person (managed-person)
   (execute-transaction
@@ -71,7 +66,7 @@
   (is (zerop (get-root-object *test-system* :id-counter))))
 
 
-;; A place to store our test managed-person's id outside of the system
+;; 4. A place to store our test managed-person's id outside of the system
 
 (defvar *jlp*)
 
@@ -81,12 +76,12 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))
     (setf *jlp* (get-id managed-person))))
 
 (test test-get-managed-person
@@ -94,14 +89,14 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
-(test test-find-managed-person-restart
+(test test-get-managed-person-restart
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the transaction log"
   (close-open-streams *test-system*)
@@ -110,28 +105,28 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
-(test test-find-managed-person-snapshot
+(test test-get-managed-person-snapshot
   "Create a snapshot of our test system"
   (snapshot *test-system*)
   (let ((managed-person (get-object-with-id *test-system* 'managed-person *jlp*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
-(test test-find-managed-person-restart-snapshot
+(test test-get-managed-person-restart-snapshot
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the snapshot"
   (close-open-streams *test-system*)
@@ -140,12 +135,12 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
 (defvar *kj*)
 
@@ -155,19 +150,19 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
-    (is (equal (get-firstname (find-managed-person 'lastname "Janeway")) "Kathryn"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Kathryn")) "Janeway"))
+    (is (equal (get-firstname (get-managed-person 'lastname "Janeway")) "Kathryn"))
+    (is (equal (get-lastname (get-managed-person 'firstname "Kathryn")) "Janeway"))
     (setf *kj* (get-id managed-person))))
 
-(test test-find-managed-person-1
+(test test-get-managed-person-1
   (let ((managed-person (get-object-with-id *test-system* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
-    (is (equal (get-firstname (find-managed-person 'lastname "Janeway")) "Kathryn"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Kathryn")) "Janeway"))))
+    (is (equal (get-firstname (get-managed-person 'lastname "Janeway")) "Kathryn"))
+    (is (equal (get-lastname (get-managed-person 'firstname "Kathryn")) "Janeway"))))
 
-(test test-find-managed-person-restart-1
+(test test-get-managed-person-restart-1
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using both the snapshot and the transaction log"
   (close-open-streams *test-system*)
@@ -176,20 +171,20 @@
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Jean-Luc"))
     (is (equal (get-lastname managed-person) "Picard"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Jean-Luc")) "Picard"))
-    (setf (get-firstname (find-managed-person 'lastname "Picard")) "J-Lu")
-    (is (equal (get-lastname (find-managed-person 'firstname "J-Lu")) "Picard"))
-    (setf (get-firstname (find-managed-person 'firstname "J-Lu")) "Jean-Luc")
-    (is (equal (get-firstname (find-managed-person 'lastname "Picard")) "Jean-Luc"))
-    (is (eq NIL (find-managed-person 'firstname "J-Lu")))))
+    (is (equal (get-lastname (get-managed-person 'firstname "Jean-Luc")) "Picard"))
+    (setf (get-firstname (get-managed-person 'lastname "Picard")) "J-Lu")
+    (is (equal (get-lastname (get-managed-person 'firstname "J-Lu")) "Picard"))
+    (setf (get-firstname (get-managed-person 'firstname "J-Lu")) "Jean-Luc")
+    (is (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
+    (is (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
-(test test-find-managed-person-restart-2
+(test test-get-managed-person-restart-2
   (let ((managed-person (get-object-with-id *test-system* 'managed-person *kj*)))
     (is (eq (class-of managed-person) (find-class 'managed-person)))
     (is (equal (get-firstname managed-person) "Kathryn"))
     (is (equal (get-lastname managed-person) "Janeway"))
-    (is (equal (get-firstname (find-managed-person 'lastname "Janeway")) "Kathryn"))
-    (is (equal (get-lastname (find-managed-person 'firstname "Kathryn")) "Janeway"))))
+    (is (equal (get-firstname (get-managed-person 'lastname "Janeway")) "Kathryn"))
+    (is (equal (get-lastname (get-managed-person 'firstname "Kathryn")) "Janeway"))))
 
 (test test-managed-person-count
   (mapcar #'(lambda (pair)
@@ -197,7 +192,7 @@
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
   (is (= (length (find-all-objects *test-system* 'managed-person)) 5))
   (mapcar #'(lambda (pair)
-              (delete-managed-person (find-managed-person 'firstname (first pair))))
+              (delete-managed-person (get-managed-person 'firstname (first pair))))
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
   (is (= (length (find-all-objects *test-system* 'managed-person)) 2)))
 
@@ -222,4 +217,17 @@
     (delete-managed-person new-managed-person)
     (is-true *managed-guard*)))
 
-;;; eof
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+Testing Managed Object Prevalence in Common Lisp
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+Altered for managed prevalence testing; Sept 2004, Randall Randall, RandallSquared
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#

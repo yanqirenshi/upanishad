@@ -1,14 +1,10 @@
-;;;; -*- mode: Lisp -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; Testing XML and S-Expression based Serialization for Common Lisp and CLOS
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+;;;;;
+;;;;; Contents
+;;;;;  1. primitives
+;;;;;  2. simple sequences
+;;;;;  3. standard structs
+;;;;;  4. hash-tables
+;;;;;
 
 (in-package :upanishad-test)
 
@@ -26,7 +22,7 @@
             (serialize-sexp object out)))
     (deserialize-sexp in)))
 
-;; primitives
+;; 1. primitives
 
 (test test-primitive-1
   (is
@@ -298,7 +294,7 @@
              (equal (get-bar foobar) (get-bar *foobar*))
              (eq (class-of foobar) (class-of *foobar*))))))
 
-;; standard structs
+;; 3. standard structs
 
 (defstruct foobaz
   foo
@@ -318,7 +314,7 @@
              (equal (foobaz-foo foobaz) (foobaz-foo *foobaz*))
              (equal (foobaz-baz foobaz) (foobaz-baz *foobaz*))))))
 
-;;; hash-tables
+;;; 4. hash-tables
 
 (defparameter *hashtable*
   (let ((hashtable (make-hash-table :test 'equal)))
@@ -354,4 +350,17 @@
     (maphash #'(lambda (k v) (is (equal v (gethash k *hashtable*)))) h2)))
 
 
-;;; eof
+
+
+#|
+-*- mode: Lisp -*-
+
+$Id$
+
+Testing XML and S-Expression based Serialization for Common Lisp and CLOS
+
+Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+
+You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
+|#
+
