@@ -73,7 +73,19 @@
 (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
   (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
 
-(defgeneric get-at-id (banshou id)
+(defgeneric class-id-list (pool)
+  (:documentation "poolに登録されているクラスの一覧(list)を返します。"))
+
+(defgeneric root-list (pool)
+  (:documentation "poolに登録されているルートオブジェクトの一覧(list)を返します。"))
+
+(defgeneric get-object-list (pool symbol)
+  (:documentation "poolで管理されている symbolクラスのオブジェクトの一覧(list)を返します。"))
+
+(defgeneric get-at-id (pool id)
+  (:documentation ""))
+
+(defgeneric print-root-list (pool &key stream)
   (:documentation ""))
 
 

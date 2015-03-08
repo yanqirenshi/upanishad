@@ -41,6 +41,7 @@ mkdir ~/up
 | libraly    | description |
 |------------|-------------|
 | [alexandria](https://common-lisp.net/project/alexandria/) | あれ？ 使ってる？|
+| cl-ppcre   |             |
 | [s-xml](https://common-lisp.net/project/s-xml/)      |シリアライズ(XML)する時に利用。|
 | [s-sysdeps](https://github.com/svenvc/s-sysdeps)  |マスタとスレーブでソケット通信するのに利用。|
 

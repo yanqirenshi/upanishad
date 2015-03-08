@@ -64,5 +64,6 @@
                          (:file "printer"          :depends-on ("master-slave" "blob")))))
   :depends-on (:alexandria
                :s-xml
-               :s-sysdeps))
+               :s-sysdeps
+               :cl-ppcre))
 

@@ -256,7 +256,33 @@
                (gethash (slot-value obj slot-symbol) index)))))
 
 
-(defmethod get-at-id ((pool banshou) id)
+(defun class-id-indexp (symbol)
+  (cl-ppcre:scan "^(\\S)+-ID-INDEX$"
+                 (symbol-name symbol)))
+
+
+(defun class-id-rootp (symbol)
+  (cl-ppcre:scan "^(\\S)+-ROOT$"
+                 (symbol-name symbol)))
+
+
+(defmethod class-id-list ((pool pool))
+  (remove-if (complement #'class-id-indexp)
+             (alexandria:hash-table-keys
+              (get-root-objects pool))))
+
+
+(defmethod root-list ((pool pool))
+  (remove-if (complement #'class-id-rootp)
+             (alexandria:hash-table-keys
+              (get-root-objects pool))))
+
+
+(defun object-root-name (symbol)
+  (get-objects-root-name symbol))
+
+
+(defmethod get-at-id ((pool pool) id)
   "もっと効率良いやりかたがありそうじゃけど。。。"
   (car
    (remove nil
@@ -266,7 +292,18 @@
                    (class-id-list pool)))))
 
 
+(defmethod get-object-list ((pool pool) (class-symbol symbol))
+  (get-root-object pool
+                   (get-objects-root-name class-symbol)))
 
+
+(defmethod print-root-list ((pool pool) &key (stream t))
+  (mapcar #'(lambda (root)
+              (format stream "~10a : count=~a~%"
+                      root
+                      (length (get-root-object pool root))))
+          (root-list pool))
+  pool)
 
 #|
 -*- mode: lisp -*-

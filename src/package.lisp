@@ -66,6 +66,7 @@
    #:close-open-streams
    #:next-id
    #:get-at-id
+   #:get-object-list
    ;; master slave
    #:start-master-client
    #:stop-master-client
