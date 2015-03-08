@@ -256,6 +256,16 @@
                (gethash (slot-value obj slot-symbol) index)))))
 
 
+(defmethod get-at-id ((pool banshou) id)
+  "もっと効率良いやりかたがありそうじゃけど。。。"
+  (car
+   (remove nil
+           (mapcar #'(lambda (index)
+                       (gethash id
+                                (get-root-object pool index)))
+                   (class-id-list pool)))))
+
+
 
 
 #|

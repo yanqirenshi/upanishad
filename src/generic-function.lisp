@@ -73,6 +73,8 @@
 (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
   (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
 
+(defgeneric get-at-id (banshou id)
+  (:documentation ""))
 
 
 ;;;

@@ -65,6 +65,7 @@
    #:drop-index-on
    #:close-open-streams
    #:next-id
+   #:get-at-id
    ;; master slave
    #:start-master-client
    #:stop-master-client
