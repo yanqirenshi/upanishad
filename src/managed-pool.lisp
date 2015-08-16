@@ -42,7 +42,7 @@
 (defmethod find-all-objects ((pool pool) class)
   "Return an unordered collection of all objects in pool that are instances of class"
   (let ((root-name (get-objects-root-name class)))
-    (get-root-object pool root-name)))
+    (copy-list (get-root-object pool root-name))))
 
 
 ;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
