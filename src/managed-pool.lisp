@@ -201,7 +201,8 @@
        :do (when (slot-value-changed-p object slot value)
              (remove-object-from-slot-index pool class slot object)
              (setf (slot-value object slot) value)
-             (add-object-to-slot-index pool class slot object)))))
+             (add-object-to-slot-index pool class slot object)))
+    object))
 
 
 
