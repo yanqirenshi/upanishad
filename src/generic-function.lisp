@@ -82,7 +82,7 @@
 (defgeneric get-object-list (pool symbol)
   (:documentation "poolで管理されている symbolクラスのオブジェクトの一覧(list)を返します。"))
 
-(defgeneric get-at-id (pool id)
+(defgeneric get-at-id (pool id &key class)
   (:documentation ""))
 
 (defgeneric print-root-list (pool &key stream)

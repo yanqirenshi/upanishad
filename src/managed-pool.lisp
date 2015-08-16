@@ -282,14 +282,16 @@
   (get-objects-root-name symbol))
 
 
-(defmethod get-at-id ((pool pool) id)
+(defmethod get-at-id ((pool pool) id &key class)
   "もっと効率良いやりかたがありそうじゃけど。。。"
-  (car
-   (remove nil
-           (mapcar #'(lambda (index)
-                       (gethash id
-                                (get-root-object pool index)))
-                   (class-id-list pool)))))
+  (if class
+      (get-object-with-id pool class id)
+      (car
+       (remove nil
+               (mapcar #'(lambda (index)
+                           (gethash id
+                                    (get-root-object pool index)))
+                       (class-id-list pool))))))
 
 
 (defmethod get-object-list ((pool pool) (class-symbol symbol))
