@@ -133,17 +133,17 @@
 
 (defmethod execute ((pool pool) (transaction transaction))
   "Execute a transaction on a pool and log it to the transaction log"
-  (let ((result
-         (handler-bind ((error #'(lambda (condition)
-                                   (when (and (get-option pool :rollback-on-error)
-                                              (initiates-rollback condition))
-                                     (format *standard-output*
-                                             ";; Notice: pool rollback/restore due to error (~a)~%"
-                                             condition)
-                                     (restore pool)))))
-           (execute-on transaction pool))))
+  (let ((result (multiple-value-list
+                 (handler-bind ((error #'(lambda (condition)
+                                           (when (and (get-option pool :rollback-on-error)
+                                                      (initiates-rollback condition))
+                                             (format *standard-output*
+                                                     ";; Notice: pool rollback/restore due to error (~a)~%"
+                                                     condition)
+                                             (restore pool)))))
+                   (execute-on transaction pool)))))
     (log-transaction pool transaction)
-    result))
+    (apply #'values result)))
 
 
 (defmethod log-transaction ((pool pool) (transaction transaction))
