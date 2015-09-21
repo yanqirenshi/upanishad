@@ -20,6 +20,7 @@ mkdir ~/up
 ```lisp
 ;; pool の開始 ※pool は db に脳内変換すると違和感がなくなります。
 (defvar *pool* (make-pool "~/up/"))
+(execute-transaction (tx-create-id-counter *pool*))
     ：
   ※いろいろな処理。 準備中
     ：
