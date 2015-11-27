@@ -20,7 +20,6 @@
   :licence "Lesser Lisp General Public License"
   :description "Common Lisp Prevalence Package"
   :long-description "Common Lisp Prevalence is an implementation of Object Prevalence for Common Lisp"
-
   :components
   ((:module "src"
             ;;
@@ -48,20 +47,20 @@
             ;;   |
             ;; (end)
             ;;
-            :components ((:file "package")
-                         (:module "serialization"
-                                  :components ((:file "serialization")
-                                               (:file "xml"  :depends-on ("serialization"))
-                                               (:file "sexp" :depends-on ("serialization")))
-                                  :depends-on ("package"))
-                         (:file "utility"          :depends-on ("serialization"))
-                         (:file "generic-function" :depends-on ("utility"))
-                         (:file "class"            :depends-on ("utility"))
-                         (:file "pool"             :depends-on ("class"))
-                         (:file "managed-pool"     :depends-on ("pool"))
-                         (:file "master-slave"     :depends-on ("pool"))
-                         (:file "blob"             :depends-on ("managed-pool"))
-                         (:file "printer"          :depends-on ("master-slave" "blob")))))
+    :components ((:file "package")
+                 (:module "serialization"
+                  :components ((:file "serialization")
+                               (:file "xml"  :depends-on ("serialization"))
+                               (:file "sexp" :depends-on ("serialization")))
+                  :depends-on ("package"))
+                 (:file "utility"          :depends-on ("serialization"))
+                 (:file "generic-function" :depends-on ("utility"))
+                 (:file "class"            :depends-on ("utility"))
+                 (:file "pool"             :depends-on ("class"))
+                 (:file "managed-pool"     :depends-on ("pool"))
+                 (:file "master-slave"     :depends-on ("pool"))
+                 (:file "blob"             :depends-on ("managed-pool"))
+                 (:file "printer"          :depends-on ("master-slave" "blob")))))
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps
