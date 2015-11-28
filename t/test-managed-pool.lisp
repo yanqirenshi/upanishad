@@ -39,6 +39,8 @@
 ;;;
 ;;; Test!
 ;;;
+(plan 13)
+
 (subtest "test-managed-pool-start"
   "Create a new prevalence pool for testing purposes"
   (let ((directory *test-pool-directory*))
@@ -208,3 +210,5 @@
       (setf *managed-guard* nil)
       (delete-managed-person new-managed-person)
       (ok *managed-guard*))))
+
+(finalize)
