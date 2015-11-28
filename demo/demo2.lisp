@@ -1,3 +1,5 @@
+(in-package :upanishad-demo)
+
 ;;;;;
 ;;;;; Contents
 ;;;;;   1. Domain Model
@@ -5,8 +7,6 @@
 ;;;;;   3. Client Interface
 ;;;;;   4. Now some test code
 ;;;;;   5. a multi-processing example
-
-(in-package :upanishad)
 
 ;;; 1. Domain Model
 
@@ -250,16 +250,16 @@
     (assert (= 10 (get-balance (find-account account-number))))
     ;; try to withdraw 20 bucks from the account
     (ignore-errors
-      ;; this will fail with an overdrawn-account error
-      ;; BEFORE the pool is modified (nothing was logged)
-      (withdraw account-number 20))
+     ;; this will fail with an overdrawn-account error
+     ;; BEFORE the pool is modified (nothing was logged)
+     (withdraw account-number 20))
     ;; check that nothing changed
     (assert (= 10 (get-balance (find-account account-number))))
     ;; try to with withdraw 20 bucks using the bogus-withdraw tx
     (ignore-errors
-      ;; this will fail with a regular error
-      ;; AFTER the pool is modified (nothing was logged)
-      (execute *bank-pool* (make-transaction 'tx-bogus-withdraw account-number 20)))
+     ;; this will fail with a regular error
+     ;; AFTER the pool is modified (nothing was logged)
+     (execute *bank-pool* (make-transaction 'tx-bogus-withdraw account-number 20)))
     ;; check that the change went through
     (assert (= -10 (get-balance (find-account account-number))))
     ;; --------------------------------------------------------------
@@ -275,18 +275,18 @@
     (assert (= 10 (get-balance (find-account account-number))))
     ;; try to withdraw 20 bucks from the account
     (ignore-errors
-      ;; this will fail with an overdrawn-account error
-      ;; BEFORE the pool is modified (nothing was logged)
-      ;; NO rollback (condition does not initiate a rollback)
-      (withdraw account-number 20))
+     ;; this will fail with an overdrawn-account error
+     ;; BEFORE the pool is modified (nothing was logged)
+     ;; NO rollback (condition does not initiate a rollback)
+     (withdraw account-number 20))
     ;; check that nothing changed
     (assert (= 10 (get-balance (find-account account-number))))
     ;; try to with withdraw 20 bucks using the bogus-withdraw tx
     (ignore-errors
-      ;; this will fail with a regular error
-      ;; AFTER the pool is modified (nothing was logged)
-      ;; rollback IS executed (condition does initiate a rollback)
-      (execute *bank-pool* (make-transaction 'tx-bogus-withdraw account-number 20)))
+     ;; this will fail with a regular error
+     ;; AFTER the pool is modified (nothing was logged)
+     ;; rollback IS executed (condition does initiate a rollback)
+     (execute *bank-pool* (make-transaction 'tx-bogus-withdraw account-number 20)))
     ;; check that the rollback took place and nothing changed
     (assert (= 10 (get-balance (find-account account-number))))
     ;; --------------------------------------------------------------
@@ -348,19 +348,3 @@
   (spawn-process "invariant" #'bank-test-5-invariant)
   (sleep 1)
   (spawn-process "invariant" #'bank-test-5-invariant))
-
-
-
-
-
-#|
--*- mode: Lisp -*-
-
-$Id$
-
-A Common Lisp version of the the Java Prevalyer demo2 example
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#

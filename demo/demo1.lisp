@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad-demo)
 
 (defun prime-p (n)
   "Prime predicate copied from Java code"
@@ -8,11 +8,11 @@
         (t (let ((factor 3)
                  (square (ceiling (sqrt n))))
              (loop
-                (unless (<= factor square)
-                  (return-from prime-p t))
-                (if (zerop (mod n factor))
-                    (return-from prime-p nil)
-                    (incf factor 2)))))))
+               (unless (<= factor square)
+                 (return-from prime-p t))
+               (if (zerop (mod n factor))
+                   (return-from prime-p nil)
+                   (incf factor 2)))))))
 
 (defclass numbers ()
   ((numbers-list :accessor get-numbers-list :initform nil))
@@ -40,13 +40,13 @@
                 (candidate (if numbers-list (1+ (first numbers-list)) 0))
                 (largest 0))
            (loop
-              (when (> candidate (min most-positive-fixnum 16777215))
-                (return))
-              (when (prime-p candidate)
-                (execute pool (make-transaction 'tx-add-number candidate))
-                (setf largest candidate)
-                (format t "Primes found: ~d. Largest: ~d~%" (length (get-numbers-list numbers)) largest))
-              (incf candidate)))
+             (when (> candidate (min most-positive-fixnum 16777215))
+               (return))
+             (when (prime-p candidate)
+               (execute pool (make-transaction 'tx-add-number candidate))
+               (setf largest candidate)
+               (format t "Primes found: ~d. Largest: ~d~%" (length (get-numbers-list numbers)) largest))
+             (incf candidate)))
       (close-open-streams pool))))
 
 (defun benchmark1 ()
@@ -72,16 +72,3 @@
     (setf pool (time (make-pool *pool-location*)))
     (close-open-streams pool)))
 
-
-
-#|
--*- mode: Lisp -*-
-
-$Id$
-
-A Common Lisp version of the the Java Prevalyer demo1 example
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software as governed by the terms of the Lisp Lesser General Public License (http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#
