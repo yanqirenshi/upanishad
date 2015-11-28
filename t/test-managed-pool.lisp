@@ -36,6 +36,16 @@
   (execute-transaction
    (tx-delete-object *test-pool* 'managed-person (get-id managed-person))))
 
+(defvar *jlp*)
+
+(defvar *kj*)
+
+(defvar *managed-guard*)
+
+(defun managed-guard (thunk)
+  (setf *managed-guard* t)
+  (funcall thunk))
+
 ;;;
 ;;; Test!
 ;;;
@@ -60,8 +70,6 @@
 ;;;
 ;;; 4. A place to store our test managed-person's id outside of the pool
 ;;;
-
-(defvar *jlp*)
 
 (subtest "test-create-managed-person"
   "Create a new test managed-person"
@@ -135,8 +143,6 @@
     (ok (equal (get-firstname (get-managed-person 'lastname "Picard")) "Jean-Luc"))
     (ok (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
-(defvar *kj*)
-
 (subtest "test-create-managed-person-1"
   "Create another test managed-person"
   (let ((managed-person (make-managed-person 'firstname "Kathryn" 'lastname "Janeway")))
@@ -190,12 +196,6 @@
   (ok (= (length (find-all-objects *test-pool* 'managed-person)) 2)))
 
 (subtest "managed-guard"
-  (defvar *managed-guard*)
-
-  (defun managed-guard (thunk)
-    (setf *managed-guard* t)
-    (funcall thunk))
-
   (subtest "test-managed-guarded"
     "testing a managed-guarded prevalence system
    [Not sure that we need the below test here -- RRR]"

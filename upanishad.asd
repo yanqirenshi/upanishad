@@ -24,27 +24,16 @@
   ((:module "src"
             ;;
             ;; (start)
-            ;;   |
             ;; package
-            ;;   |
             ;; [serialization]
-            ;;   |
             ;; generic-function
-            ;;   |
             ;; class
-            ;;   |
             ;; pool
-            ;;   |
             ;;   +-----------------+
-            ;;   |                 |
             ;; managed-pool  master-slave
-            ;;   |                 |
             ;; blob                |
-            ;;   |                 |
             ;;   +-----------------+
-            ;;   |
             ;; printer
-            ;;   |
             ;; (end)
             ;;
     :components ((:file "package")
@@ -64,5 +53,6 @@
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps
-               :cl-ppcre))
+               :cl-ppcre)
+  :in-order-to ((test-op (test-op upanishad-test))))
 
