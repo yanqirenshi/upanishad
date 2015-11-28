@@ -99,7 +99,7 @@
                                          :direction :output
                                          :if-does-not-exist :create
                                          #+ccl :sharing #+ccl nil
-                                         :if-exists :append)))))
+                                                    :if-exists :append)))))
 
 
 (defmethod close-open-streams ((pool pool) &key abort)
@@ -219,19 +219,19 @@
   (when (probe-file (get-transaction-log pool))
     (let ((position 0))
       (handler-bind ((s-xml:xml-parser-error
-                      #'(lambda (condition)
-                          (format *standard-output*
-                                  ";; Warning: error during transaction log restore: ~s~%"
-                                  condition)
-                          (truncate-file (get-transaction-log pool) position)
-                          (return-from restore))))
+                       #'(lambda (condition)
+                           (format *standard-output*
+                                   ";; Warning: error during transaction log restore: ~s~%"
+                                   condition)
+                           (truncate-file (get-transaction-log pool) position)
+                           (return-from restore))))
         (with-open-file (in (get-transaction-log pool) :direction :input)
           (loop
-             (let ((transaction (funcall (get-deserializer pool) in (get-serialization-state pool))))
-               (setf position (file-position in))
-               (if transaction
-                   (execute-on transaction pool)
-                   (return)))))))))
+            (let ((transaction (funcall (get-deserializer pool) in (get-serialization-state pool))))
+              (setf position (file-position in))
+              (if transaction
+                  (execute-on transaction pool)
+                  (return)))))))))
 
 
 (defmethod execute ((pool guarded-pool) (transaction transaction))
@@ -301,12 +301,12 @@
       (with-open-file (out tmp-file :direction :output :if-exists :overwrite :if-does-not-exist :create)
         (when (> position (file-length in)) (return-from truncate-file))
         (loop
-           (when (= index position) (return))
-           (setf read-count (read-sequence buffer in))
-           (when (>= (+ index read-count) position)
-             (setf read-count (- position index)))
-           (incf index read-count)
-           (write-sequence buffer out :end read-count))))
+          (when (= index position) (return))
+          (setf read-count (read-sequence buffer in))
+          (when (>= (+ index read-count) position)
+            (setf read-count (- position index)))
+          (incf index read-count)
+          (write-sequence buffer out :end read-count))))
     (delete-file file)
     (rename-file tmp-file file))
   (format t ";; Notice: truncated transaction log at position ~d~%" position))
@@ -318,9 +318,9 @@
     (with-open-file (in source :direction :input)
       (with-open-file (out target :direction :output :if-exists :overwrite :if-does-not-exist :create)
         (loop
-           (setf read-count (read-sequence buffer in))
-           (write-sequence buffer out :end read-count)
-           (when (< read-count 4096) (return)))))))
+          (setf read-count (read-sequence buffer in))
+          (write-sequence buffer out :end read-count)
+          (when (< read-count 4096) (return)))))))
 
 
 
@@ -340,20 +340,3 @@
 
 #-allegro
 (setf (documentation '(setf get-guard) 'function) "Set the guard function of a pool")
-
-
-
-
-#|
--*- mode: Lisp -*-
-
-$Id$
-
-Object Prevalence in Common Lisp
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software
-as governed by the terms of the Lisp Lesser General Public License
-(http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#

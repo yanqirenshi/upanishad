@@ -32,31 +32,15 @@
    :name "upanishad-pool-slave-server"
    :connection-handler #'(lambda (stream)
                            (loop
-                              (let ((transaction (funcall (get-deserializer pool)
-                                                          stream
-                                                          (get-serialization-state pool))))
-                                (if (or (null transaction)
-                                        (eq transaction :stop))
-                                    (return)
-                                    (execute pool transaction)))))))
+                             (let ((transaction (funcall (get-deserializer pool)
+                                                         stream
+                                                         (get-serialization-state pool))))
+                               (if (or (null transaction)
+                                       (eq transaction :stop))
+                                   (return)
+                                   (execute pool transaction)))))))
 
 
 (defun stop-slave-server (server)
   ;; Plato Wu,2009/02/26: stop-server need be exported in s-sysdeps.
   (s-sysdeps::stop-server (caar server)))
-
-
-#|
--*- mode: lisp -*-
-
-$Id$
-
-The master-slave system keeps one prevalence system in sync with another
-by sending transactions over a socket
-
-Copyright (C) 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software
-as governed by the terms of the Lisp Lesser General Public License
-(http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#

@@ -1,13 +1,8 @@
-;;;;;
-;;;;;
-;;;;;
-;;;;;
-
 (in-package :upanishad)
 
 (defun print-root-objects (pool)
   (maphash #'(lambda (k v)
-               (when (not (eq :ID-COUNTER k))
+               (when (not (eq :%id-counter k))
                  (let ((type (type-of v)))
                    (format t "~20a : ~a~%"
                            k

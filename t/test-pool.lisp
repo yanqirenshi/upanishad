@@ -8,7 +8,7 @@
 (defvar *test-pool* nil)
 
 (defclass person ()
-  ((id :initarg :id :accessor get-id)
+  ((%id :initarg :%id :accessor %id)
    (firstname :initarg :firstname :accessor get-firstname)
    (lastname :initarg :lastname :accessor get-lastname)))
 
@@ -17,18 +17,28 @@
 
 (defun tx-create-person (pool firstname lastname)
   (let* ((persons (get-root-object pool :persons))
-         (id (next-id pool))
-         (person (make-instance 'person :id id :firstname firstname :lastname lastname)))
-    (setf (gethash id persons) person)))
+         (%id (next-%id pool))
+         (person (make-instance 'person :%id %id :firstname firstname :lastname lastname)))
+    (setf (gethash %id persons) person)))
 
 (defun tx-delete-person (pool id)
   (let ((persons (get-root-object pool :persons)))
     (remhash id persons)))
 
+(defvar *jlp*)
+
+(defvar *kj*)
+
+(defvar *guard*)
+
+(defun guard (thunk)
+  (setf *guard* t)
+  (funcall thunk))
+
 ;;;
 ;;; Test
 ;;;
-(plan 1)
+(plan 6)
 
 (subtest "test-pool-start"
   "Create a new prevalence system for testing purposes"
@@ -42,8 +52,8 @@
 
 (subtest "create-counter"
   "Test create a new id counter"
-  (execute *test-pool* (make-transaction 'tx-create-id-counter))
-  (ok (zerop (get-root-object *test-pool* :id-counter))
+  (execute *test-pool* (make-transaction 'tx-create-%id-counter))
+  (ok (zerop (get-root-object *test-pool* :%id-counter))
       "Created counter"))
 
 (subtest "hash-table-test"
@@ -55,8 +65,6 @@
 ;;; A place to store our test person's id outside of the pool
 ;;;
 (subtest "A place to store our test person's id outside of the pool"
-  (defvar *jlp*)
-
   (subtest "test-create-person"
     "Create a new test person"
     (let
@@ -64,7 +72,7 @@
       (ok (eq (class-of person) (find-class 'person)))
       (ok (equal (get-firstname person) "Jean-Luc"))
       (ok (equal (get-lastname person) "Picard"))
-      (setf *jlp* (get-id person))))
+      (setf *jlp* (%id person))))
 
   (subtest "test-get-person" ;; :depends-on '(and test-create-person)
     (let ((person (gethash *jlp* (get-root-object *test-pool* :persons))))
@@ -104,14 +112,12 @@
 ;;; Create another test person
 ;;;
 (subtest "Create another test person"
-  (defvar *kj*)
-
   (subtest "test-create-person-1"
     (let ((person (execute *test-pool* (make-transaction 'tx-create-person "Kathryn" "Janeway"))))
       (ok (eq (class-of person) (find-class 'person)))
       (ok (equal (get-firstname person) "Kathryn"))
       (ok (equal (get-lastname person) "Janeway"))
-      (setf *kj* (get-id person))))
+      (setf *kj* (%id person))))
 
   (subtest "test-get-person-1"
     (let ((person (gethash *kj* (get-root-object *test-pool* :persons))))
@@ -146,12 +152,6 @@
     (ok (= (hash-table-count (get-root-object *test-pool* :persons)) 2))))
 
 (subtest "Test Guard"
-  (defvar *guard*)
-
-  (defun guard (thunk)
-    (setf *guard* t)
-    (funcall thunk))
-
   (subtest "test-guarded"
     "testing a guarded prevalence system"
     (close-open-streams *test-pool*)
@@ -163,7 +163,7 @@
       (setf new-person (execute *test-pool* (make-transaction 'tx-create-person "John" "Doe")))
       (ok *guard*)
       (setf *guard* nil)
-      (execute *test-pool* (make-transaction 'tx-delete-person (get-id new-person)))
+      (execute *test-pool* (make-transaction 'tx-delete-person (%id new-person)))
       (ok *guard*))))
 
 (finalize)

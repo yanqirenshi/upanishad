@@ -32,7 +32,7 @@
     (intern (concatenate 'string classname "-ROOT") :keyword)))
 
 
-(defun get-objects-slot-index-name (class &optional (slot 'id))
+(defun get-objects-slot-index-name (class &optional (slot '%id))
   "Return the keyword symbol naming the specified index of instances of class."
   (let ((classname (if (symbolp class) (string class) (class-name class)))
         (slotname  (symbol-name slot)))
@@ -45,32 +45,32 @@
     (copy-list (get-root-object pool root-name))))
 
 
-;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
-(defmethod find-object-with-id ((pool pool) class id)
-  "Find and return the object in pool of class with id, null if not found"
-  (let* ((index-name (get-objects-slot-index-name class 'id))
+;; TODO: この関数は廃止予定です。 下の get-object-with-%id を利用するようにしてください。
+(defmethod find-object-with-%id ((pool pool) class %id)
+  "Find and return the object in pool of class with %id, null if not found"
+  (let* ((index-name (get-objects-slot-index-name class '%id))
          (index (get-root-object pool index-name)))
     (when index
-      (gethash id index))))
+      (gethash %id index))))
 
 
-(defmethod get-object-with-id ((pool pool) class id)
-  "Find and return the object in pool of class with id, null if not found"
-  (let* ((index-name (get-objects-slot-index-name class 'id))
+(defmethod get-object-with-%id ((pool pool) class %id)
+  "Find and return the object in pool of class with %id, null if not found"
+  (let* ((index-name (get-objects-slot-index-name class '%id))
          (index (get-root-object pool index-name)))
     (when index
-      (gethash id index))))
+      (gethash %id index))))
 
 
 (defmethod find-object-with-slot-use-index ((pool pool) class index)
   (when index
-    (let* ((ids (alexandria:hash-table-values  index))
-           (len (length ids)))
+    (let* ((%ids (alexandria:hash-table-values  index))
+           (len (length %ids)))
       (cond ((= len 0) nil)
-            ((= len 1) (list (get-object-with-id pool class (first ids))))
+            ((= len 1) (list (get-object-with-%id pool class (first %ids))))
             (t (mapcar #'(lambda (id)
-                           (get-object-with-id pool class id))
-                       ids))))))
+                           (get-object-with-%id pool class id))
+                       %ids))))))
 
 
 (defmethod find-object-with-slot-full-scan ((pool pool) class slot value test)
@@ -113,17 +113,17 @@
 
 
 (defun slot-index-xxx-add (index object slot)
-  (let ((id-map (gethash (slot-value object slot) index))
-        (id     (get-id object)))
+  (let ((%id-map (gethash (slot-value object slot) index))
+        (%id     (%id object)))
     ;; 最初の時ね。
-    (when (null id-map)
-      (setf id-map   (make-hash-table))
-      (setf (gethash (slot-value object slot) index) id-map))
+    (when (null %id-map)
+      (setf %id-map   (make-hash-table))
+      (setf (gethash (slot-value object slot) index) %id-map))
     ;; 既に存在するかチェックする。
     ;; 存在する場合は何もしない。
-    (unless (gethash id id-map)
+    (unless (gethash %id %id-map)
       ;; 存在しない場合は追加する。
-      (setf (gethash id id-map) (get-id object)))))
+      (setf (gethash %id %id-map) (%id object)))))
 
 
 (defmethod add-object-to-slot-index ((pool pool) class slot object)
@@ -135,16 +135,16 @@
 
 
 (defun slot-index-xxx-remove (index object slot)
-  (let ((id-map (gethash (slot-value object slot) index))
-        (id     (get-id object)))
+  (let ((%id-map (gethash (slot-value object slot) index))
+        (%id     (%id object)))
     ;; 既に存在するかチェックする。
-    ;; 存在する場合は id-map から削除する。
-    (when id-map ;;TODO: このケースって何じゃったっけ？
-      (when (gethash id id-map)
-        (remhash id id-map))
-      ;; id-map が空になったら、index から削除する。
+    ;; 存在する場合は %id-map から削除する。
+    (when %id-map ;;TODO: このケースって何じゃったっけ？
+      (when (gethash %id %id-map)
+        (remhash %id %id-map))
+      ;; %id-map が空になったら、index から削除する。
       ;; TODO: これ、削除する必要あるの？
-      (when (= (hash-table-size id-map) 0)
+      (when (= (hash-table-size %id-map) 0)
         (remhash (slot-value object slot) index)))))
 
 
@@ -173,48 +173,48 @@
 
 
 (defmethod tx-create-object ((pool pool) class &optional slots-and-values)
-  (let* ((id (next-id pool))
-         (object (make-instance class :id id))
-         (index-name (get-objects-slot-index-name class 'id))
+  (let* ((%id (next-%id pool))
+         (object (make-instance class :%id %id))
+         (index-name (get-objects-slot-index-name class '%id))
          (index (or (get-root-object pool index-name)
                     (setf (get-root-object pool index-name) (make-hash-table)))))
     (push object (get-root-object pool (get-objects-root-name class)))
-    (setf (gethash id index) object)
-    (tx-change-object-slots pool class id slots-and-values)
+    (setf (gethash %id index) object)
+    (tx-change-object-slots pool class %id slots-and-values)
     object))
 
 
-(defmethod tx-delete-object ((pool pool) class id)
-  (let ((object (get-object-with-id pool class id)))
+(defmethod tx-delete-object ((pool pool) class %id)
+  (let ((object (get-object-with-%id pool class %id)))
     (if object
         (let ((root-name (get-objects-root-name class))
-              (index-name (get-objects-slot-index-name class 'id)))
+              (index-name (get-objects-slot-index-name class '%id)))
           (setf (get-root-object pool root-name) (delete object (get-root-object pool root-name)))
-          (remhash id (get-root-object pool index-name)))
-        (error "no object of class ~a with id ~d found in ~s" class id pool))))
+          (remhash %id (get-root-object pool index-name)))
+        (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
 
-(defmethod tx-change-object-slots ((pool pool) class id slots-and-values)
-  (let ((object (get-object-with-id pool class id)))
-    (unless object (error "no object of class ~a with id ~d found in ~s" class id pool))
+(defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
+  (let ((object (get-object-with-%id pool class %id)))
+    (unless object (error "no object of class ~a with %id ~d found in ~s" class %id pool))
     (loop :for (slot value) :in slots-and-values
-       :do (when (slot-value-changed-p object slot value)
-             (remove-object-from-slot-index pool class slot object)
-             (setf (slot-value object slot) value)
-             (add-object-to-slot-index pool class slot object)))
+          :do (when (slot-value-changed-p object slot value)
+                (remove-object-from-slot-index pool class slot object)
+                (setf (slot-value object slot) value)
+                (add-object-to-slot-index pool class slot object)))
     object))
 
 
 
 ;;;
-;;; 2. We use a simple id counter to generate unique object identifiers
+;;; 2. We use a simple %id counter to generate unique object identifiers
 ;;;
-(defmethod tx-create-id-counter ((pool pool))
-  (setf (get-root-object pool :id-counter) 0))
+(defmethod tx-create-%id-counter ((pool pool))
+  (setf (get-root-object pool :%id-counter) 0))
 
 
-(defmethod next-id ((pool pool))
-  (incf (get-root-object pool :id-counter)))
+(defmethod next-%id ((pool pool))
+  (incf (get-root-object pool :%id-counter)))
 
 
 ;;;
@@ -253,28 +253,28 @@
                                                   slot-symbol))
          (index (get-root-object pool index-name)))
     (when (and index (gethash (slot-value obj slot-symbol) index))
-      (remhash (get-id  obj)
+      (remhash (%id  obj)
                (gethash (slot-value obj slot-symbol) index)))))
 
 
-(defun class-id-indexp (symbol)
-  (cl-ppcre:scan "^(\\S)+-ID-INDEX$"
+(defun class-%id-indexp (symbol)
+  (cl-ppcre:scan "^(\\S)+-%ID-INDEX$"
                  (symbol-name symbol)))
 
 
-(defun class-id-rootp (symbol)
+(defun class-rootp (symbol)
   (cl-ppcre:scan "^(\\S)+-ROOT$"
                  (symbol-name symbol)))
 
 
-(defmethod class-id-list ((pool pool))
-  (remove-if (complement #'class-id-indexp)
+(defmethod class-%id-list ((pool pool))
+  (remove-if (complement #'class-%id-indexp)
              (alexandria:hash-table-keys
               (get-root-objects pool))))
 
 
 (defmethod root-list ((pool pool))
-  (remove-if (complement #'class-id-rootp)
+  (remove-if (complement #'class-rootp)
              (alexandria:hash-table-keys
               (get-root-objects pool))))
 
@@ -283,16 +283,16 @@
   (get-objects-root-name symbol))
 
 
-(defmethod get-at-id ((pool pool) id &key class)
+(defmethod get-at-%id ((pool pool) %id &key class)
   "もっと効率良いやりかたがありそうじゃけど。。。"
   (if class
-      (get-object-with-id pool class id)
+      (get-object-with-%id pool class %id)
       (car
        (remove nil
                (mapcar #'(lambda (index)
-                           (gethash id
+                           (gethash %id
                                     (get-root-object pool index)))
-                       (class-id-list pool))))))
+                       (class-%id-list pool))))))
 
 
 (defmethod get-object-list ((pool pool) (class-symbol symbol))
@@ -307,18 +307,3 @@
                       (length (get-root-object pool root))))
           (root-list pool))
   pool)
-
-#|
--*- mode: lisp -*-
-
-$Id$
-
-The code in this file adds another layer above plain object prevalence.
-We manage objects with ids in an organized fashion, adding an id counter and preferences.
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software
-as governed by the terms of the Lisp Lesser General Public License
-(http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#

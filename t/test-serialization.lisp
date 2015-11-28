@@ -12,6 +12,29 @@
             (serialize-sexp object out)))
     (deserialize-sexp in)))
 
+(defun circular-list (&rest elements)
+  (let ((cycle (copy-list elements)))
+    (nconc cycle cycle)))
+
+(defclass foobar ()
+  ((foo :accessor get-foo :initarg :foo)
+   (bar :accessor get-bar :initarg :bar)))
+
+(defparameter *foobar* (make-instance 'foobar :foo 100 :bar "Bar"))
+
+(defstruct foobaz foo baz)
+
+(defparameter *foobaz* (make-foobaz :foo 100 :baz "Baz"))
+
+(defparameter *hashtable*
+  (let ((hashtable (make-hash-table :test 'equal)))
+    (map nil
+         #'(lambda (feature) (setf (gethash (symbol-name feature) hashtable) feature))
+         *features*)
+    hashtable))
+
+(defparameter *empty-hashtable* (make-hash-table))
+
 ;;;
 ;;; Test
 ;;;
@@ -166,9 +189,6 @@
       (cons 'hi 2) "test-simple-sequences-10")
 
   (subtest "circular-list"
-    (defun circular-list (&rest elements)
-      (let ((cycle (copy-list elements)))
-        (nconc cycle cycle)))
 
     (is (third (serialize-and-deserialize-sexp (circular-list 'a 'b)))
         'a "test-circular-list-1")
@@ -197,12 +217,6 @@
 ;;;
 (subtest "3. simple objects"
 
-  (defclass foobar ()
-    ((foo :accessor get-foo :initarg :foo)
-     (bar :accessor get-bar :initarg :bar)))
-
-  (defparameter *foobar* (make-instance 'foobar :foo 100 :bar "Bar"))
-
   (subtest "test-simple-objects-1"
     (let ((foobar (serialize-and-deserialize-xml *foobar*)))
       (ok (and (equal (get-foo foobar) (get-foo *foobar*))
@@ -219,9 +233,6 @@
 ;;; 4. standard structs
 ;;;
 (subtest "4. standard structs"
-  (defstruct foobaz foo baz)
-
-  (defparameter *foobaz* (make-foobaz :foo 100 :baz "Baz"))
 
   (subtest "test-standard-structs-1"
     (let ((foobaz (serialize-and-deserialize-xml *foobaz*)))
@@ -239,12 +250,6 @@
 ;;; 5. hash-tables
 ;;;
 (subtest "5. hash-tables"
-  (defparameter *hashtable*
-    (let ((hashtable (make-hash-table :test 'equal)))
-      (map nil
-           #'(lambda (feature) (setf (gethash (symbol-name feature) hashtable) feature))
-           *features*)
-      hashtable))
 
   (subtest "test-hash-tables-1"
     (let (h2)
@@ -257,8 +262,6 @@
       (setf h2 (serialize-and-deserialize-sexp *hashtable*))
       (maphash #'(lambda (k v) (ok (equal v (gethash k h2)))) *hashtable*)
       (maphash #'(lambda (k v) (ok (equal v (gethash k *hashtable*)))) h2)))
-
-  (defparameter *empty-hashtable* (make-hash-table))
 
   (subtest "test-empty-hash-tables-1"
     (let (h2)

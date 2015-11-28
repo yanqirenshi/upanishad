@@ -73,10 +73,10 @@
 ;;; 3. Atman
 ;;;
 (defclass atman (brahman)
-  ((id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
-       :reader id
-       :initarg :id
-       :initform -1))
+  ((%id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
+        :reader %id
+        :initarg :%id
+        :initform -1))
   (:documentation "Superclass for objects with an id"))
 
 
