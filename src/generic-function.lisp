@@ -18,12 +18,12 @@
 (defgeneric find-all-objects (pool class)
   (:documentation "Return an unordered collection of all objects in pool that are instances of class"))
 
-;; TODO: この関数は廃止予定です。 下の get-object-with-id を利用するようにしてください。
-(defgeneric find-object-with-id (pool class id)
-  (:documentation "Find and return the object in pool of class with id, null if not found"))
+;; TODO: この関数は廃止予定です。 下の get-object-with-%id を利用するようにしてください。
+(defgeneric find-object-with-%id (pool class %id)
+  (:documentation "Find and return the object in pool of class with %id, null if not found"))
 
-(defgeneric get-object-with-id (pool class id)
-  (:documentation "Find and return the object in pool of class with id, null if not found"))
+(defgeneric get-object-with-%id (pool class %id)
+  (:documentation "Find and return the object in pool of class with %id, null if not found"))
 
 (defgeneric find-object-with-slot-use-index (pool class index)
   (:documentation "執筆中"))
@@ -53,19 +53,19 @@
   (:documentation "Drop indexes on each of the slots provided"))
 
 (defgeneric tx-create-object (pool class &optional slots-and-values)
-  (:documentation "Create a new object of class in pool, assigning it a unique id, optionally setting some slots and values"))
+  (:documentation "Create a new object of class in pool, assigning it a unique %id, optionally setting some slots and values"))
 
-(defgeneric tx-delete-object (pool class id)
-  (:documentation "Delete the object of class with id from the pool"))
+(defgeneric tx-delete-object (pool class %id)
+  (:documentation "Delete the object of class with %id from the pool"))
 
-(defgeneric tx-change-object-slots (pool class id slots-and-values)
-  (:documentation "Change some slots of the object of class with id in pool using slots and values"))
+(defgeneric tx-change-object-slots (pool class %id slots-and-values)
+  (:documentation "Change some slots of the object of class with %id in pool using slots and values"))
 
-(defgeneric tx-create-id-counter (pool)
-  (:documentation "Initialize the id counter to 0"))
+(defgeneric tx-create-%id-counter (pool)
+  (:documentation "Initialize the %id counter to 0"))
 
-(defgeneric next-id (pool)
-  (:documentation "Increment and return the next id"))
+(defgeneric next-%id (pool)
+  (:documentation "Increment and return the next %id"))
 
 (defgeneric all-preferences-keys (pool)
   (:documentation "Return a list of all persistent preference keys of pool"))
@@ -73,7 +73,7 @@
 (defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
   (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
 
-(defgeneric class-id-list (pool)
+(defgeneric class-%id-list (pool)
   (:documentation "poolに登録されているクラスの一覧(list)を返します。"))
 
 (defgeneric root-list (pool)
@@ -82,7 +82,7 @@
 (defgeneric get-object-list (pool symbol)
   (:documentation "poolで管理されている symbolクラスのオブジェクトの一覧(list)を返します。"))
 
-(defgeneric get-at-id (pool id &key class)
+(defgeneric get-at-%id (pool %id &key class)
   (:documentation ""))
 
 (defgeneric print-root-list (pool &key stream)
@@ -174,4 +174,3 @@
 
 (defgeneric set-size-from-file (blob)
   (:documentation "執筆中"))
-

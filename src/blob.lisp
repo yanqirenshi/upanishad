@@ -13,7 +13,7 @@
 
 
 (defmethod get-file ((blob blob))
-  (merge-pathnames (princ-to-string (get-id blob)) *blob-root*))
+  (merge-pathnames (princ-to-string (%id blob)) *blob-root*))
 
 
 (defmethod get-size :before ((blob blob))
@@ -81,20 +81,3 @@
 (defmethod set-size-from-file ((blob blob))
   (with-slots (size) blob
     (setf size (size-from-file blob))))
-
-
-#|
--*- Mode: LISP -*-
-
-$Id$
-
-Blobs represent collections of bytes of a certain mime type,
-where the bytes themselves are stored automatically in an ordinary file.
-This helps to save memory for large collections of binary data.
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software
-as governed by the terms of the Lisp Lesser General Public License
-(http://opensource.franz.com/preamble.html), also known as the LLGPL.
-|#

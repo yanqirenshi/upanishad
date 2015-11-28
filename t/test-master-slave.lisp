@@ -22,7 +22,7 @@
 
 (defvar *slave-server-name* nil)
 
-(defvar *user-id* nil)
+(defvar *user-%id* nil)
 
 ;;;
 ;;; Test
@@ -39,14 +39,14 @@
   (setf *master-test-pool* (make-pool *master-test-pool-directory*))
   (ok *master-test-pool*)
   (totally-destroy *master-test-pool*)
-  (execute-transaction (tx-create-id-counter *master-test-pool*))
+  (execute-transaction (tx-create-%id-counter *master-test-pool*))
 
   (when *slave-test-pool*
     (totally-destroy *slave-test-pool*))
   (setf *slave-test-pool* (make-pool *slave-test-pool-directory*))
   (ok *slave-test-pool*)
   (totally-destroy *slave-test-pool*)
-  (execute-transaction (tx-create-id-counter *slave-test-pool*))
+  (execute-transaction (tx-create-%id-counter *slave-test-pool*))
   (setf *slave-server-name* (start-slave-server *slave-test-pool*))
   (ok *slave-server-name*)
 
@@ -55,23 +55,23 @@
                                                      'test-pool-user
                                                      '((username "billg")
                                                        (password "windows"))))))
-    (setf *user-id* (get-id user)))
-  (ok *user-id*)
-  *user-id*)
+    (setf *user-%id* (%id user)))
+  (ok *user-%id*)
+  *user-%id*)
 
 
 ;;;
 ;;; 3. now do the test
 ;;;
 (subtest "test-get-master-user"
-  (let ((user (get-object-with-id *master-test-pool* 'test-pool-user *user-id*)))
+  (let ((user (get-object-with-%id *master-test-pool* 'test-pool-user *user-%id*)))
     (ok (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 
 (subtest "test-get-slave-user" ;; :depends-on '(and test-get-master-user)
   ;; Plato Wu,2009/02/27: because it need time to transfer data from master to slave?
   (sleep 1)
-  (let ((user (get-object-with-id *slave-test-pool* 'test-pool-user *user-id*)))
+  (let ((user (get-object-with-%id *slave-test-pool* 'test-pool-user *user-%id*)))
     (ok (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 

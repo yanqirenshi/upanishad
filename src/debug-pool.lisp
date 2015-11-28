@@ -12,8 +12,8 @@
   "Echo the XML making up the transaction log of pool to t"
   (with-open-file (in (get-transaction-log pool) :direction :input)
     (loop
-       (let ((transaction (s-xml::echo-xml in *standard-output*)))
-         (when (null transaction) (return)))))
+      (let ((transaction (s-xml::echo-xml in *standard-output*)))
+        (when (null transaction) (return)))))
   t)
 
 
@@ -21,10 +21,10 @@
   "Print the transaction objects making up the transaction log of pool to t"
   (with-open-file (in (get-transaction-log pool) :direction :input)
     (loop
-       (let ((transaction (deserialize-xml in (get-serialization-state pool))))
-         (if (null transaction)
-             (return)
-             (format t "~a~%" transaction)))))
+      (let ((transaction (deserialize-xml in (get-serialization-state pool))))
+        (if (null transaction)
+            (return)
+            (format t "~a~%" transaction)))))
   t)
 
 
@@ -40,25 +40,9 @@
   (let (transactions)
     (with-open-file (in (get-transaction-log pool) :direction :input)
       (loop
-         (let ((transaction (deserialize-xml in (get-serialization-state pool))))
-           (if (null transaction)
-               (return)
-               (push transaction transactions)))))
+        (let ((transaction (deserialize-xml in (get-serialization-state pool))))
+          (if (null transaction)
+              (return)
+              (push transaction transactions)))))
     (setf transactions (nreverse transactions))
     (nthcdr (max 0 (- (length transactions) count)) transactions)))
-
-
-
-#|
--*- Mode: LISP -*-
-
-$Id$
-
-Some debugging routines for CL-PREVALENCE
-
-Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-
-You are granted the rights to distribute and use this software
-as governed by the terms of the Lisp Lesser General Public License
-(http://opensource.franz.com/preamble.html), also known as the LLGPL.
-#|
