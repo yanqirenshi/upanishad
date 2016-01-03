@@ -86,16 +86,16 @@
     (setf (get-snapshot pool) (merge-pathnames (make-pathname :name (get-snapshot-filename pool)
                                                               :type (get-file-extension pool))
                                                directory)
-          (get-transaction-log pool) (merge-pathnames (make-pathname :name (get-transaction-log-filename pool)
-                                                                     :type (get-file-extension pool))
-                                                      directory)))
+          (transaction-log pool) (merge-pathnames (make-pathname :name (get-transaction-log-filename pool)
+                                                                 :type (get-file-extension pool))
+                                                  directory)))
   (restore pool))
 
 
 (defmethod get-transaction-log-stream :before ((pool pool))
   (with-slots (transaction-log-stream) pool
     (unless transaction-log-stream
-      (setf transaction-log-stream (open (get-transaction-log pool)
+      (setf transaction-log-stream (open (transaction-log pool)
                                          :direction :output
                                          :if-does-not-exist :create
                                          #+ccl :sharing #+ccl nil
@@ -173,7 +173,7 @@
 (defmethod snapshot ((pool pool))
   "Write to whole pool to persistent storage resetting the transaction log"
   (let ((timetag (timetag))
-        (transaction-log (get-transaction-log pool))
+        (transaction-log (transaction-log pool))
         (snapshot (get-snapshot pool)))
     (close-open-streams pool)
     (when (probe-file snapshot)
@@ -193,7 +193,7 @@
 (defmethod backup ((pool pool) &key directory)
   "Make backup copies of the current snapshot and transaction-log files"
   (let* ((timetag (timetag))
-         (transaction-log (get-transaction-log pool))
+         (transaction-log (transaction-log pool))
          (snapshot (get-snapshot pool))
          (transaction-log-backup (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
                                                                  :type (get-file-extension pool))
@@ -216,16 +216,16 @@
   (when (probe-file (get-snapshot pool))
     (with-open-file (in (get-snapshot pool) :direction :input)
       (setf (root-objects pool) (funcall (get-deserializer pool) in (serialization-state pool)))))
-  (when (probe-file (get-transaction-log pool))
+  (when (probe-file (transaction-log pool))
     (let ((position 0))
       (handler-bind ((s-xml:xml-parser-error
                        #'(lambda (condition)
                            (format *standard-output*
                                    ";; Warning: error during transaction log restore: ~s~%"
                                    condition)
-                           (truncate-file (get-transaction-log pool) position)
+                           (truncate-file (transaction-log pool) position)
                            (return-from restore))))
-        (with-open-file (in (get-transaction-log pool) :direction :input)
+        (with-open-file (in (transaction-log pool) :direction :input)
           (loop
             (let ((transaction (funcall (get-deserializer pool) in (serialization-state pool))))
               (setf position (file-position in))

@@ -10,7 +10,7 @@
 ;;;
 (defun print-transaction-log (pool)
   "Echo the XML making up the transaction log of pool to t"
-  (with-open-file (in (get-transaction-log pool) :direction :input)
+  (with-open-file (in (transaction-log pool) :direction :input)
     (loop
       (let ((transaction (s-xml::echo-xml in *standard-output*)))
         (when (null transaction) (return)))))
@@ -19,7 +19,7 @@
 
 (defun show-transaction-log (pool)
   "Print the transaction objects making up the transaction log of pool to t"
-  (with-open-file (in (get-transaction-log pool) :direction :input)
+  (with-open-file (in (transaction-log pool) :direction :input)
     (loop
       (let ((transaction (deserialize-xml in (serialization-state pool))))
         (if (null transaction)
@@ -38,7 +38,7 @@
 (defun transaction-log-tail (pool &optional (count 8))
   "Return a list of the count last transaction objects of pool"
   (let (transactions)
-    (with-open-file (in (get-transaction-log pool) :direction :input)
+    (with-open-file (in (transaction-log pool) :direction :input)
       (loop
         (let ((transaction (deserialize-xml in (serialization-state pool))))
           (if (null transaction)

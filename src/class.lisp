@@ -206,8 +206,6 @@
 ;;;
 
 ;; pool
-(defreader pool transaction-log)
-(defwriter pool transaction-log)
 (defreader pool transaction-log-stream)
 (defwriter pool transaction-log-stream)
 (defreader pool serializer)
