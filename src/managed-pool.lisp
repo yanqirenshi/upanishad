@@ -60,7 +60,7 @@
   (let ((root-name (get-objects-root-name class)))
     (copy-list (get-root-object pool root-name))))
 
-(defun find-object-with-slot-use-index (pool class index)
+(defun find-objects-with-slot-use-index (pool class index)
   (when index
     (let* ((%ids (alexandria:hash-table-values  index))
            (len (length %ids)))
@@ -70,23 +70,23 @@
                            (get-object-at-%id pool class id))
                        %ids))))))
 
-(defun find-object-with-slot-full-scan (pool class slot value test)
+(defun find-objects-with-slot-full-scan (pool class slot value test)
   "オブジェクトを全件検索します。"
   (remove-if #'(lambda (object)
                  (not (funcall test value (slot-value object slot))))
              (find-all-objects pool class)))
 
-(defmethod find-object-with-slot ((pool pool) class slot value &optional (test #'equalp))
+(defmethod find-objects-with-slot ((pool pool) class slot value &optional (test #'equalp))
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index      (get-root-object pool index-name)))
     (if index
-        (find-object-with-slot-use-index pool class (gethash value index))
-        (find-object-with-slot-full-scan pool class slot value test))))
+        (find-objects-with-slot-use-index pool class (gethash value index))
+        (find-objects-with-slot-full-scan pool class slot value test))))
 
-(defmethod find-object ((pool pool) (class symbol)
+(defmethod find-objects ((pool pool) (class symbol)
                         &key (slot nil) (value nil) (test #'equalp))
   (if slot
-      (find-object-with-slot pool class slot value test)
+      (find-objects-with-slot pool class slot value test)
       (find-all-objects pool class)))
 
 

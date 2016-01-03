@@ -30,7 +30,7 @@
      (tx-create-object *test-pool* 'managed-person slots-and-values))))
 
 (defun get-managed-person (slot value)
-  (first (find-object *test-pool* 'managed-person :slot slot :value value)))
+  (first (find-objects *test-pool* 'managed-person :slot slot :value value)))
 
 (defun delete-managed-person (managed-person)
   (execute-transaction
@@ -189,11 +189,11 @@
   (mapcar #'(lambda (pair)
               (make-managed-person 'firstname (first pair) 'lastname (second pair)))
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
-  (ok (= (length (find-object *test-pool* 'managed-person)) 5))
+  (ok (= (length (find-objects *test-pool* 'managed-person)) 5))
   (mapcar #'(lambda (pair)
               (delete-managed-person (get-managed-person 'firstname (first pair))))
           '(("Benjamin" "Sisko") ("James T." "Kirk") ("Jonathan" "Archer")))
-  (ok (= (length (find-object *test-pool* 'managed-person)) 2)))
+  (ok (= (length (find-objects *test-pool* 'managed-person)) 2)))
 
 (subtest "managed-guard"
   (subtest "test-managed-guarded"

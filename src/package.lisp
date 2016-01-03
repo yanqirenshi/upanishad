@@ -56,7 +56,7 @@
            #:tx-set-preference
            #:tx-remove-object-on-slot-index
            #:get-object-at-%id
-           #:find-object
+           #:find-objects
            #:get-preference
            #:all-preferences-keys
            #:index-on
