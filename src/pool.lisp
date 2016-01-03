@@ -215,7 +215,7 @@
   (close-open-streams pool)
   (when (probe-file (get-snapshot pool))
     (with-open-file (in (get-snapshot pool) :direction :input)
-      (setf (root-objects pool) (funcall (get-deserializer pool) in (serialization-state pool)))))
+      (setf (root-objects pool) (funcall (deserializer pool) in (serialization-state pool)))))
   (when (probe-file (transaction-log pool))
     (let ((position 0))
       (handler-bind ((s-xml:xml-parser-error
@@ -227,7 +227,7 @@
                            (return-from restore))))
         (with-open-file (in (transaction-log pool) :direction :input)
           (loop
-            (let ((transaction (funcall (get-deserializer pool) in (serialization-state pool))))
+            (let ((transaction (funcall (deserializer pool) in (serialization-state pool))))
               (setf position (file-position in))
               (if transaction
                   (execute-on transaction pool)

@@ -32,7 +32,7 @@
    :name "upanishad-pool-slave-server"
    :connection-handler #'(lambda (stream)
                            (loop
-                             (let ((transaction (funcall (get-deserializer pool)
+                             (let ((transaction (funcall (deserializer pool)
                                                          stream
                                                          (serialization-state pool))))
                                (if (or (null transaction)

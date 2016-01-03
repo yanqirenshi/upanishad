@@ -206,8 +206,6 @@
 ;;;
 
 ;; pool
-(defreader pool deserializer)
-(defwriter pool deserializer)
 (defreader pool file-extension)
 (defwriter pool file-extension)
 (defreader pool transaction-hook)
