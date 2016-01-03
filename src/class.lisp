@@ -211,19 +211,14 @@
 ;; blob
 (defreader blob name)
 (defwriter blob name)
-;; (defreader blob size)
 (defreader blob mime-type)
 (defwriter blob mime-type)
 (defreader blob keywords)
 (defwriter blob keywords)
 
 ;; pool
-;; (defreader pool directory)
-;; (defwriter pool directory)
 (defreader pool root-objects)
 (defwriter pool root-objects)
-;; (defreader pool snapshot)
-;; (defwriter pool snapshot)
 (defreader pool transaction-log)
 (defwriter pool transaction-log)
 (defreader pool transaction-log-stream)
@@ -241,7 +236,3 @@
 ;; guarded-pool
 (defreader pool guard)
 (defwriter pool guard)
-
-;; transaction
-;; (defreader pool function)
-;; (defwriter pool function)
