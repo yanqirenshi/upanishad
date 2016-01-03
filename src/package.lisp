@@ -33,7 +33,7 @@
            #:remove-root-object
            #:get-root-object
            #:get-option
-           #:get-guard
+           #:guard
            #:transaction
            #:no-rollback-error
            #:initiates-rollback

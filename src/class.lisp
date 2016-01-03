@@ -194,17 +194,3 @@
     :initarg :function
     :initform 'identity))
   (:documentation "A simple Transaction object joining a function and its arguments"))
-
-
-
-;;;
-;;; 9. define Getter and Setter
-;;;
-;;; Description:
-;;;   以下は下位互換のための Getter / Setter なんよ。
-;;;   本当はやめたい。その内やめる。的なものじゃけぇ。
-;;;
-
-;; guarded-pool
-(defreader pool guard)
-(defwriter pool guard)

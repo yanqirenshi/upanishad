@@ -202,7 +202,7 @@
     (close-open-streams *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*
                                  :pool-class 'guarded-pool))
-    (setf (get-guard *test-pool*) #'managed-guard)
+    (setf (guard *test-pool*) #'managed-guard)
     (let (new-managed-person)
       (setf *managed-guard* nil)
       (setf new-managed-person (make-managed-person 'firstname "John" 'lastname "Doe"))

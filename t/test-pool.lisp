@@ -31,7 +31,7 @@
 
 (defvar *guard*)
 
-(defun guard (thunk)
+(defun guard-function (thunk)
   (setf *guard* t)
   (funcall thunk))
 
@@ -157,7 +157,7 @@
     (close-open-streams *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*
                                  :pool-class 'guarded-pool))
-    (setf (get-guard *test-pool*) #'guard)
+    (setf (guard *test-pool*) #'guard-function)
     (let (new-person)
       (setf *guard* nil)
       (setf new-person (execute *test-pool* (make-transaction 'tx-create-person "John" "Doe")))
