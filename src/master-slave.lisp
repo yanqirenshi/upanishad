@@ -6,7 +6,7 @@
   (let ((out (s-sysdeps:open-socket-stream host port)))
     (setf (get-transaction-hook pool)
           #'(lambda (transaction)
-              (funcall (get-serializer pool)
+              (funcall (serializer pool)
                        transaction
                        out
                        (serialization-state pool))

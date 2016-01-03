@@ -92,7 +92,7 @@
   (restore pool))
 
 
-(defmethod get-transaction-log-stream :before ((pool pool))
+(defmethod transaction-log-stream :before ((pool pool))
   (with-slots (transaction-log-stream) pool
     (unless transaction-log-stream
       (setf transaction-log-stream (open (transaction-log pool)
@@ -148,8 +148,8 @@
 
 (defmethod log-transaction ((pool pool) (transaction transaction))
   "Log transaction for pool"
-  (let ((out (get-transaction-log-stream pool)))
-    (funcall (get-serializer pool) transaction out (serialization-state pool))
+  (let ((out (transaction-log-stream pool)))
+    (funcall (serializer pool) transaction out (serialization-state pool))
     (terpri out)
     (finish-output out)))
 
@@ -182,7 +182,7 @@
                                            snapshot)))
     (with-open-file (out snapshot
                          :direction :output :if-does-not-exist :create :if-exists :supersede)
-      (funcall (get-serializer pool) (root-objects pool) out (serialization-state pool)))
+      (funcall (serializer pool) (root-objects pool) out (serialization-state pool)))
     (when (probe-file transaction-log)
       (copy-file transaction-log (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
                                                                  :type (get-file-extension pool))
