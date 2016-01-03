@@ -21,7 +21,7 @@
   "Print the transaction objects making up the transaction log of pool to t"
   (with-open-file (in (get-transaction-log pool) :direction :input)
     (loop
-      (let ((transaction (deserialize-xml in (get-serialization-state pool))))
+      (let ((transaction (deserialize-xml in (serialization-state pool))))
         (if (null transaction)
             (return)
             (format t "~a~%" transaction)))))
@@ -40,7 +40,7 @@
   (let (transactions)
     (with-open-file (in (get-transaction-log pool) :direction :input)
       (loop
-        (let ((transaction (deserialize-xml in (get-serialization-state pool))))
+        (let ((transaction (deserialize-xml in (serialization-state pool))))
           (if (null transaction)
               (return)
               (push transaction transactions)))))

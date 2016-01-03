@@ -205,20 +205,7 @@
 ;;;   本当はやめたい。その内やめる。的なものじゃけぇ。
 ;;;
 
-;; atman
-(defreader atman id)
-
-;; blob
-(defreader blob name)
-(defwriter blob name)
-(defreader blob mime-type)
-(defwriter blob mime-type)
-(defreader blob keywords)
-(defwriter blob keywords)
-
 ;; pool
-(defreader pool root-objects)
-(defwriter pool root-objects)
 (defreader pool transaction-log)
 (defwriter pool transaction-log)
 (defreader pool transaction-log-stream)
@@ -229,7 +216,6 @@
 (defwriter pool deserializer)
 (defreader pool file-extension)
 (defwriter pool file-extension)
-(defreader pool serialization-state)
 (defreader pool transaction-hook)
 (defwriter pool transaction-hook)
 

@@ -8,4 +8,4 @@
                            k
                            (cond ((eq 'CONS type) (length v))
                                  ((eq 'HASH-TABLE type) (hash-table-size v)))))))
-           (get-root-objects pool)))
+           (root-objects pool)))

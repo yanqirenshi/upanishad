@@ -84,7 +84,7 @@
         (find-objects-with-slot-full-scan pool class slot value test))))
 
 (defmethod find-objects ((pool pool) (class symbol)
-                        &key (slot nil) (value nil) (test #'equalp))
+                         &key (slot nil) (value nil) (test #'equalp))
   (if slot
       (find-objects-with-slot pool class slot value test)
       (find-all-objects pool class)))
@@ -263,13 +263,13 @@
 (defmethod class-%id-list ((pool pool))
   (remove-if (complement #'class-%id-indexp)
              (alexandria:hash-table-keys
-              (get-root-objects pool))))
+              (root-objects pool))))
 
 
 (defmethod root-list ((pool pool))
   (remove-if (complement #'class-rootp)
              (alexandria:hash-table-keys
-              (get-root-objects pool))))
+              (root-objects pool))))
 
 
 (defun object-root-name (symbol)

@@ -40,11 +40,11 @@
 (defmethod poolp (other) nil)
 
 (defmethod get-root-object ((pool pool) name)
-  (gethash name (get-root-objects pool)))
+  (gethash name (root-objects pool)))
 
 
 (defmethod (setf get-root-object) (value (pool pool) name)
-  (setf (gethash name (get-root-objects pool)) value))
+  (setf (gethash name (root-objects pool)) value))
 
 
 (defmethod get-option ((pool pool) name)
@@ -117,7 +117,7 @@
     (dolist (pathname (directory (merge-pathnames (make-pathname :name :wild :type (get-file-extension pool))
                                                   (get-directory pool))))
       (delete-file pathname)))
-  (clrhash (get-root-objects pool)))
+  (clrhash (root-objects pool)))
 
 
 (defmethod print-object ((transaction transaction) stream)
@@ -128,7 +128,7 @@
 
 
 (defmethod remove-root-object ((pool pool) name)
-  (remhash name (get-root-objects pool)))
+  (remhash name (root-objects pool)))
 
 
 (defmethod execute ((pool pool) (transaction transaction))
@@ -149,7 +149,7 @@
 (defmethod log-transaction ((pool pool) (transaction transaction))
   "Log transaction for pool"
   (let ((out (get-transaction-log-stream pool)))
-    (funcall (get-serializer pool) transaction out (get-serialization-state pool))
+    (funcall (get-serializer pool) transaction out (serialization-state pool))
     (terpri out)
     (finish-output out)))
 
@@ -182,7 +182,7 @@
                                            snapshot)))
     (with-open-file (out snapshot
                          :direction :output :if-does-not-exist :create :if-exists :supersede)
-      (funcall (get-serializer pool) (get-root-objects pool) out (get-serialization-state pool)))
+      (funcall (get-serializer pool) (root-objects pool) out (serialization-state pool)))
     (when (probe-file transaction-log)
       (copy-file transaction-log (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
                                                                  :type (get-file-extension pool))
@@ -211,11 +211,11 @@
 
 (defmethod restore ((pool pool))
   "Load a pool from persistent storage starting from the last snapshot and replaying the transaction log"
-  (clrhash (get-root-objects pool))
+  (clrhash (root-objects pool))
   (close-open-streams pool)
   (when (probe-file (get-snapshot pool))
     (with-open-file (in (get-snapshot pool) :direction :input)
-      (setf (get-root-objects pool) (funcall (get-deserializer pool) in (get-serialization-state pool)))))
+      (setf (root-objects pool) (funcall (get-deserializer pool) in (serialization-state pool)))))
   (when (probe-file (get-transaction-log pool))
     (let ((position 0))
       (handler-bind ((s-xml:xml-parser-error
@@ -227,7 +227,7 @@
                            (return-from restore))))
         (with-open-file (in (get-transaction-log pool) :direction :input)
           (loop
-            (let ((transaction (funcall (get-deserializer pool) in (get-serialization-state pool))))
+            (let ((transaction (funcall (get-deserializer pool) in (serialization-state pool))))
               (setf position (file-position in))
               (if transaction
                   (execute-on transaction pool)
@@ -328,7 +328,7 @@
 ;;; 7. from the serialization package
 ;;;
 (defmethod reset-known-slots ((pool pool) &optional class)
-  (reset-known-slots (get-serialization-state pool) class))
+  (reset-known-slots (serialization-state pool) class))
 
 
 

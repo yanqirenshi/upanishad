@@ -9,7 +9,7 @@
               (funcall (get-serializer pool)
                        transaction
                        out
-                       (get-serialization-state pool))
+                       (serialization-state pool))
               (finish-output out)
               (when (eq transaction :stop)
                 (close out)))))
@@ -34,7 +34,7 @@
                            (loop
                              (let ((transaction (funcall (get-deserializer pool)
                                                          stream
-                                                         (get-serialization-state pool))))
+                                                         (serialization-state pool))))
                                (if (or (null transaction)
                                        (eq transaction :stop))
                                    (return)
