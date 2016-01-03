@@ -18,11 +18,7 @@
 (defgeneric find-all-objects (pool class)
   (:documentation "Return an unordered collection of all objects in pool that are instances of class"))
 
-;; TODO: この関数は廃止予定です。 下の get-object-with-%id を利用するようにしてください。
-(defgeneric find-object-with-%id (pool class %id)
-  (:documentation "Find and return the object in pool of class with %id, null if not found"))
-
-(defgeneric get-object-with-%id (pool class %id)
+(defgeneric get-object-at-%id (pool class %id)
   (:documentation "Find and return the object in pool of class with %id, null if not found"))
 
 (defgeneric find-object-with-slot-use-index (pool class index)

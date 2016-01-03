@@ -45,16 +45,7 @@
     (copy-list (get-root-object pool root-name))))
 
 
-;; TODO: この関数は廃止予定です。 下の get-object-with-%id を利用するようにしてください。
-(defmethod find-object-with-%id ((pool pool) class %id)
-  "Find and return the object in pool of class with %id, null if not found"
-  (let* ((index-name (get-objects-slot-index-name class '%id))
-         (index (get-root-object pool index-name)))
-    (when index
-      (gethash %id index))))
-
-
-(defmethod get-object-with-%id ((pool pool) class %id)
+(defmethod get-object-at-%id ((pool pool) class %id)
   "Find and return the object in pool of class with %id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class '%id))
          (index (get-root-object pool index-name)))
@@ -67,9 +58,9 @@
     (let* ((%ids (alexandria:hash-table-values  index))
            (len (length %ids)))
       (cond ((= len 0) nil)
-            ((= len 1) (list (get-object-with-%id pool class (first %ids))))
+            ((= len 1) (list (get-object-at-%id pool class (first %ids))))
             (t (mapcar #'(lambda (id)
-                           (get-object-with-%id pool class id))
+                           (get-object-at-%id pool class id))
                        %ids))))))
 
 
@@ -185,7 +176,7 @@
 
 
 (defmethod tx-delete-object ((pool pool) class %id)
-  (let ((object (get-object-with-%id pool class %id)))
+  (let ((object (get-object-at-%id pool class %id)))
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class '%id)))
@@ -195,7 +186,7 @@
 
 
 (defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
-  (let ((object (get-object-with-%id pool class %id)))
+  (let ((object (get-object-at-%id pool class %id)))
     (unless object (error "no object of class ~a with %id ~d found in ~s" class %id pool))
     (loop :for (slot value) :in slots-and-values
           :do (when (slot-value-changed-p object slot value)
@@ -286,7 +277,7 @@
 (defmethod get-at-%id ((pool pool) %id &key class)
   "もっと効率良いやりかたがありそうじゃけど。。。"
   (if class
-      (get-object-with-%id pool class %id)
+      (get-object-at-%id pool class %id)
       (car
        (remove nil
                (mapcar #'(lambda (index)
