@@ -45,15 +45,6 @@
     (copy-list (get-root-object pool root-name))))
 
 
-;; TODO: この関数は廃止予定です。 下の get-object-at-%id を利用するようにしてください。
-(defmethod find-object-with-%id ((pool pool) class %id)
-  "Find and return the object in pool of class with %id, null if not found"
-  (let* ((index-name (get-objects-slot-index-name class '%id))
-         (index (get-root-object pool index-name)))
-    (when index
-      (gethash %id index))))
-
-
 (defmethod get-object-at-%id ((pool pool) class %id)
   "Find and return the object in pool of class with %id, null if not found"
   (let* ((index-name (get-objects-slot-index-name class '%id))
