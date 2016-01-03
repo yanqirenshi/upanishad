@@ -156,7 +156,7 @@
 
 (defmethod log-transaction :after ((pool pool) (transaction transaction))
   "Execute the transaction-hook"
-  (funcall (get-transaction-hook pool) transaction))
+  (funcall (transaction-hook pool) transaction))
 
 
 (defmethod query ((pool pool) function &rest args)

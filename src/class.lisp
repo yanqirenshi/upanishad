@@ -205,10 +205,6 @@
 ;;;   本当はやめたい。その内やめる。的なものじゃけぇ。
 ;;;
 
-;; pool
-(defreader pool transaction-hook)
-(defwriter pool transaction-hook)
-
 ;; guarded-pool
 (defreader pool guard)
 (defwriter pool guard)

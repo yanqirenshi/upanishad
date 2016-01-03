@@ -4,7 +4,7 @@
   "Start a connection to host:port to deliver transactions from pool"
   (stop-master-client pool)
   (let ((out (s-sysdeps:open-socket-stream host port)))
-    (setf (get-transaction-hook pool)
+    (setf (transaction-hook pool)
           #'(lambda (transaction)
               (funcall (serializer pool)
                        transaction
