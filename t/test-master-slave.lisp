@@ -64,14 +64,14 @@
 ;;; 3. now do the test
 ;;;
 (subtest "test-get-master-user"
-  (let ((user (get-object-with-%id *master-test-pool* 'test-pool-user *user-%id*)))
+  (let ((user (get-object-at-%id *master-test-pool* 'test-pool-user *user-%id*)))
     (ok (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 
 (subtest "test-get-slave-user" ;; :depends-on '(and test-get-master-user)
   ;; Plato Wu,2009/02/27: because it need time to transfer data from master to slave?
   (sleep 1)
-  (let ((user (get-object-with-%id *slave-test-pool* 'test-pool-user *user-%id*)))
+  (let ((user (get-object-at-%id *slave-test-pool* 'test-pool-user *user-%id*)))
     (ok (and (equal (get-username user) "billg")
              (equal (get-password user) "windows")))))
 

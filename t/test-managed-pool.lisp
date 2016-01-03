@@ -86,7 +86,7 @@
     (setf *jlp* (%id managed-person))))
 
 (subtest "test-get-managed-person"
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Jean-Luc"))
     (ok (equal (get-lastname managed-person) "Picard"))
@@ -102,7 +102,7 @@
   counting on a restore operation using the transaction log"
   (close-open-streams *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Jean-Luc"))
     (ok (equal (get-lastname managed-person) "Picard"))
@@ -116,7 +116,7 @@
 (subtest "test-get-managed-person-snapshot"
   "Create a snapshot of our test pool"
   (snapshot *test-pool*)
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Jean-Luc"))
     (ok (equal (get-lastname managed-person) "Picard"))
@@ -132,7 +132,7 @@
   counting on a restore operation using the snapshot"
   (close-open-streams *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Jean-Luc"))
     (ok (equal (get-lastname managed-person) "Picard"))
@@ -154,7 +154,7 @@
     (setf *kj* (%id managed-person))))
 
 (subtest "test-get-managed-person-1"
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *kj*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *kj*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Kathryn"))
     (ok (equal (get-lastname managed-person) "Janeway"))
@@ -166,7 +166,7 @@
    counting on a restore operation using both the snapshot and the transaction log"
   (close-open-streams *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *jlp*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Jean-Luc"))
     (ok (equal (get-lastname managed-person) "Picard"))
@@ -178,7 +178,7 @@
     (ok (eq NIL (get-managed-person 'firstname "J-Lu")))))
 
 (subtest "test-get-managed-person-restart-2"
-  (let ((managed-person (get-object-with-%id *test-pool* 'managed-person *kj*)))
+  (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *kj*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
     (ok (equal (get-firstname managed-person) "Kathryn"))
     (ok (equal (get-lastname managed-person) "Janeway"))
