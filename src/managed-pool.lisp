@@ -47,10 +47,18 @@
 
 (defmethod get-object-at-%id ((pool pool) class %id)
   "Find and return the object in pool of class with %id, null if not found"
-  (let* ((index-name (get-objects-slot-index-name class '%id))
-         (index (get-root-object pool index-name)))
-    (when index
-      (gethash %id index))))
+  (cond ((eq class :all)
+         (car (remove nil
+                      (mapcar #'(lambda (index)
+                                  (gethash %id
+                                           (get-root-object pool index)))
+                              (class-%id-list pool)))))
+        ((symbolp class)
+         (let* ((index-name (get-objects-slot-index-name class '%id))
+                (index (get-root-object pool index-name)))
+           (when index
+             (gethash %id index))))
+        (t (error "Bad class. class=~A" class))))
 
 
 (defmethod find-object-with-slot-use-index ((pool pool) class index)
@@ -268,18 +276,6 @@
 
 (defun object-root-name (symbol)
   (get-objects-root-name symbol))
-
-
-(defmethod get-at-%id ((pool pool) %id &key class)
-  "もっと効率良いやりかたがありそうじゃけど。。。"
-  (if class
-      (get-object-at-%id pool class %id)
-      (car
-       (remove nil
-               (mapcar #'(lambda (index)
-                           (gethash %id
-                                    (get-root-object pool index)))
-                       (class-%id-list pool))))))
 
 
 (defmethod get-object-list ((pool pool) (class-symbol symbol))
