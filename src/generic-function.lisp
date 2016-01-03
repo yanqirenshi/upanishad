@@ -15,20 +15,8 @@
 (defgeneric get-preference (pool key)
   (:documentation "Retrieve the value of the persistent preference stored under key in pool"))
 
-(defgeneric find-all-objects (pool class)
-  (:documentation "Return an unordered collection of all objects in pool that are instances of class"))
-
 (defgeneric get-object-at-%id (pool class %id)
   (:documentation "Find and return the object in pool of class with %id, null if not found"))
-
-(defgeneric find-object-with-slot-use-index (pool class index)
-  (:documentation "執筆中"))
-
-(defgeneric find-object-with-slot-full-scan (pool class slot value test)
-  (:documentation "執筆中"))
-
-(defgeneric find-object-with-slot (pool class slot value &optional test)
-  (:documentation "Find and return the object in pool of class with slot equal to value, null if not found"))
 
 (defgeneric find-object (pool class &key slot value test)
   (:documentation "執筆中"))

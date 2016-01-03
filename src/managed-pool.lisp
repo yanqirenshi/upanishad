@@ -39,12 +39,6 @@
     (intern (concatenate 'string classname "-" slotname "-INDEX") :keyword)))
 
 
-(defmethod find-all-objects ((pool pool) class)
-  "Return an unordered collection of all objects in pool that are instances of class"
-  (let ((root-name (get-objects-root-name class)))
-    (copy-list (get-root-object pool root-name))))
-
-
 (defmethod get-object-at-%id ((pool pool) class %id)
   "Find and return the object in pool of class with %id, null if not found"
   (cond ((eq class :all)
@@ -61,7 +55,12 @@
         (t (error "Bad class. class=~A" class))))
 
 
-(defmethod find-object-with-slot-use-index ((pool pool) class index)
+(defun find-all-objects (pool class)
+  "Return an unordered collection of all objects in pool that are instances of class"
+  (let ((root-name (get-objects-root-name class)))
+    (copy-list (get-root-object pool root-name))))
+
+(defun find-object-with-slot-use-index (pool class index)
   (when index
     (let* ((%ids (alexandria:hash-table-values  index))
            (len (length %ids)))
@@ -71,13 +70,11 @@
                            (get-object-at-%id pool class id))
                        %ids))))))
 
-
-(defmethod find-object-with-slot-full-scan ((pool pool) class slot value test)
+(defun find-object-with-slot-full-scan (pool class slot value test)
   "オブジェクトを全件検索します。"
   (remove-if #'(lambda (object)
                  (not (funcall test value (slot-value object slot))))
              (find-all-objects pool class)))
-
 
 (defmethod find-object-with-slot ((pool pool) class slot value &optional (test #'equalp))
   (let* ((index-name (get-objects-slot-index-name class slot))
@@ -91,6 +88,7 @@
   (if slot
       (find-object-with-slot pool class slot value test)
       (find-all-objects pool class)))
+
 
 (defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
