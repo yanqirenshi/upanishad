@@ -30,7 +30,7 @@
      (tx-create-object *test-pool* 'managed-person slots-and-values))))
 
 (defun get-managed-person (slot value)
-  (first (find-object-with-slot *test-pool* 'managed-person slot value)))
+  (first (find-object *test-pool* 'managed-person :slot slot :value value)))
 
 (defun delete-managed-person (managed-person)
   (execute-transaction

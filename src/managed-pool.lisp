@@ -72,21 +72,17 @@
 
 
 (defmethod find-object-with-slot ((pool pool) class slot value &optional (test #'equalp))
-  "Find and return the object in pool of class with slot equal to value, null if not found
-オブジェクトのスロットの値を検索して、ヒツトしたものを返します。
-対象のスロットにインデックスが貼られている場合はインデックスを利用して検索します。
-インデックスが存在しない場合は 全件検索します。
-
-返す値はリスト形式で返します。なもんで、存在しない場合は nil を返します。
-"
   (let* ((index-name (get-objects-slot-index-name class slot))
          (index      (get-root-object pool index-name)))
     (if index
-        ;; index が存在した場合は index で検索する。
         (find-object-with-slot-use-index pool class (gethash value index))
-        ;; index が存在しない場合は全部検索します。
         (find-object-with-slot-full-scan pool class slot value test))))
 
+(defmethod find-object ((pool pool) (class symbol)
+                        &key (slot nil) (value nil) (test #'equalp))
+  (if slot
+      (find-object-with-slot pool class slot value test)
+      (find-all-objects pool class)))
 
 (defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
