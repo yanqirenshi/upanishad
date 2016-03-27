@@ -47,7 +47,7 @@
                (setf largest candidate)
                (format t "Primes found: ~d. Largest: ~d~%" (length (get-numbers-list numbers)) largest))
              (incf candidate)))
-      (close-open-streams pool))))
+      (stop pool))))
 
 (defun benchmark1 ()
   (let (pool)
@@ -55,9 +55,9 @@
     (totally-destroy pool)
     (execute pool (make-transaction 'tx-create-numbers-root))
     (time (dotimes (i 10000) (execute pool (make-transaction 'tx-add-number i))))
-    (close-open-streams pool)
+    (stop pool)
     (setf pool (time (make-pool *pool-location*)))
-    (close-open-streams pool)))
+    (stop pool)))
 
 (defun benchmark2 ()
   (let (pool)
@@ -68,7 +68,7 @@
     (totally-destroy pool)
     (execute pool (make-transaction 'tx-create-numbers-root))
     (time (dotimes (i 10000) (execute pool (make-transaction 'tx-add-number i))))
-    (close-open-streams pool)
+    (stop pool)
     (setf pool (time (make-pool *pool-location*)))
-    (close-open-streams pool)))
+    (stop pool)))
 
