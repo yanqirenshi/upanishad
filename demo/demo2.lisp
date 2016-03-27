@@ -221,7 +221,7 @@
   (let ((pool (make-pool *bank-pool-location*
                          :pool-class 'guarded-pool)))
     (query pool #'get-bank-balance)
-    (close-open-streams pool)))
+    (stop pool)))
 
 (defmethod initiates-rollback ((bank-error bank-error))
   nil)
@@ -306,10 +306,10 @@
   (run-process name function))
 
 (defun bank-test-5-setup ()
-  (when *bank-pool* (close-open-streams *bank-pool*))
+  (when *bank-pool* (stop *bank-pool*))
   (setf *bank-pool* (make-pool *bank-pool-location*
                                :pool-class 'guarded-pool))
-  (setf (get-guard *bank-pool*) #'bank-pool-guard)
+  (setf (guard *bank-pool*) #'bank-pool-guard)
   (mapcar #'(lambda (account)
               (delete-account (get-number account)))
           (list-all-accounts))

@@ -83,7 +83,7 @@
   (subtest "test-get-person-restart"
     "Throw away the previous prevalence instance and start over,
    counting on a restore operation using the transaction log"
-    (close-open-streams *test-pool*)
+    (stop *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*))
     (let ((person (gethash *jlp* (get-root-object *test-pool* :persons))))
       (ok (eq (class-of person) (find-class 'person)))
@@ -101,7 +101,7 @@
   (subtest "test-get-person-restart-snapshot"
     "Throw away the previous prevalence instance and start over,
    counting on a restore operation using the snapshot"
-    (close-open-streams *test-pool*)
+    (stop *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*))
     (let ((person (gethash *jlp* (get-root-object *test-pool* :persons))))
       (ok (eq (class-of person) (find-class 'person)))
@@ -128,7 +128,7 @@
   (subtest "test-get-person-restart-1"
     "Throw away the previous prevalence instance and start over,
   counting on a restore operation using both the snapshot and the transaction log"
-    (close-open-streams *test-pool*)
+    (stop *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*))
     (let ((person (gethash *jlp* (get-root-object *test-pool* :persons))))
       (ok (eq (class-of person) (find-class 'person)))
@@ -154,7 +154,7 @@
 (subtest "Test Guard"
   (subtest "test-guarded"
     "testing a guarded prevalence system"
-    (close-open-streams *test-pool*)
+    (stop *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*
                                  :pool-class 'guarded-pool))
     (setf (guard *test-pool*) #'guard-function)

@@ -49,7 +49,8 @@
                  (:file "managed-pool"     :depends-on ("pool"))
                  (:file "master-slave"     :depends-on ("pool"))
                  (:file "blob"             :depends-on ("managed-pool"))
-                 (:file "printer"          :depends-on ("master-slave" "blob")))))
+                 (:file "printer"          :depends-on ("master-slave" "blob"))
+                 (:file "debug-pool"       :depends-on ("printer")))))
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps

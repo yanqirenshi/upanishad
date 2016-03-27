@@ -100,7 +100,7 @@
 (subtest "test-get-managed-person-restart"
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the transaction log"
-  (close-open-streams *test-pool*)
+  (stop *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
   (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
@@ -130,7 +130,7 @@
 (subtest "test-get-managed-person-restart-snapshot"
   "Throw away the previous prevalence instance and start over,
   counting on a restore operation using the snapshot"
-  (close-open-streams *test-pool*)
+  (stop *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
   (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
@@ -164,7 +164,7 @@
 (subtest "test-get-managed-person-restart-1"
   "Throw away the previous prevalence instance and start over,
    counting on a restore operation using both the snapshot and the transaction log"
-  (close-open-streams *test-pool*)
+  (stop *test-pool*)
   (setf *test-pool* (make-pool *test-pool-directory*))
   (let ((managed-person (get-object-at-%id *test-pool* 'managed-person *jlp*)))
     (ok (eq (class-of managed-person) (find-class 'managed-person)))
@@ -199,7 +199,7 @@
   (subtest "test-managed-guarded"
     "testing a managed-guarded prevalence system
    [Not sure that we need the below test here -- RRR]"
-    (close-open-streams *test-pool*)
+    (stop *test-pool*)
     (setf *test-pool* (make-pool *test-pool-directory*
                                  :pool-class 'guarded-pool))
     (setf (guard *test-pool*) #'managed-guard)

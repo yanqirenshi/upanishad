@@ -72,6 +72,7 @@
            #:stop-slave-server
            ;; Class: pool and guarded-pool
            #:pool
+           #:stop
            #:guarded-pool
            ;; Class: blob
            ;; slots

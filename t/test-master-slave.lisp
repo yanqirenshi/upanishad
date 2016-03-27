@@ -81,7 +81,7 @@
   (stop-master-client *master-test-pool*)
   (stop-slave-server *slave-server-name*)
 
-  (close-open-streams *master-test-pool*)
-  (close-open-streams *slave-test-pool*))
+  (stop *master-test-pool*)
+  (stop *slave-test-pool*))
 
 (finalize)
