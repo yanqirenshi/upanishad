@@ -97,6 +97,9 @@
 (defgeneric restore (pool)
   (:documentation "Restore a pool from permanent storage"))
 
+(defgeneric stop (pool &key abort)
+  (:documentation "Stop a pool"))
+
 (defgeneric remove-root-object (pool name)
   (:documentation "Remove the root object by symbol name from pool"))
 

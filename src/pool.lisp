@@ -263,6 +263,8 @@
   (funcall (guard pool)
            #'(lambda () (call-next-method pool))))
 
+(defmethod stop ((pool pool) &key abort)
+  (close-open-streams pool :abort abort))
 
 
 ;;;
