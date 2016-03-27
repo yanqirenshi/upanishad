@@ -25,13 +25,13 @@
     (when (and index  (slot-boundp object slot))
       (%add-object-to-slot-index index object slot))))
 
-(defun make-index ()
+(defun make-index (&key (test #'equalp))
   (make-hash-table :test test))
 
 (defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
     (unless (get-root-object pool index-name)
-      (let ((index (make-index)))
+      (let ((index (make-index :test test)))
         (setf (get-root-object pool index-name) index)
         (dolist (object (find-all-objects pool class))
           (add-object-to-slot-index pool class slot object))))))
