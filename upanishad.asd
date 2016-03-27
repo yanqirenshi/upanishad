@@ -37,12 +37,7 @@
             ;; (end)
             ;;
     :components ((:file "package")
-                 (:module "serialization"
-                  :components ((:file "serialization")
-                               (:file "xml"  :depends-on ("serialization"))
-                               (:file "sexp" :depends-on ("serialization")))
-                  :depends-on ("package"))
-                 (:file "utility"          :depends-on ("serialization"))
+                 (:file "utility"          :depends-on ("package"))
                  (:file "generic-function" :depends-on ("utility"))
                  (:file "class"            :depends-on ("utility"))
                  (:file "pool"             :depends-on ("class"))
@@ -54,6 +49,7 @@
   :depends-on (:alexandria
                :s-xml
                :s-sysdeps
+               :s-serialization
                :cl-ppcre)
   :in-order-to ((test-op (test-op upanishad-test))))
 
