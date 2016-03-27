@@ -46,8 +46,7 @@
              (find-all-objects pool class)))
 
 (defmethod find-objects-with-slot ((pool pool) class slot value &optional (test #'equalp))
-  (let* ((index-name (get-objects-slot-index-name class slot))
-         (index      (get-root-object pool index-name)))
+  (let ((index (slot-index-at pool slot :class class)))
     (if index
         (find-objects-with-slot-use-index pool class (gethash value index))
         (find-objects-with-slot-full-scan pool class slot value test))))
@@ -68,7 +67,8 @@
          (object (make-instance class :%id %id))
          (index-name (get-objects-slot-index-name class '%id))
          (index (or (get-root-object pool index-name)
-                    (setf (get-root-object pool index-name) (make-hash-table)))))
+                    (setf (get-root-object pool index-name)
+                          (make-hash-table)))))
     (push object (get-root-object pool (get-objects-root-name class)))
     (setf (gethash %id index) object)
     (tx-change-object-slots pool class %id slots-and-values)
@@ -79,7 +79,8 @@
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class '%id)))
-          (setf (get-root-object pool root-name) (delete object (get-root-object pool root-name)))
+          (setf (get-root-object pool root-name)
+                (delete object (get-root-object pool root-name)))
           (remhash %id (get-root-object pool index-name)))
         (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
