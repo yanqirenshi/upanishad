@@ -27,14 +27,42 @@
 (defvar *index-name-format* "~a-~a-INDEX")
 
 (defun class-%id-indexp (symbol)
-  (cl-ppcre:scan "^(\\S)+-%ID-INDEX$"
-                 (symbol-name symbol)))
+  (null (not (cl-ppcre:scan *index-name-regex* (symbol-name symbol)))))
+
+(defun classname-at (value)
+  (if (symbolp value)
+      (string value)
+      (class-name value)))
 
 (defun get-objects-slot-index-name (class &optional (slot '%id))
   "Return the keyword symbol naming the specified index of instances of class."
-  (let ((classname (if (symbolp class) (string class) (class-name class)))
+  (let ((classname (classname-at class))
         (slotname  (symbol-name slot)))
-    (intern (concatenate 'string classname "-" slotname "-INDEX") :keyword)))
+    (intern (format nil *index-name-format* classname slotname) :keyword)))
+
+
+(defun %index-at (pool name class slot)
+  (cond ((and class slot)
+         (get-root-object pool (get-objects-slot-index-name class slot)))
+        (name (get-root-object pool name))
+        (t (error "Bad parameter"))))
+
+(defun index-at (pool &key name class slot (ensure nil))
+  (assert pool)
+  (let ((index (%index-at pool name class slot)))
+    (or index
+        (when ensure
+          (setf (index-at pool :name name :class class :slot slot)
+                (make-hash-table))))))
+
+(defun (setf index-at) (index pool &key name class slot)
+  (assert pool)
+  (cond ((and class slot)
+         (setf (index-at pool :name (get-objects-slot-index-name class slot))
+               index))
+        (name
+         (setf (get-root-object pool name) index))
+        (t (error "Bad parameter"))))
 
 (defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
