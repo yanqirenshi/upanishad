@@ -1,4 +1,10 @@
-(in-package :upanishad-test)
+(defpackage :upanishad-test.managed-pool.index
+  (:use :cl
+        #:upanishad
+        #:prove
+        #:s-serialization
+        #:upanishad-test.test-utility))
+(in-package :upanishad-test.managed-pool.index)
 
 (plan nil)
 
