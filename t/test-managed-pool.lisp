@@ -54,10 +54,7 @@
 (subtest "test-managed-pool-start"
   "Create a new prevalence pool for testing purposes"
   (let ((directory *test-pool-directory*))
-    ;; Throw away any xml files that we find: we want to start from scratch
-    (when (probe-file directory)
-      (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
-        (delete-file pathname)))
+    (clear-pool-datastor directory)
     (setf *test-pool* (make-pool directory))
     (ok *test-pool*)
     (index-on *test-pool* 'managed-person '(firstname lastname) 'equal)))
