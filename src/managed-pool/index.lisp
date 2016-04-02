@@ -40,14 +40,34 @@
         (slotname  (symbol-name slot)))
     (intern (format nil *index-name-format* classname slotname) :keyword)))
 
-(defun index-at (pool &key name)
-  (when pool
-    (cond (name (get-index-object pool name))
-          (t (error "Bad parameter")))))
+(defun make-index (&key (test #'equalp))
+  (make-hash-table :test test))
 
-(defun (setf index-at) (index pool &key name)
-  (when pool
-    (setf (get-index-object pool name) index)))
+(defun make-%id-map ()
+  (make-hash-table))
+
+(defun %index-at (pool name class slot)
+  (cond ((and class slot)
+         (get-index-object pool (get-objects-slot-index-name class slot)))
+        (name (get-index-object pool name))
+        (t (error "Bad parameter"))))
+
+(defun index-at (pool &key name class slot (ensure nil))
+  (assert pool)
+  (let ((index (%index-at pool name class slot)))
+    (or index
+        (when ensure
+          (setf (index-at pool :name name :class class :slot slot)
+                (make-hash-table))))))
+
+(defun (setf index-at) (index pool &key name class slot)
+  (assert pool)
+  (cond ((and class slot)
+         (setf (index-at pool :name (get-objects-slot-index-name class slot))
+               index))
+        (name
+         (setf (get-index-object pool name) index))
+        (t (error "Bad parameter"))))
 
 (defun slot-index-at (pool slot &key class object)
   (cond ((and class slot)
@@ -70,9 +90,6 @@
   (let ((index (slot-index-at pool slot :class class)))
     (when (and index (slot-boundp object slot))
       (%add-object-to-slot-index index object slot))))
-
-(defun make-index (&key (test #'equalp))
-  (make-hash-table :test test))
 
 (defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-objects-slot-index-name class slot)))
