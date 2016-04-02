@@ -14,11 +14,18 @@
       (delete-file pathname))))
 
 
-(defvar *test-pool-root-directory* (pathname "/tmp/.upanishad/test/"))
+(defvar *test-pool-root-directory* (pathname "~/tmp/.upanishad/test/"))
+
+
+(defun ensure-directory-path (target)
+  (if (string= "/" (subseq target (- (length target) 1)))
+      target
+      (concatenate 'string target "/")))
 
 (defun test-pool-directory (target)
-  (merge-pathnames target *test-pool-root-directory*))
-
+  (assert target)
+  (merge-pathnames (ensure-directory-path target)
+                   *test-pool-root-directory*))
 
 (defmacro with-pool ((pool directory) &body body)
   `(let ((,pool nil))
