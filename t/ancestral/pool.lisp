@@ -1,15 +1,15 @@
-(defpackage :upanishad-test.test-pool
+(defpackage :upanishad-test.ancestral.pool
   (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
         #:upanishad-test.test-utility))
-(in-package :upanishad-test.test-pool)
+(in-package :upanishad-test.ancestral.pool)
 
 ;;;
 ;;; preparation
 ;;;
-(defparameter *test-pool-directory* (test-pool-directory "test-pool"))
+(defparameter *test-pool-directory* (test-pool-directory "ancestral.pool"))
 
 (defvar *test-pool* nil)
 

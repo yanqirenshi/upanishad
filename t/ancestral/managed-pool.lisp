@@ -1,12 +1,12 @@
-(defpackage :upanishad-test.test-managed-pool
+(defpackage :upanishad-test.ancestral.managed-pool
   (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
         #:upanishad-test.test-utility))
-(in-package :upanishad-test.test-managed-pool)
+(in-package :upanishad-test.ancestral.managed-pool)
 
-(defparameter *test-pool-directory* (test-pool-directory "test-managed-pool"))
+(defparameter *test-pool-directory* (test-pool-directory "ancestral.managed-pool"))
 
 (defvar *test-pool* nil)
 

@@ -1,20 +1,20 @@
-(defpackage :upanishad-test.test-master-slave
+(defpackage :upanishad-test.ancestral.master-slave
   (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
         #:upanishad-test.test-utility))
-(in-package :upanishad-test.test-master-slave)
+(in-package :upanishad-test.ancestral.master-slave)
 
 ;;;
 ;;; 1. the master and client systems themselves
 ;;;
 
-(defparameter *master-test-pool-directory* (test-pool-directory "test-master-slave/master"))
+(defparameter *master-test-pool-directory* (test-pool-directory "ancestral.master-slave/master"))
 
 (defvar *master-test-pool* nil)
 
-(defparameter *slave-test-pool-directory* (test-pool-directory "test-master-slave/slave"))
+(defparameter *slave-test-pool-directory* (test-pool-directory "ancestral.master-slave/slave"))
 
 (defvar *slave-test-pool* nil)
 
