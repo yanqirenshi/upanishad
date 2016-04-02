@@ -29,7 +29,7 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
                                (:file "index-object")
                                (:file "id-counter")))
                  (:file "master-slave")
-                 (:file "pool")
+                 (:file "pool/pool.lisp")
                  (:file "printer")
                  (:file "utility")
                  (:module "ancestral"
