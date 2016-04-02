@@ -42,12 +42,12 @@
 
 (defun index-at (pool &key name)
   (when pool
-    (cond (name (get-root-object pool name))
+    (cond (name (get-index-object pool name))
           (t (error "Bad parameter")))))
 
 (defun (setf index-at) (index pool &key name)
   (when pool
-    (setf (get-root-object pool name) index)))
+    (setf (get-index-object pool name) index)))
 
 (defun slot-index-at (pool slot &key class object)
   (cond ((and class slot)
@@ -112,7 +112,7 @@
 
 (defmethod tx-remove-objects-slot-index ((pool pool) class slot)
   (let ((index-name (get-objects-slot-index-name class slot)))
-    (when (get-root-object pool index-name)
+    (when (get-index-object pool index-name)
       (remove-root-object pool index-name))))
 
 (defmethod drop-index-on ((pool pool) class &optional slots)
