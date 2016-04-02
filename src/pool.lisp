@@ -40,17 +40,17 @@
 (defmethod poolp (other) nil)
 
 
-(defmethod get-root-object ((pool pool) name)
+(defmethod get-root-object ((pool pool) (name symbol))
   (gethash name (root-objects pool)))
 
-(defmethod (setf get-root-object) (value (pool pool) name)
+(defmethod (setf get-root-object) (value (pool pool) (name symbol))
   (setf (gethash name (root-objects pool)) value))
 
 
-(defmethod get-index-object ((pool pool) name)
+(defmethod get-index-object ((pool pool) (name symbol))
   (gethash name (index-objects pool)))
 
-(defmethod (setf get-index-object) (value (pool pool) name)
+(defmethod (setf get-index-object) (value (pool pool) (name symbol))
   (setf (gethash name (index-objects pool)) value))
 
 
