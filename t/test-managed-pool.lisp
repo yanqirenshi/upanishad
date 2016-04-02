@@ -1,6 +1,12 @@
-(in-package :upanishad-test)
+(defpackage :upanishad-test.test-managed-pool
+  (:use #:cl
+        #:upanishad
+        #:prove
+        #:s-serialization
+        #:upanishad-test.test-utility))
+(in-package :upanishad-test.test-managed-pool)
 
-(defparameter *test-pool-directory* (pathname "/tmp/test-managed-pool/"))
+(defparameter *test-pool-directory* (test-pool-directory "test-managed-pool"))
 
 (defvar *test-pool* nil)
 

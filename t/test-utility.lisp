@@ -1,5 +1,8 @@
 (defpackage :upanishad-test.test-utility
-  (:use :cl :upanishad :prove :s-serialization)
+  (:use #:cl
+        #:upanishad
+        #:prove
+        #:s-serialization)
   (:export #:clear-pool-datastor
            #:test-pool-directory
            #:with-pool))

@@ -1,4 +1,10 @@
-(in-package :upanishad-test)
+(defpackage :upanishad-test.test-serialization
+  (:use #:cl
+        #:upanishad
+        #:prove
+        #:s-serialization
+        #:upanishad-test.test-utility))
+(in-package :upanishad-test.test-serialization)
 
 (defun serialize-and-deserialize-xml (object)
   (with-input-from-string
