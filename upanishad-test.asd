@@ -18,7 +18,8 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
   :long-description "5am test suite for cl-prevalence"
   :components
   ((:module "t"
-    :components ((:file "package")
+    :components ((:file "test-utility")
+                 (:file "package" :depends-on ("test-utility"))
                  (:file "blob")
                  (:file "class")
                  (:file "debug-pool")
