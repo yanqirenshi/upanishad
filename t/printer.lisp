@@ -8,9 +8,10 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "printer"))
 
-(plan nil)
+(plan 1)
 
 
+(subtest ":print-root-objects" (skip 1 "準備中"))
 
 
 (finalize)

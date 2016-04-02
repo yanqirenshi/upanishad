@@ -8,9 +8,11 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.id-counter"))
 
-(plan nil)
+(plan 2)
 
 
+(subtest ":tx-create-%id-counter" (skip 1 "準備中"))
+(subtest ":next-%id" (skip 1 "準備中"))
 
 
 (finalize)

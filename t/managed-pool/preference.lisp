@@ -10,7 +10,8 @@
 
 (plan nil)
 
-
-
+(subtest ":get-preference" (skip 1 "準備中"))
+(subtest ":tx-set-preference" (skip 1 "準備中"))
+(subtest ":all-preferences-keys" (skip 1 "準備中"))
 
 (finalize)
