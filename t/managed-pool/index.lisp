@@ -37,7 +37,6 @@
   (let* ((object-class 'person)
          (%id-index-name (up::get-objects-slot-index-name object-class)))
     (with-pool (pool *test-pool-directory*)
-      (print pool)
       (tx-create-%id-counter pool)
       (tx-create-object pool object-class)
       (ok (up::index-at pool :name %id-index-name))
