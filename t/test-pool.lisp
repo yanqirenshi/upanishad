@@ -3,7 +3,7 @@
 ;;;
 ;;; preparation
 ;;;
-(defparameter *test-pool-directory* (pathname "/tmp/test-up-pool/"))
+(defparameter *slave-test-pool-directory* (test-pool-directory "test-pool/"))
 
 (defvar *test-pool* nil)
 

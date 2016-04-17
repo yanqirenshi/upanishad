@@ -4,11 +4,11 @@
 ;;; 1. the master and client systems themselves
 ;;;
 
-(defparameter *master-test-pool-directory* (pathname "/tmp/master-test-pool/"))
+(defparameter *master-test-pool-directory* (test-pool-directory "test-master-slave/master/"))
 
 (defvar *master-test-pool* nil)
 
-(defparameter *slave-test-pool-directory* (pathname "/tmp/slave-test-pool/"))
+(defparameter *slave-test-pool-directory* (test-pool-directory "test-master-slave/slave/"))
 
 (defvar *slave-test-pool* nil)
 
