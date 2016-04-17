@@ -37,14 +37,12 @@
   (let* ((object-class 'person)
          (%id-index-name (up::get-objects-slot-index-name object-class)))
     (with-pool (pool *test-pool-directory*)
-      (tx-create-%id-counter pool)
       (tx-create-object pool object-class)
       (ok (up::index-at pool :name %id-index-name))
       (is-error (up::index-at pool) 'error))))
 
 (subtest "::slot-index-at"
   (with-pool (pool *test-pool-directory*)
-    (tx-create-%id-counter pool)
 
     (ok (null (upanishad::slot-index-at pool '%id :class 'person)))
 
