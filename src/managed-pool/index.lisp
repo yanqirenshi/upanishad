@@ -75,7 +75,7 @@
            (index-at pool :name index-name)))
         ((and object slot)
          (slot-index-at pool slot :class (class-name (class-of object))))
-        (t "Bad parameter")))
+        (t (error "Bad parameter"))))
 
 (defun %add-object-to-slot-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))

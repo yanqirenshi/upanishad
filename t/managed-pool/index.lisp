@@ -42,7 +42,22 @@
       (ok (up::index-at pool :name %id-index-name))
       (is-error (up::index-at pool) 'error))))
 
-(skip 1 "slot-index-at")
+(subtest "::slot-index-at"
+  (with-pool (pool *test-pool-directory*)
+    (tx-create-%id-counter pool)
+
+    (ok (null (upanishad::slot-index-at pool '%id :class 'person)))
+
+    (let ((person (up:tx-create-object pool 'person)))
+
+      (subtest "can return index(hash table)"
+        (let ((result (upanishad::slot-index-at pool '%id :class 'person)))
+          (ok (hash-table-p result) "at class"))
+
+        (let ((result (upanishad::slot-index-at pool '%id :object person)))
+          (ok (hash-table-p result) "at object"))))
+
+    (is-error (upanishad::slot-index-at pool '%id) 'error "can raised error")))
 
 (skip 1 "%add-object-to-slot-index")
 
