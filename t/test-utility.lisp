@@ -33,7 +33,7 @@
      (unwind-protect
           (clear-pool-datastor ,directory)
        (setf ,pool (make-pool ,directory))
-       (when ,with-id-counter (tx-create-%id-counter ,pool))
+       ,(when with-id-counter '(tx-create-%id-counter pool))
        ,@body
        (when pool
          (stop pool)))))
