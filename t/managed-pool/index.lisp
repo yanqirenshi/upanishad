@@ -33,11 +33,25 @@
 (subtest "::get-objects-slot-index-name"
   (is (up::get-objects-slot-index-name 'meme) :meme-%id-index))
 
-(skip 1 "make-index")
+(subtest "::make-index"
+  (ok (hash-table-p (up::make-index)) "can return hash-table"))
 
-(skip 1 "make-%id-map")
+(subtest "make-%id-map"
+  (ok (hash-table-p (up::make-%id-map)) "can return hash-table"))
 
-(skip 1 "%index-at")
+(subtest "%index-at"
+  (with-pool (pool *test-pool-directory*)
+    (tx-create-object pool 'person)
+
+    (subtest "at class and slot"
+      (let ((result (up::%index-at pool nil 'person '%id)))
+        (ok (hash-table-p result) "index is hash-table")
+        (is (hash-table-count result) 1 "hash-table size is 1")))
+
+    (subtest "at name"
+      (let ((result (up::%index-at pool :person-%id-index nil nil)))
+        (ok (hash-table-p result) "index is hash-table")
+        (is (hash-table-count result) 1 "hash-table size is 1")))))
 
 (subtest "::index-at"
   (let* ((object-class 'person)
