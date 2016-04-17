@@ -33,6 +33,12 @@
 (subtest "::get-objects-slot-index-name"
   (is (up::get-objects-slot-index-name 'meme) :meme-%id-index))
 
+(skip 1 "make-index")
+
+(skip 1 "make-%id-map")
+
+(skip 1 "%index-at")
+
 (subtest "::index-at"
   (let* ((object-class 'person)
          (%id-index-name :person-%id-index))
@@ -63,9 +69,7 @@
 
 (skip 1 "%add-object-to-slot-index")
 
-(skip 1 "add-object-to-slot-index")
-
-(skip 1 "make-index")
+(skip 1 "::add-object-to-slot-index")
 
 (skip 1 "tx-create-objects-slot-index")
 
