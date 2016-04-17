@@ -1,4 +1,4 @@
-(in-package :upanishad-test)
+(in-package :upanishad-test.prevalence)
 
 (defun serialize-and-deserialize-xml (object)
   (with-input-from-string
