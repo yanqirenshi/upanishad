@@ -10,13 +10,24 @@
     (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
       (delete-file pathname))))
 
+;;;
+;;; directory
+;;;
+(defvar *test-pool-root-directory* (pathname "~/var/upanishad/test/"))
 
-(defvar *test-pool-root-directory* (pathname "/tmp/.upanishad/test/"))
+(defun ensure-directory-path (directory-path)
+  (let ((len (length directory-path)))
+    (if (string= (subseq directory-path (- len 1)) "/")
+        directory-path
+        (concatenate 'string directory-path "/"))))
 
-(defun test-pool-directory (target)
-  (merge-pathnames target *test-pool-root-directory*))
+(defun test-pool-directory (path &key (base-directory *test-pool-root-directory*))
+  (ensure-directories-exist
+   (merge-pathnames (ensure-directory-path path) base-directory)))
 
-
+;;;
+;;; with
+;;;
 (defmacro with-pool ((pool directory) &body body)
   `(let ((,pool nil))
      (unwind-protect
