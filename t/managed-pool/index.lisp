@@ -35,11 +35,15 @@
 
 (subtest "::index-at"
   (let* ((object-class 'person)
-         (%id-index-name (up::get-objects-slot-index-name object-class)))
+         (%id-index-name :person-%id-index))
     (with-pool (pool *test-pool-directory*)
       (tx-create-object pool object-class)
-      (ok (up::index-at pool :name %id-index-name))
-      (is-error (up::index-at pool) 'error))))
+
+      (let ((result (up::index-at pool :name %id-index-name)))
+        (ok (hash-table-p result) "index is hash-table")
+        (is (hash-table-count result) 1 "hash-table size is 1"))
+
+      (is-error (up::index-at pool) 'error "can rise error"))))
 
 (subtest "::slot-index-at"
   (with-pool (pool *test-pool-directory*)
