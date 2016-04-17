@@ -28,12 +28,12 @@
 ;;;
 ;;; with
 ;;;
-(defmacro with-pool ((pool directory) &body body)
+(defmacro with-pool ((pool directory &key (with-id-counter t)) &body body)
   `(let ((,pool nil))
      (unwind-protect
           (clear-pool-datastor ,directory)
        (setf ,pool (make-pool ,directory))
+       (when ,with-id-counter (tx-create-%id-counter ,pool))
        ,@body
        (when pool
          (stop pool)))))
-
