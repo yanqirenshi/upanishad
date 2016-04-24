@@ -54,14 +54,12 @@
                                   :type (file-extension pool))
                    directory))
 
-(defun snapshot-backup-file (pool directory timetag)
-  (merge-pathnames (make-pathname :name (make-snapshot-filename pool nil timetag)
-                                  :type (file-extension pool))
-                   directory))
+(defun make-snapshot-backup-pathname (pool directory timetag)
+  (make-snapshot-pathname pool directory nil timetag))
 
 (defun snapshot-copy-snapshot-file (pool directory timetag)
   (when (probe-file directory)
-    (copy-file directory (snapshot-backup-file pool directory timetag))))
+    (copy-file directory (make-snapshot-backup-pathname pool directory timetag))))
 
 (defun backup-snapshot (snapshot snapshot-backup)
   (when (probe-file snapshot)
@@ -119,7 +117,7 @@
          (transaction-log (transaction-log pool))
          (snapshot (get-snapshot pool))
          (transaction-log-backup (transaction-log-backup-file pool (or directory transaction-log) timetag))
-         (snapshot-backup (snapshot-backup-file pool (or directory snapshot) timetag)))
+         (snapshot-backup (make-snapshot-backup-pathname pool (or directory snapshot) timetag)))
     (close-open-streams pool)
     (backup-transaction-log transaction-log transaction-log-backup)
     (backup-snapshot snapshot snapshot-backup)
