@@ -130,12 +130,17 @@
 (defgeneric log-transaction (pool transaction)
   (:documentation "執筆中"))
 
-(defgeneric get-transaction-log-filename (pool &optional suffix)
+(defgeneric make-snapshot-filename (pool type &optional suffix)
   (:documentation "執筆中"))
 
-(defgeneric get-snapshot-filename (pool &optional suffix)
+(defgeneric make-snapshot-pathname (pool directory type &optional suffix)
   (:documentation "執筆中"))
 
+(defgeneric make-transaction-log-filename (pool &optional suffix)
+  (:documentation "執筆中"))
+
+(defgeneric make-transaction-log-pathname (pool directory &optional suffix)
+  (:documentation "執筆中"))
 
 
 ;;;

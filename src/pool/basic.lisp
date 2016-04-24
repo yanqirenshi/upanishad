@@ -8,12 +8,8 @@
   (declare (ignore initargs))
   (with-slots (directory) pool
     (ensure-directories-exist directory)
-    (setf (get-snapshot pool) (merge-pathnames (make-pathname :name (get-snapshot-filename pool)
-                                                              :type (file-extension pool))
-                                               directory)
-          (transaction-log pool) (merge-pathnames (make-pathname :name (get-transaction-log-filename pool)
-                                                                 :type (file-extension pool))
-                                                  directory)))
+    (setf (get-snapshot    pool) (make-snapshot-pathname pool directory :object)
+          (transaction-log pool) (make-transaction-log-pathname pool directory)))
   (restore pool))
 
 (defmethod transaction-log-stream :before ((pool pool))
@@ -29,12 +25,33 @@
 
 (defmethod poolp (other) nil)
 
+;;;
+;;; Root objects
+;;;
 (defmethod get-root-object ((pool pool) name)
   (gethash name (root-objects pool)))
 
 (defmethod (setf get-root-object) (value (pool pool) name)
   (setf (gethash name (root-objects pool)) value))
 
+(defmethod remove-root-object ((pool pool) name)
+  (remhash name (root-objects pool)))
+
+;;;
+;;; Index objects
+;;;
+(defmethod get-index-object ((pool pool) name)
+  (gethash name (index-objects pool)))
+
+(defmethod (setf get-index-object) (value (pool pool) name)
+  (setf (gethash name (index-objects pool)) value))
+
+(defmethod remove-index-object ((pool pool) name)
+  (remhash name (index-objects pool)))
+
+;;;
+;;; Option
+;;;
 (defmethod get-option ((pool pool) name)
   (with-slots (options) pool
     (gethash name options)))
@@ -43,15 +60,14 @@
   (with-slots (options) pool
     (setf (gethash name options) value)))
 
-(defmethod remove-root-object ((pool pool) name)
-  (remhash name (root-objects pool)))
-
+;;;
+;;; Print
+;;;
 (defmethod print-object ((transaction transaction) stream)
   (print-unreadable-object (transaction stream :type t :identity t)
     (format stream "~a ~a"
             (get-function transaction)
             (or (args transaction) "()"))))
-
 
 ;;;
 ;;; execute

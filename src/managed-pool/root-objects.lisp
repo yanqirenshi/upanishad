@@ -1,5 +1,9 @@
 (in-package :upanishad)
 
+(defun class-rootp (symbol)
+  (cl-ppcre:scan "^(\\S)+-ROOT$"
+                 (symbol-name symbol)))
+
 (defun get-objects-root-name (class)
   (let ((classname (if (symbolp class) (string class) (class-name class))))
     (intern (concatenate 'string classname "-ROOT") :keyword)))
@@ -12,8 +16,7 @@
                                            (get-root-object pool index)))
                               (class-%id-list pool)))))
         ((symbolp class)
-         (let* ((index-name (get-objects-slot-index-name class '%id))
-                (index (get-root-object pool index-name)))
+         (let ((index (index-at pool :class class :slot '%id)))
            (when index
              (gethash %id index))))
         (t (error "Bad class. class=~A" class))))
@@ -38,8 +41,7 @@
              (find-all-objects pool class)))
 
 (defmethod find-objects-with-slot ((pool pool) class slot value &optional (test #'equalp))
-  (let* ((index-name (get-objects-slot-index-name class slot))
-         (index      (get-root-object pool index-name)))
+  (let ((index (slot-index-at pool slot :class class)))
     (if index
         (find-objects-with-slot-use-index pool class (gethash value index))
         (find-objects-with-slot-full-scan pool class slot value test))))
@@ -57,9 +59,7 @@
 (defmethod tx-create-object ((pool pool) class &optional slots-and-values)
   (let* ((%id (next-%id pool))
          (object (make-instance class :%id %id))
-         (index-name (get-objects-slot-index-name class '%id))
-         (index (or (get-root-object pool index-name)
-                    (setf (get-root-object pool index-name) (make-hash-table)))))
+         (index (index-at pool :class class :slot '%id :ensure t)))
     (push object (get-root-object pool (get-objects-root-name class)))
     (setf (gethash %id index) object)
     (tx-change-object-slots pool class %id slots-and-values)
@@ -70,8 +70,9 @@
     (if object
         (let ((root-name (get-objects-root-name class))
               (index-name (get-objects-slot-index-name class '%id)))
-          (setf (get-root-object pool root-name) (delete object (get-root-object pool root-name)))
-          (remhash %id (get-root-object pool index-name)))
+          (setf (get-root-object pool root-name)
+                (delete object (get-root-object pool root-name)))
+          (remhash %id (get-index-object pool index-name)))
         (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
 (defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
@@ -87,9 +88,6 @@
 ;;;
 ;;; 4. added iwasaki
 ;;;
-(defun class-rootp (symbol)
-  (cl-ppcre:scan "^(\\S)+-ROOT$"
-                 (symbol-name symbol)))
 
 (defmethod class-%id-list ((pool pool))
   (remove-if (complement #'class-%id-indexp)
