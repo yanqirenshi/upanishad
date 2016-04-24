@@ -8,7 +8,7 @@
   (declare (ignore initargs))
   (with-slots (directory) pool
     (ensure-directories-exist directory)
-    (setf (get-snapshot    pool) (make-snapshot-pathname pool directory :object)
+    (setf (snapshot-pathnames pool) (make-snapshot-pathname pool directory :object)
           (transaction-log pool) (make-transaction-log-pathname pool directory)))
   (restore pool))
 
