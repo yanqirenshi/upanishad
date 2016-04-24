@@ -126,6 +126,10 @@
     :documentation ":type hash-table"
     :accessor root-objects
     :initform (make-hash-table :test 'eq))
+   (index-objects
+    :documentation ":type hash-table"
+    :accessor index-objects
+    :initform (make-hash-table :test 'eq))
    (options
     :documentation ":type hash-table"
     :initform (make-hash-table :test 'eq))

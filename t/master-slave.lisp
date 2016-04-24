@@ -8,13 +8,7 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "master-slave"))
 
-(plan 4)
-
-
-(subtest ":start-master-client" (skip 1 "準備中"))
-(subtest ":stop-master-client" (skip 1 "準備中"))
-(subtest ":start-slave-server" (skip 1 "準備中"))
-(subtest ":stop-slave-server" (skip 1 "準備中"))
+(plan nil)
 
 
 (finalize)
