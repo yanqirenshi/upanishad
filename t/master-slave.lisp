@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.master-slave
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
@@ -9,8 +9,6 @@
 (defparameter *test-pool-directory* (test-pool-directory "master-slave"))
 
 (plan nil)
-
-
 
 
 (finalize)

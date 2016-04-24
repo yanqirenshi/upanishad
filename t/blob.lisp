@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.blob
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
@@ -9,8 +9,6 @@
 (defparameter *test-pool-directory* (test-pool-directory "blob"))
 
 (plan nil)
-
-
 
 
 (finalize)

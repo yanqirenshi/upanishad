@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.printer
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
@@ -9,8 +9,5 @@
 (defparameter *test-pool-directory* (test-pool-directory "printer"))
 
 (plan nil)
-
-
-
 
 (finalize)

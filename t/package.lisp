@@ -1,9 +1,8 @@
 (defpackage :upanishad-test
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
-        #:s-serialization
-        #:upanishad-test.test-utility)
+        #:s-serialization)
   (:nicknames :up-test))
 (in-package :upanishad-test)
 

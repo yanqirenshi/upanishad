@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.debug-pool
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
@@ -9,8 +9,6 @@
 (defparameter *test-pool-directory* (test-pool-directory "debug-pool"))
 
 (plan nil)
-
-
 
 
 (finalize)

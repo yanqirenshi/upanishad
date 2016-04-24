@@ -5,12 +5,10 @@
                  (symbol-name symbol)))
 
 (defun get-objects-root-name (class)
-  "Return the keyword symbol naming the root of instances of class"
   (let ((classname (if (symbolp class) (string class) (class-name class))))
     (intern (concatenate 'string classname "-ROOT") :keyword)))
 
 (defmethod get-object-at-%id ((pool pool) class %id)
-  "Find and return the object in pool of class with %id, null if not found"
   (cond ((eq class :all)
          (car (remove nil
                       (mapcar #'(lambda (index)
@@ -24,7 +22,6 @@
         (t (error "Bad class. class=~A" class))))
 
 (defun find-all-objects (pool class)
-  "Return an unordered collection of all objects in pool that are instances of class"
   (let ((root-name (get-objects-root-name class)))
     (copy-list (get-root-object pool root-name))))
 
@@ -39,7 +36,6 @@
                        %ids))))))
 
 (defun find-objects-with-slot-full-scan (pool class slot value test)
-  "オブジェクトを全件検索します。"
   (remove-if #'(lambda (object)
                  (not (funcall test value (slot-value object slot))))
              (find-all-objects pool class)))
@@ -57,7 +53,6 @@
       (find-all-objects pool class)))
 
 (defun slot-value-changed-p (object slot value)
-  "Return true when slot in object is not eql to value (or when the slot was unbound)"
   (or (not (slot-boundp object slot))
       (not (eql (slot-value object slot) value))))
 

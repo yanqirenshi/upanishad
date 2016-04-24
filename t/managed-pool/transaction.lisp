@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.managed-pool.transaction
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
@@ -9,8 +9,6 @@
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.transaction"))
 
 (plan nil)
-
-
 
 
 (finalize)

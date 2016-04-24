@@ -1,5 +1,5 @@
 (defpackage :upanishad-test.managed-pool.id-counter
-  (:use :cl
+  (:use #:cl
         #:upanishad
         #:prove
         #:s-serialization
