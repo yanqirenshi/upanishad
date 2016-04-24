@@ -43,17 +43,24 @@
 ;;;
 ;;; snapshot file
 ;;;
-(defmethod get-snapshot-filename ((pool pool) &optional suffix)
-  (format nil "snapshot~@[-~a~]" suffix))
+(defmethod make-snapshot-filename ((pool pool) (type symbol) &optional suffix)
+  (assert (or (null type) (find type '(:object :index))))
+  (unless type (warn "type が nil ですよ。"))
+  (if type
+      (format nil "snapshot-~a~@[-~a~]" (string-downcase (symbol-name type)) suffix)
+      (format nil "snapshot~@[-~a~]" suffix)))
 
-(defun snapshot-backup-file (pool directory timetag)
-  (merge-pathnames (make-pathname :name (get-snapshot-filename pool timetag)
+(defmethod make-snapshot-pathname (pool directory type &optional suffix)
+  (merge-pathnames (make-pathname :name (make-snapshot-filename pool type suffix)
                                   :type (file-extension pool))
                    directory))
 
-(defun snapshot-copy-snapshot-file (pool directory timetag)
+(defun make-snapshot-backup-pathname (pool directory type timetag)
+  (make-snapshot-pathname pool directory type timetag))
+
+(defun snapshot-copy-snapshot-file (pool directory type timetag)
   (when (probe-file directory)
-    (copy-file directory (snapshot-backup-file pool directory timetag))))
+    (copy-file directory (make-snapshot-backup-pathname pool directory type timetag))))
 
 (defun backup-snapshot (snapshot snapshot-backup)
   (when (probe-file snapshot)
@@ -62,13 +69,16 @@
 ;;;
 ;;; transaction log file
 ;;;
-(defmethod get-transaction-log-filename ((pool pool) &optional suffix)
+(defmethod make-transaction-log-filename ((pool pool) &optional suffix)
   (format nil "transaction-log~@[-~a~]" suffix))
 
-(defun transaction-log-backup-file (pool directory timetag)
-  (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
+(defmethod make-transaction-log-pathname (pool directory &optional suffix)
+  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool suffix)
                                   :type (file-extension pool))
                    directory))
+
+(defun transaction-log-backup-file (pool directory timetag)
+  (make-transaction-log-pathname pool directory timetag))
 
 (defun snapshot-transaction-log (pool directory timetag)
   (when (probe-file directory)
@@ -92,7 +102,7 @@
         (transaction-log (transaction-log pool))
         (snapshot (get-snapshot pool)))
     (close-open-streams pool)
-    (snapshot-copy-snapshot-file pool snapshot timetag)
+    (snapshot-copy-snapshot-file pool snapshot :object timetag)
     (snapshot-root-objects pool snapshot)
     (snapshot-transaction-log pool transaction-log timetag)
     (delete-file transaction-log)))
@@ -106,7 +116,7 @@
          (transaction-log (transaction-log pool))
          (snapshot (get-snapshot pool))
          (transaction-log-backup (transaction-log-backup-file pool (or directory transaction-log) timetag))
-         (snapshot-backup (snapshot-backup-file pool (or directory snapshot) timetag)))
+         (snapshot-backup (make-snapshot-backup-pathname pool (or directory snapshot) :object timetag)))
     (close-open-streams pool)
     (backup-transaction-log transaction-log transaction-log-backup)
     (backup-snapshot snapshot snapshot-backup)
