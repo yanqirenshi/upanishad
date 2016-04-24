@@ -71,15 +71,13 @@
 (defmethod make-transaction-log-filename ((pool pool) &optional suffix)
   (format nil "transaction-log~@[-~a~]" suffix))
 
-(defmethod make-transaction-log-pathname (pool directory)
-  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool)
+(defmethod make-transaction-log-pathname (pool directory &optional suffix)
+  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool suffix)
                                   :type (file-extension pool))
                    directory))
 
 (defun transaction-log-backup-file (pool directory timetag)
-  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool timetag)
-                                  :type (file-extension pool))
-                   directory))
+  (make-transaction-log-pathname pool directory timetag))
 
 (defun snapshot-transaction-log (pool directory timetag)
   (when (probe-file directory)

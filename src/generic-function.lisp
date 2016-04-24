@@ -139,7 +139,7 @@
 (defgeneric make-transaction-log-filename (pool &optional suffix)
   (:documentation "執筆中"))
 
-(defgeneric make-transaction-log-pathname (pool directory)
+(defgeneric make-transaction-log-pathname (pool directory &optional suffix)
   (:documentation "執筆中"))
 
 
