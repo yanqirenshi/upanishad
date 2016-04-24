@@ -8,12 +8,8 @@
   (declare (ignore initargs))
   (with-slots (directory) pool
     (ensure-directories-exist directory)
-    (setf (get-snapshot pool) (merge-pathnames (make-pathname :name (make-snapshot-filename pool nil )
-                                                              :type (file-extension pool))
-                                               directory)
-          (transaction-log pool) (merge-pathnames (make-pathname :name (make-transaction-log-filename pool)
-                                                                 :type (file-extension pool))
-                                                  directory)))
+    (setf (get-snapshot    pool) (make-snapshot-pathname pool directory nil)
+          (transaction-log pool) (make-transaction-log-pathname pool directory)))
   (restore pool))
 
 (defmethod transaction-log-stream :before ((pool pool))

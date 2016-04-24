@@ -44,10 +44,15 @@
 ;;; snapshot file
 ;;;
 (defmethod make-snapshot-filename ((pool pool) (type symbol) &optional suffix)
-  (assert (find type '(:object :index)))
+  (assert (or (null type) (find type '(:object :index))))
   (if type
       (format nil "snapshot-~a~@[-~a~]" (string-downcase (symbol-name type)) suffix)
       (format nil "snapshot~@[-~a~]" suffix)))
+
+(defmethod make-snapshot-pathname (pool directory type &optional suffix)
+  (merge-pathnames (make-pathname :name (make-snapshot-filename pool suffix)
+                                  :type (file-extension pool))
+                   directory))
 
 (defun snapshot-backup-file (pool directory timetag)
   (merge-pathnames (make-pathname :name (make-snapshot-filename pool nil timetag)
@@ -67,6 +72,11 @@
 ;;;
 (defmethod make-transaction-log-filename ((pool pool) &optional suffix)
   (format nil "transaction-log~@[-~a~]" suffix))
+
+(defmethod make-transaction-log-pathname (pool directory)
+  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool)
+                                  :type (file-extension pool))
+                   directory))
 
 (defun transaction-log-backup-file (pool directory timetag)
   (merge-pathnames (make-pathname :name (make-transaction-log-filename pool timetag)
