@@ -142,6 +142,12 @@
 (defgeneric make-transaction-log-pathname (pool directory &optional suffix)
   (:documentation "執筆中"))
 
+(defgeneric snapshot-pathnames (pool type)
+  (:documentation "執筆中"))
+
+(defgeneric (setf snapshot-pathnames) (value pool type)
+  (:documentation "執筆中"))
+
 
 ;;;
 ;;; 3. blob
