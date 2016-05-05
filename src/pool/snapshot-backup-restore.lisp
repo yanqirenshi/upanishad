@@ -104,11 +104,15 @@
 ;;;
 ;;; snapshot
 ;;;
-(defun snapshot-root-objects (pool snapshot)
-  (with-open-file (out snapshot :direction :output
-                                :if-does-not-exist :create
-                                :if-exists :supersede)
-    (funcall (serializer pool) (root-objects pool) out (serialization-state pool))))
+(defun snapshot-objects (pool snapshot type)
+  (assert (snapshot-type-p type))
+  (let ((objects (cond ((eq type :object) (root-objects pool))
+                       ((eq type :index) (index-objects pool)))))
+    (with-open-file (out snapshot :direction :output
+                                  :if-does-not-exist :create
+                                  :if-exists :supersede)
+      (funcall (serializer pool) objects out (serialization-state pool))))
+  pool)
 
 (defmethod snapshot ((pool pool))
   (let ((timetag (timetag))
@@ -116,11 +120,17 @@
         (snapshot-object (snapshot-pathnames pool :object))
         (snapshot-index (snapshot-pathnames pool :index)))
     (close-open-streams pool)
+    ;; backup snapshot
     (snapshot-copy-snapshot-file pool snapshot-object :object timetag)
-    (snapshot-copy-snapshot-file pool snapshot-index :object timetag)
-    (snapshot-root-objects pool snapshot-object)
+    (snapshot-copy-snapshot-file pool snapshot-index :index timetag)
+    ;; snapshot
+    (snapshot-objects pool snapshot-object :object)
+    (snapshot-objects pool snapshot-index :index)
+    ;; transaction log
     (snapshot-transaction-log pool transaction-log timetag)
-    (delete-file transaction-log)))
+    (when (fad:file-exists-p transaction-log)
+      (delete-file transaction-log))
+    pool))
 
 
 ;;;
@@ -133,7 +143,7 @@
          (snapshot-object (snapshot-pathnames pool :object))
          (snapshot-object-backup (make-snapshot-backup-pathname pool (or directory snapshot-object) :object timetag))
          (snapshot-index (snapshot-pathnames pool :index))
-         (snapshot-index-backup (make-snapshot-backup-pathname pool (or directory snapshot-index) :object timetag)))
+         (snapshot-index-backup (make-snapshot-backup-pathname pool (or directory snapshot-index) :index timetag)))
     (close-open-streams pool)
     (backup-transaction-log transaction-log transaction-log-backup)
     (backup-snapshot snapshot-object snapshot-object-backup)
@@ -144,13 +154,19 @@
 ;;;
 ;;; restore
 ;;;
-(defun restore-root-objects (pool)
+(defun restore-objects (pool type)
+  (assert (snapshot-type-p type))
   (let ((deserializer (deserializer pool))
         (serialization-state (serialization-state pool)))
-    (when (probe-file (snapshot-pathnames pool :object))
-      (with-open-file (in (snapshot-pathnames pool :object) :direction :input)
-        (setf (root-objects pool)
-              (funcall deserializer in serialization-state))))))
+    (when (probe-file (snapshot-pathnames pool type))
+      (with-open-file (in (snapshot-pathnames pool type) :direction :input)
+        (cond ((eq type :object)
+               (setf (root-objects pool)
+                     (funcall deserializer in serialization-state)))
+              ((eq type :index)
+               (setf (index-objects pool)
+                     (funcall deserializer in serialization-state)))))))
+  pool)
 
 (defun restore-transaction-log (pool)
   (when (probe-file (transaction-log pool))
@@ -168,10 +184,13 @@
               (setf position (file-position in))
               (if transaction
                   (execute-on transaction pool)
-                  (return)))))))))
+                  (return))))))))
+  pool)
 
 (defmethod restore ((pool pool))
   (clrhash (root-objects pool))
   (close-open-streams pool)
-  (restore-root-objects pool)
-  (restore-transaction-log pool))
+  (restore-objects pool :object)
+  (restore-objects pool :index)
+  (restore-transaction-log pool)
+  pool)
