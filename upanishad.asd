@@ -56,6 +56,7 @@
                  (:file "printer"          :depends-on ("master-slave" "blob"))
                  (:file "debug-pool"       :depends-on ("printer")))))
   :depends-on (:alexandria
+               :cl-fad
                :s-xml
                :s-sysdeps
                :s-serialization
