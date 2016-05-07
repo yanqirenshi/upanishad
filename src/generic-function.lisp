@@ -28,10 +28,10 @@
   (:documentation "Remove an index for this object on this slot"))
 
 (defgeneric add-object-to-index (pool class slot object)
-  (:documentation "インデックスにオブジェクトを登録します。"))
+  (:documentation "インデックスにオブジェクトを登録する。"))
 
-(defgeneric remove-object-from-slot-index (pool class slot object)
-  (:documentation "スロット・インデックスからオブジェクトを削除します。"))
+(defgeneric remove-object-from-index (pool class slot object)
+  (:documentation "インデックスからオブジェクトを削除する。"))
 
 (defgeneric index-on (pool class &optional slots test)
   (:documentation "Create indexes on each of the slots provided."))

@@ -104,7 +104,7 @@
     (execute-transaction
      (tx-create-index-for-objects-slot pool class slot test))))
 
-(defun %remove-object-from-slot-index (index object slot)
+(defun %remove-object-from-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))
         (%id     (%id object)))
     (when %id-map
@@ -113,10 +113,10 @@
       (when (= (hash-table-size %id-map) 0)
         (remhash (slot-value object slot) index)))))
 
-(defmethod remove-object-from-slot-index ((pool pool) class slot object)
+(defmethod remove-object-from-index ((pool pool) class slot object)
   (let ((index (slot-index-at pool slot :class class)))
     (when (and index (slot-boundp object slot))
-      (%remove-object-from-slot-index index object slot))))
+      (%remove-object-from-index index object slot))))
 
 (defmethod tx-remove-object-on-slot-index ((pool pool)
                                            (obj  meme)

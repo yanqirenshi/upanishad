@@ -80,7 +80,7 @@
     (unless object (error "no object of class ~a with %id ~d found in ~s" class %id pool))
     (loop :for (slot value) :in slots-and-values
           :do (when (slot-value-changed-p object slot value)
-                (remove-object-from-slot-index pool class slot object)
+                (remove-object-from-index pool class slot object)
                 (setf (slot-value object slot) value)
                 (add-object-to-index pool class slot object)))
     object))
