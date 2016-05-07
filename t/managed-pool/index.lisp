@@ -97,6 +97,6 @@
 
 (skip 1 "tx-remove-objects-slot-index")
 
-(skip 1 "drop-index-on")
+(skip 1 "drop-index")
 
 (finalize)

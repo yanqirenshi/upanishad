@@ -91,19 +91,6 @@
     (when (and index (slot-boundp object slot))
       (%add-object-to-index index object slot))))
 
-(defmethod tx-create-index-for-objects-slot ((pool pool) class slot &optional (test #'equalp))
-  (let ((index-name (get-index-name class slot)))
-    (unless (index-at pool :name index-name)
-      (let ((index (make-index :test test)))
-        (setf (index-at pool :name index-name) index)
-        (dolist (object (find-all-objects pool class))
-          (add-object-to-index pool class slot object))))))
-
-(defmethod index-on ((pool pool) class &optional slots (test 'equalp))
-  (dolist (slot slots)
-    (execute-transaction
-     (tx-create-index-for-objects-slot pool class slot test))))
-
 (defun %remove-object-from-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))
         (%id     (%id object)))
@@ -127,12 +114,37 @@
       (remhash (%id  obj)
                (gethash (slot-value obj slot-symbol) index)))))
 
+(defmethod tx-create-index-for-objects-slot ((pool pool) class slot &optional (test #'equalp))
+  (let ((index-name (get-index-name class slot)))
+    (unless (index-at pool :name index-name)
+      (let ((index (make-index :test test)))
+        (setf (index-at pool :name index-name) index)
+        (dolist (object (find-all-objects pool class))
+          (add-object-to-index pool class slot object))))))
+
+(defmethod index-on ((pool pool) class &optional slots (test 'equalp))
+  (dolist (slot slots)
+    (execute-transaction
+     (tx-create-index-for-objects-slot pool class slot test))))
+
 (defmethod tx-remove-objects-slot-index ((pool pool) class slot)
   (let ((index-name (get-index-name class slot)))
     (when (get-index-object pool index-name)
       (remove-root-object pool index-name))))
 
-(defmethod drop-index-on ((pool pool) class &optional slots)
+(defmethod drop-index ((pool pool) class &optional slots)
   (dolist (slot slots)
     (execute-transaction
      (tx-remove-objects-slot-index pool class slot))))
+
+;;;
+;;; Index
+;;;   - create : (create-index pool object-class slot)
+;;;   - get    : (get-index    pool object-class slot)
+;;;   - drop   : (drop-index   pool object-class slot)
+;;; Pool
+;;;   - add    : (add-index    pool Index)
+;;; Object
+;;;   - add    : (add    pool Index object)
+;;;   - remove : (remove pool Index object)
+

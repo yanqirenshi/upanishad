@@ -60,7 +60,7 @@
            #:get-preference
            #:all-preferences-keys
            #:index-on
-           #:drop-index-on
+           #:drop-index
            #:close-open-streams
            #:next-%id
            #:get-at-%id

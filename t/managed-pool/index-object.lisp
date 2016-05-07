@@ -50,7 +50,7 @@
 (subtest "::%remove-object-from-index" (skip 1 "準備中"))
 (subtest "::remove-object-from-index" (skip 1 "準備中"))
 (subtest ":index-on" (skip 1 "準備中"))
-(subtest ":drop-index-on" (skip 1 "準備中"))
+(subtest ":drop-index" (skip 1 "準備中"))
 (subtest ":tx-remove-object-on-slot-index" (skip 1 "準備中"))
 
 

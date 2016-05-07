@@ -36,7 +36,7 @@
 (defgeneric index-on (pool class &optional slots test)
   (:documentation "Create indexes on each of the slots provided."))
 
-(defgeneric drop-index-on (pool class &optional slots)
+(defgeneric drop-index (pool class &optional slots)
   (:documentation "Drop indexes on each of the slots provided"))
 
 (defgeneric tx-create-object (pool class &optional slots-and-values)
