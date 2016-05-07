@@ -41,7 +41,7 @@
              (find-all-objects pool class)))
 
 (defmethod find-objects-with-slot ((pool pool) class slot value &optional (test #'equalp))
-  (let ((index (slot-index-at pool slot :class class)))
+  (let ((index (index-at pool :class class :slot slot)))
     (if index
         (find-objects-with-slot-use-index pool class (gethash value index))
         (find-objects-with-slot-full-scan pool class slot value test))))

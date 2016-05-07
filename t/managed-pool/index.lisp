@@ -44,12 +44,12 @@
     (tx-create-object pool 'person)
 
     (subtest "at class and slot"
-      (let ((result (up::%index-at pool nil 'person '%id)))
+      (let ((result (up::%index-at pool '%id nil 'person nil)))
         (ok (hash-table-p result) "index is hash-table")
         (is (hash-table-count result) 1 "hash-table size is 1")))
 
     (subtest "at name"
-      (let ((result (up::%index-at pool :person-%id-index nil nil)))
+      (let ((result (up::%index-at pool nil :person-%id-index nil nil)))
         (ok (hash-table-p result) "index is hash-table")
         (is (hash-table-count result) 1 "hash-table size is 1")))))
 
@@ -64,22 +64,6 @@
         (is (hash-table-count result) 1 "hash-table size is 1"))
 
       (is-error (up::index-at pool) 'error "can rise error"))))
-
-(subtest "::slot-index-at"
-  (with-pool (pool *test-pool-directory*)
-
-    (ok (null (upanishad::slot-index-at pool '%id :class 'person)))
-
-    (let ((person (up:tx-create-object pool 'person)))
-
-      (subtest "can return index(hash table)"
-        (let ((result (upanishad::slot-index-at pool '%id :class 'person)))
-          (ok (hash-table-p result) "at class"))
-
-        (let ((result (upanishad::slot-index-at pool '%id :object person)))
-          (ok (hash-table-p result) "at object"))))
-
-    (is-error (upanishad::slot-index-at pool '%id) 'error "can raised error")))
 
 (skip 1 "%add-object-to-index")
 

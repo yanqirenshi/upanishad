@@ -49,24 +49,29 @@
 ;;;
 ;;; index-at
 ;;;
-(defun %index-at (pool name class slot)
+(defun %index-at (pool slot name class object)
   (cond ((and class slot)
          (get-index-object pool (get-index-name class slot)))
+        ((and object slot)
+         (%index-at pool slot nil (class-name (class-of object)) nil))
         (name (get-index-object pool name))
         (t (error "Bad parameter"))))
 
-(defun index-at (pool &key name class slot (ensure nil))
+(defun index-at (pool &key slot name class object (ensure nil))
   (assert pool)
-  (let ((index (%index-at pool name class slot)))
+  (let ((index (%index-at pool slot name class object)))
     (or index
         (when ensure
-          (setf (index-at pool :name name :class class :slot slot)
+          (setf (index-at pool :name name :class class :slot slot :object object)
                 (make-hash-table))))))
 
-(defun (setf index-at) (index pool &key name class slot)
+(defun (setf index-at) (index pool &key name class slot object)
   (assert pool)
   (cond ((and class slot)
          (setf (index-at pool :name (get-index-name class slot))
+               index))
+        ((and object slot)
+         (setf (index-at pool :name (get-index-name (class-name (class-of object)) slot))
                index))
         (name
          (setf (get-index-object pool name) index))
@@ -102,16 +107,8 @@
      (tx-remove-objects-slot-index pool class slot))))
 
 ;;;
-;;; etc
+;;; add-object-to-index
 ;;;
-(defun slot-index-at (pool slot &key class object)
-  (cond ((and class slot)
-         (let ((index-name (get-index-name class slot)))
-           (index-at pool :name index-name)))
-        ((and object slot)
-         (slot-index-at pool slot :class (class-name (class-of object))))
-        (t (error "Bad parameter"))))
-
 (defun %add-object-to-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))
         (%id     (%id object)))
@@ -122,10 +119,13 @@
       (setf (gethash %id %id-map) (%id object)))))
 
 (defmethod add-object-to-index ((pool pool) class slot object)
-  (let ((index (slot-index-at pool slot :class class)))
+  (let ((index (index-at pool :class class :slot slot)))
     (when (and index (slot-boundp object slot))
       (%add-object-to-index index object slot))))
 
+;;;
+;;; remove-object-from-index
+;;;
 (defun %remove-object-from-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))
         (%id     (%id object)))
@@ -136,14 +136,17 @@
         (remhash (slot-value object slot) index)))))
 
 (defmethod remove-object-from-index ((pool pool) class slot object)
-  (let ((index (slot-index-at pool slot :class class)))
+  (let ((index (index-at pool :class class :slot slot)))
     (when (and index (slot-boundp object slot))
       (%remove-object-from-index index object slot))))
 
+;;;
+;;; etc
+;;;
 (defmethod tx-remove-object-on-index ((pool pool)
                                       (obj  meme)
                                       (slot-symbol symbol))
-  (let* ((index (slot-index-at pool slot-symbol :object obj))
+  (let* ((index (index-at pool :object obj :slot slot-symbol))
          (%id-map (gethash (slot-value obj slot-symbol) index)))
     (when (and index %id-map)
       (remhash (%id  obj)
