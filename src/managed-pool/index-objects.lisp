@@ -91,7 +91,7 @@
     (when (and index (slot-boundp object slot))
       (%add-object-to-index index object slot))))
 
-(defmethod tx-create-objects-slot-index ((pool pool) class slot &optional (test #'equalp))
+(defmethod tx-create-index-for-objects-slot ((pool pool) class slot &optional (test #'equalp))
   (let ((index-name (get-index-name class slot)))
     (unless (index-at pool :name index-name)
       (let ((index (make-index :test test)))
@@ -102,7 +102,7 @@
 (defmethod index-on ((pool pool) class &optional slots (test 'equalp))
   (dolist (slot slots)
     (execute-transaction
-     (tx-create-objects-slot-index pool class slot test))))
+     (tx-create-index-for-objects-slot pool class slot test))))
 
 (defun %remove-object-from-slot-index (index object slot)
   (let ((%id-map (gethash (slot-value object slot) index))

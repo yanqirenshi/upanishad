@@ -85,7 +85,7 @@
 
 (skip 1 "::add-object-to-index")
 
-(skip 1 "tx-create-objects-slot-index")
+(skip 1 "tx-create-index-for-objects-slot")
 
 (skip 1 "index-on")
 

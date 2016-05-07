@@ -43,7 +43,7 @@
       (is-error (up::index-at pool) 'error)
       (snapshot pool))))
 
-(subtest "::tx-create-objects-slot-index" (skip 1 "準備中"))
+(subtest "::tx-create-index-for-objects-slot" (skip 1 "準備中"))
 (subtest "::tx-remove-objects-slot-index" (skip 1 "準備中"))
 (subtest "::%add-object-to-index" (skip 1 "準備中"))
 (subtest "::add-object-to-index" (skip 1 "準備中"))

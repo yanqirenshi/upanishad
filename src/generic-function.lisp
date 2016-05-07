@@ -21,7 +21,7 @@
 (defgeneric find-object (pool class &key slot value test)
   (:documentation "執筆中"))
 
-(defgeneric tx-create-objects-slot-index (pool class slot &optional test)
+(defgeneric tx-create-index-for-objects-slot (pool class slot &optional test)
   (:documentation "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"))
 
 (defgeneric tx-remove-objects-slot-index (pool class slot)
