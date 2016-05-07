@@ -57,8 +57,8 @@
 (defgeneric all-preferences-keys (pool)
   (:documentation "Return a list of all persistent preference keys of pool"))
 
-(defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
-  (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
+(defgeneric tx-remove-object-on-index (pool atman slot-symbol)
+  (:documentation "インデックスからオブジェクトを取り除きます。"))
 
 (defgeneric class-%id-list (pool)
   (:documentation "poolに登録されているクラスの一覧(list)を返します。"))

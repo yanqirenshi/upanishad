@@ -140,9 +140,9 @@
     (when (and index (slot-boundp object slot))
       (%remove-object-from-index index object slot))))
 
-(defmethod tx-remove-object-on-slot-index ((pool pool)
-                                           (obj  meme)
-                                           (slot-symbol symbol))
+(defmethod tx-remove-object-on-index ((pool pool)
+                                      (obj  meme)
+                                      (slot-symbol symbol))
   (let* ((index (slot-index-at pool slot-symbol :object obj))
          (%id-map (gethash (slot-value obj slot-symbol) index)))
     (when (and index %id-map)

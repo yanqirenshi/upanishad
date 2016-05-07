@@ -93,7 +93,7 @@
 
 (skip 1 "remove-object-from-index")
 
-(skip 1 "tx-remove-object-on-slot-index")
+(skip 1 "tx-remove-object-on-index")
 
 (skip 1 "tx-remove-objects-slot-index")
 
