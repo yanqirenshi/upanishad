@@ -69,10 +69,10 @@
   (let ((object (get-object-at-%id pool class %id)))
     (if object
         (let ((root-name (get-objects-root-name class))
-              (index-name (get-objects-slot-index-name class '%id)))
+              (index (index-at pool :class class :slot '%id)))
           (setf (get-root-object pool root-name)
                 (delete object (get-root-object pool root-name)))
-          (remhash %id (get-index-object pool index-name)))
+          (remhash %id index))
         (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
 (defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
