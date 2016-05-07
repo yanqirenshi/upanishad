@@ -30,12 +30,12 @@
               'error
               "class instance")))
 
-(subtest "::get-objects-slot-index-name"
-  (is (up::get-objects-slot-index-name 'person) :person-%id-index))
+(subtest "::get-index-name"
+  (is (up::get-index-name 'person) :person-%id-index))
 
 (subtest "::index-at"
   (let* ((object-class 'person)
-         (%id-index-name (up::get-objects-slot-index-name object-class)))
+         (%id-index-name (up::get-index-name object-class)))
     (with-pool (pool *test-pool-directory*)
       (tx-create-%id-counter pool)
       (tx-create-object pool object-class)
@@ -45,8 +45,8 @@
 
 (subtest "::tx-create-objects-slot-index" (skip 1 "準備中"))
 (subtest "::tx-remove-objects-slot-index" (skip 1 "準備中"))
-(subtest "::%add-object-to-slot-index" (skip 1 "準備中"))
-(subtest "::add-object-to-slot-index" (skip 1 "準備中"))
+(subtest "::%add-object-to-index" (skip 1 "準備中"))
+(subtest "::add-object-to-index" (skip 1 "準備中"))
 (subtest "::%remove-object-from-slot-index" (skip 1 "準備中"))
 (subtest "::remove-object-from-slot-index" (skip 1 "準備中"))
 (subtest ":index-on" (skip 1 "準備中"))

@@ -30,8 +30,8 @@
               'error
               "class instance")))
 
-(subtest "::get-objects-slot-index-name"
-  (is (up::get-objects-slot-index-name 'meme) :meme-%id-index))
+(subtest "::get-index-name"
+  (is (up::get-index-name 'meme) :meme-%id-index))
 
 (subtest "::make-index"
   (ok (hash-table-p (up::make-index)) "can return hash-table"))
@@ -81,9 +81,9 @@
 
     (is-error (upanishad::slot-index-at pool '%id) 'error "can raised error")))
 
-(skip 1 "%add-object-to-slot-index")
+(skip 1 "%add-object-to-index")
 
-(skip 1 "::add-object-to-slot-index")
+(skip 1 "::add-object-to-index")
 
 (skip 1 "tx-create-objects-slot-index")
 

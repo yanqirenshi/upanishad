@@ -27,8 +27,8 @@
 (defgeneric tx-remove-objects-slot-index (pool class slot)
   (:documentation "Remove an index for this object on this slot"))
 
-(defgeneric add-object-to-slot-index (pool class slot object)
-  (:documentation "スロット・インデックスにオブジェクトを登録します。"))
+(defgeneric add-object-to-index (pool class slot object)
+  (:documentation "インデックスにオブジェクトを登録します。"))
 
 (defgeneric remove-object-from-slot-index (pool class slot object)
   (:documentation "スロット・インデックスからオブジェクトを削除します。"))
