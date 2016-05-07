@@ -46,6 +46,9 @@
 (defun make-%id-map ()
   (make-hash-table))
 
+;;;
+;;; index-at
+;;;
 (defun %index-at (pool name class slot)
   (cond ((and class slot)
          (get-index-object pool (get-index-name class slot)))
@@ -69,6 +72,38 @@
          (setf (get-index-object pool name) index))
         (t (error "Bad parameter"))))
 
+;;;
+;;; add-index
+;;;
+(defmethod tx-create-index-for-objects-slot ((pool pool) class slot &optional (test #'equalp))
+  (let ((index-name (get-index-name class slot)))
+    (unless (index-at pool :name index-name)
+      (let ((index (make-index :test test)))
+        (setf (index-at pool :name index-name) index)
+        (dolist (object (find-all-objects pool class))
+          (add-object-to-index pool class slot object))))))
+
+(defmethod add-index ((pool pool) class &optional slots (test 'equalp))
+  (dolist (slot slots)
+    (execute-transaction
+     (tx-create-index-for-objects-slot pool class slot test))))
+
+;;;
+;;; drop-index
+;;;
+(defmethod tx-remove-objects-slot-index ((pool pool) class slot)
+  (let ((index-name (get-index-name class slot)))
+    (when (get-index-object pool index-name)
+      (remove-root-object pool index-name))))
+
+(defmethod drop-index ((pool pool) class &optional slots)
+  (dolist (slot slots)
+    (execute-transaction
+     (tx-remove-objects-slot-index pool class slot))))
+
+;;;
+;;; etc
+;;;
 (defun slot-index-at (pool slot &key class object)
   (cond ((and class slot)
          (let ((index-name (get-index-name class slot)))
@@ -113,38 +148,3 @@
     (when (and index %id-map)
       (remhash (%id  obj)
                (gethash (slot-value obj slot-symbol) index)))))
-
-(defmethod tx-create-index-for-objects-slot ((pool pool) class slot &optional (test #'equalp))
-  (let ((index-name (get-index-name class slot)))
-    (unless (index-at pool :name index-name)
-      (let ((index (make-index :test test)))
-        (setf (index-at pool :name index-name) index)
-        (dolist (object (find-all-objects pool class))
-          (add-object-to-index pool class slot object))))))
-
-(defmethod add-index ((pool pool) class &optional slots (test 'equalp))
-  (dolist (slot slots)
-    (execute-transaction
-     (tx-create-index-for-objects-slot pool class slot test))))
-
-(defmethod tx-remove-objects-slot-index ((pool pool) class slot)
-  (let ((index-name (get-index-name class slot)))
-    (when (get-index-object pool index-name)
-      (remove-root-object pool index-name))))
-
-(defmethod drop-index ((pool pool) class &optional slots)
-  (dolist (slot slots)
-    (execute-transaction
-     (tx-remove-objects-slot-index pool class slot))))
-
-;;;
-;;; Index
-;;;   - create : (create-index pool object-class slot)
-;;;   - get    : (get-index    pool object-class slot)
-;;;   - drop   : (drop-index   pool object-class slot)
-;;; Pool
-;;;   - add    : (add-index    pool Index)
-;;; Object
-;;;   - add    : (add    pool Index object)
-;;;   - remove : (remove pool Index object)
-
