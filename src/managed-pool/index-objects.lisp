@@ -122,7 +122,7 @@
         (dolist (object (find-all-objects pool class))
           (add-object-to-index pool class slot object))))))
 
-(defmethod index-on ((pool pool) class &optional slots (test 'equalp))
+(defmethod add-index ((pool pool) class &optional slots (test 'equalp))
   (dolist (slot slots)
     (execute-transaction
      (tx-create-index-for-objects-slot pool class slot test))))

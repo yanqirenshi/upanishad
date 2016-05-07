@@ -33,7 +33,7 @@
 (defgeneric remove-object-from-index (pool class slot object)
   (:documentation "インデックスからオブジェクトを削除する。"))
 
-(defgeneric index-on (pool class &optional slots test)
+(defgeneric add-index (pool class &optional slots test)
   (:documentation "Create indexes on each of the slots provided."))
 
 (defgeneric drop-index (pool class &optional slots)

@@ -59,7 +59,7 @@
            #:find-objects
            #:get-preference
            #:all-preferences-keys
-           #:index-on
+           #:add-index
            #:drop-index
            #:close-open-streams
            #:next-%id

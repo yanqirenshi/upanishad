@@ -80,7 +80,7 @@
         (delete-file pathname)))
     (setf *test-pool* (make-pool directory))
     (ok *test-pool*)
-    (index-on *test-pool* 'managed-person '(firstname lastname) 'equal)))
+    (add-index *test-pool* 'managed-person '(firstname lastname) 'equal)))
 
 (subtest "test-create-counter"
   "Create a new %id counter"
