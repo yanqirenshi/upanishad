@@ -135,7 +135,7 @@
     :initform (make-hash-table :test 'eq))
    (snapshot
     :documentation ":type pathname"
-    :accessor get-snapshot)
+    :initform (make-hash-table :test 'eq))
    (transaction-log
     :documentation ":type pathname"
     :accessor transaction-log)

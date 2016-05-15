@@ -21,22 +21,22 @@
 (defgeneric find-object (pool class &key slot value test)
   (:documentation "執筆中"))
 
-(defgeneric tx-create-objects-slot-index (pool class slot &optional test)
+(defgeneric tx-create-index-for-objects-slot (pool class slot &optional test)
   (:documentation "Create an index for this object on this slot, with an optional test for the hash table (add existing objects)"))
 
 (defgeneric tx-remove-objects-slot-index (pool class slot)
   (:documentation "Remove an index for this object on this slot"))
 
-(defgeneric add-object-to-slot-index (pool class slot object)
-  (:documentation "スロット・インデックスにオブジェクトを登録します。"))
+(defgeneric add-object-to-index (pool class slot object)
+  (:documentation "インデックスにオブジェクトを登録する。"))
 
-(defgeneric remove-object-from-slot-index (pool class slot object)
-  (:documentation "スロット・インデックスからオブジェクトを削除します。"))
+(defgeneric remove-object-from-index (pool class slot object)
+  (:documentation "インデックスからオブジェクトを削除する。"))
 
-(defgeneric index-on (pool class &optional slots test)
+(defgeneric add-index (pool class &optional slots test)
   (:documentation "Create indexes on each of the slots provided."))
 
-(defgeneric drop-index-on (pool class &optional slots)
+(defgeneric drop-index (pool class &optional slots)
   (:documentation "Drop indexes on each of the slots provided"))
 
 (defgeneric tx-create-object (pool class &optional slots-and-values)
@@ -57,8 +57,8 @@
 (defgeneric all-preferences-keys (pool)
   (:documentation "Return a list of all persistent preference keys of pool"))
 
-(defgeneric tx-remove-object-on-slot-index (pool atman slot-symbol)
-  (:documentation "スロット・インデックスからオブジェクトを取り除きます。"))
+(defgeneric tx-remove-object-on-index (pool atman slot-symbol)
+  (:documentation "インデックスからオブジェクトを取り除きます。"))
 
 (defgeneric class-%id-list (pool)
   (:documentation "poolに登録されているクラスの一覧(list)を返します。"))
@@ -68,10 +68,6 @@
 
 (defgeneric get-object-list (pool symbol)
   (:documentation "poolで管理されている symbolクラスのオブジェクトの一覧(list)を返します。"))
-
-(defgeneric get-at-%id (pool %id &key class)
-  (:documentation ""))
-
 (defgeneric print-root-list (pool &key stream)
   (:documentation ""))
 
@@ -140,6 +136,12 @@
   (:documentation "執筆中"))
 
 (defgeneric make-transaction-log-pathname (pool directory &optional suffix)
+  (:documentation "執筆中"))
+
+(defgeneric snapshot-pathnames (pool type)
+  (:documentation "執筆中"))
+
+(defgeneric (setf snapshot-pathnames) (value pool type)
   (:documentation "執筆中"))
 
 
