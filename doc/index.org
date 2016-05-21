@@ -1,3 +1,18 @@
+# Overview
+
+class: meme の slot のインデックス。
+スロットの種類ごとに slot は二種類ある。
+
+1. %id のインデックス
+   - object 作成時に自動で作成される。
+   - key: %id, vlue: meme instance
+   - value は meme instance の参照となる。
+   - key:value = 1:1 となる。 
+   - これは root-objects に持つべきだな。
+2. %id 以外のインデックス
+   - key: %id, vlue: %id
+   - key:value = 1:n となる。 
+   - value は %id の値となり meme instance を直接参照するものではない。
 
 # Objects
 
