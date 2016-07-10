@@ -1,5 +1,9 @@
 (in-package :upanishad)
 
+
+;;;
+;;; utility
+;;;
 (defun class-rootp (symbol)
   (cl-ppcre:scan "^(\\S)+-ROOT$"
                  (symbol-name symbol)))
@@ -8,6 +12,10 @@
   (let ((classname (if (symbolp class) (string class) (class-name class))))
     (intern (concatenate 'string classname "-ROOT") :keyword)))
 
+;;;
+;;; @export
+;;; get-object-at-%id
+;;;
 (defmethod get-object-at-%id ((pool pool) class %id)
   (cond ((eq class :all)
          (car (remove nil
@@ -21,6 +29,10 @@
              (gethash %id index))))
         (t (error "Bad class. class=~A" class))))
 
+;;;
+;;; @export
+;;; find-objects
+;;;
 (defun find-all-objects (pool class)
   (let ((root-name (get-objects-root-name class)))
     (copy-list (get-root-object pool root-name))))
@@ -52,10 +64,10 @@
       (find-objects-with-slot pool class slot value test)
       (find-all-objects pool class)))
 
-(defun slot-value-changed-p (object slot value)
-  (or (not (slot-boundp object slot))
-      (not (eql (slot-value object slot) value))))
-
+;;;
+;;; @export
+;;; tx-create-object
+;;;
 (defmethod tx-create-object ((pool pool) class &optional slots-and-values)
   (let* ((%id (next-%id pool))
          (object (make-instance class :%id %id))
@@ -65,6 +77,11 @@
     (tx-change-object-slots pool class %id slots-and-values)
     object))
 
+
+;;;
+;;; @export
+;;; tx-delete-object
+;;;
 (defmethod tx-delete-object ((pool pool) class %id)
   (let ((object (get-object-at-%id pool class %id)))
     (if object
@@ -75,6 +92,14 @@
           (remhash %id index))
         (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
+;;; @export
+;;; tx-change-object-slots
+;;;
+(defun slot-value-changed-p (object slot value)
+  (or (not (slot-boundp object slot))
+      (not (eql (slot-value object slot) value))))
+
+;; export
 (defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
   (let ((object (get-object-at-%id pool class %id)))
     (unless object (error "no object of class ~a with %id ~d found in ~s" class %id pool))
@@ -102,6 +127,7 @@
 (defun object-root-name (symbol)
   (get-objects-root-name symbol))
 
+;; export
 (defmethod get-object-list ((pool pool) (class-symbol symbol))
   (get-root-object pool
                    (get-objects-root-name class-symbol)))
