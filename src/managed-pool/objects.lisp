@@ -1,7 +1,11 @@
 (in-package :upanishad.objects)
 
 (defclass objects (meme)
-  ((contents :documentation ""
+  ((class-symbol
+    :documentation ""
+    :accessor class-symbol
+    :initarg :class-symbol)
+   (contents :documentation ""
              :accessor contents
              :initarg :contents
              :initform nil)
@@ -9,18 +13,6 @@
            :accessor %id-ht
            :initarg :%id-ht
            :initform (make-hash-table))))
-
-(defun make-objects-%id-ht (objects &optional (%id-ht (make-hash-table)))
-  (when objects 
-    (let ((object (car objects)))
-      ;; TODO: check meme instance object
-      (setf (gethash (up:%id object) %id-ht) object)
-      (make-objects-%id-ht (cdr objects) %id-ht))))
-
-(defun make-objects (&key objects)
-  (make-instance 'objects
-                 :contents objects
-                 :%id-ht (make-objects-%id-ht objects)))
 
 (defgeneric add-object (objects object)
   (:method ((objects objects) (object upanishad:meme))
@@ -39,4 +31,8 @@
         (error "Not exist object"))
       (remhash %id %id-ht)
       (remove object objects))))
-    
+
+(defun make-objects (object-symbol &key objects)
+  (let ((new-objects (make-instance 'objects :object-symbol object-symbol)))
+    (dolist (object objects)
+      (add-object new-objects object))))
