@@ -24,15 +24,6 @@
                                                | key (%id)       |    :
                                                | value           |o- -+
                                                +-----------------+
-
-
-
-
-
-
-
-
-
 #+END_SRC
 
 # snapshot, restor
