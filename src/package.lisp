@@ -18,6 +18,14 @@
            #:reset-known-slots)
   (:documentation "XML and s-expression based serialization for Common Lisp and CLOS"))
 
+(defpackage :upanishad.objects
+  (:use :cl)
+  (:export #:objects
+           #:make-objects
+           #:add-object
+           #:remove-object)
+  (:documentation ""))
+
 (defpackage :upanishad.index
   (:use :cl)
   (:export #:index
