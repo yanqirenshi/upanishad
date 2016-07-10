@@ -105,34 +105,6 @@
   (:documentation "Base Prevalence system implementation object"))
 
 
-;;; object
-(defclass object (meme)
-  ((contents :documentation ""
-             :accessor contents
-             :initarg :contents
-             :initform nil)
-   (%id-ht :documentation ""
-           :accessor %id-ht
-           :initarg :%id-ht
-           :initform (make-hash-table))))
-
-
-;;; index
-(defclass index (meme)
-  ((object-symbol :documentation ""
-                  :accessor object-symbol
-                  :initarg :object-symbol
-                  :initform nil)
-   (slot-symbol :documentation ""
-                :accessor slot-symbol
-                :initarg :slot-symbol
-                :initform nil)
-   (contents :documentation ""
-             :accessor contents
-             :initarg :contents
-             :initform (make-hash-table :test 'equalp))))
-
-
 ;;;;;
 ;;;;; guarded-pool
 ;;;;;
