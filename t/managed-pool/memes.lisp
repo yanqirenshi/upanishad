@@ -46,7 +46,7 @@
         (meme (make-instance 'test-meme :%id 1)))
     (is (add-meme memes meme)
         memes "can return memes")
-    (is (gethash 1 (%id-ht memes))
+    (is (get-meme memes 1)
         meme "can return meme")))
 
 (subtest "make-memes"
