@@ -21,7 +21,16 @@
       (when (gethash %id %id-ht)
         (error "Aledy exist meme"))
       (setf (gethash %id %id-ht) meme)
-      (push meme (contents memes)))))
+      (push meme (contents memes)))
+    memes))
+
+(defgeneric make-memes (class-symbol &key contents)
+  (:method ((object-symbol symbol) &key contents)
+    (let ((new-memes (make-instance 'memes
+                                    :class-symbol object-symbol)))
+      (dolist (meme contents)
+        (add-meme new-memes meme))
+      new-memes)))
 
 (defgeneric remove-meme (memes meme)
   (:method ((memes memes) (meme up:meme))
@@ -31,8 +40,3 @@
         (error "Not exist meme"))
       (remhash %id %id-ht)
       (remove meme memes))))
-
-(defun make-memes (object-symbol &key memes)
-  (let ((new-memes (make-instance 'memes :object-symbol object-symbol)))
-    (dolist (meme memes)
-      (add-object new-memes meme))))
