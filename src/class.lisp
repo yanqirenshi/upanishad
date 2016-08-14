@@ -65,6 +65,10 @@
     :documentation ":type hash-table"
     :accessor index-objects
     :initform (make-hash-table :test 'eq))
+   (memes
+    :documentation ":type hash-table"
+    :accessor memes
+    :initform (make-hash-table :test 'eq))
    (options
     :documentation ":type hash-table"
     :initform (make-hash-table :test 'eq))
