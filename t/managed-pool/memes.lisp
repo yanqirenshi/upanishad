@@ -62,6 +62,23 @@
         :test 'equalp
         "can return contents")))
 
-(subtest "remove-meme" (skip 1 "準備中"))
+(subtest "remove-meme"
+  (let* ((meme1 (make-instance 'test-meme :%id 1))
+         (meme2 (make-instance 'test-meme :%id 2))
+         (memes (make-memes 'memes
+                            :contents (list meme1 meme2))))
+    (subtest "before remove-meme"
+      (is (length (contents memes)) 2)
+      (is (hash-table-count (%id-ht memes)) 2)
+      (ok (get-meme memes 1))
+      (ok (get-meme memes 2)))
+    (subtest "submit remove-meme"
+      (is (remove-meme memes meme1)
+          memes "can return memes"))
+    (subtest "after remove-meme"
+      (is (length (contents memes)) 1)
+      (is (hash-table-count (%id-ht memes)) 1)
+      (ok (not (get-meme memes 1)))
+      (ok (get-meme memes 2)))))
 
 (finalize)
