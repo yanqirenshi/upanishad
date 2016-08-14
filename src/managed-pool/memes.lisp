@@ -1,6 +1,6 @@
 (in-package :upanishad.memes)
 
-(defclass memes (meme)
+(defclass memes ()
   ((class-symbol
     :documentation ""
     :accessor class-symbol
