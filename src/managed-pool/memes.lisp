@@ -17,7 +17,7 @@
 (defgeneric add-meme (memes meme)
   (:method ((memes memes) (meme upanishad:meme))
     (let ((%id-ht (%id-ht memes))
-          (%id meme))
+          (%id (up:%id meme)))
       (when (gethash %id %id-ht)
         (error "Aledy exist meme"))
       (setf (gethash %id %id-ht) meme)
