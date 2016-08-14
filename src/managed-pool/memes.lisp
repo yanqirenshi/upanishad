@@ -37,8 +37,10 @@
 
 (defgeneric remove-meme (memes meme)
   (:method ((memes memes) (meme up:meme))
-    (let ((%id meme))
+    (let ((%id (up:%id meme)))
       (unless (get-meme memes %id)
         (error "Not exist meme"))
       (remhash %id (%id-ht memes))
-      (remove meme memes))))
+      (setf (contents memes)
+            (remove meme (contents memes)))
+      memes)))
