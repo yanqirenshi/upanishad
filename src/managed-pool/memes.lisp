@@ -14,13 +14,16 @@
            :initarg :%id-ht
            :initform (make-hash-table))))
 
+(defun get-meme (memes %id)
+  (when (and memes %id)
+    (gethash %id (%id-ht memes))))
+
 (defgeneric add-meme (memes meme)
   (:method ((memes memes) (meme upanishad:meme))
-    (let ((%id-ht (%id-ht memes))
-          (%id (up:%id meme)))
-      (when (gethash %id %id-ht)
+    (let ((%id (up:%id meme)))
+      (when (get-meme memes %id)
         (error "Aledy exist meme"))
-      (setf (gethash %id %id-ht) meme)
+      (setf (gethash %id (%id-ht memes)) meme)
       (push meme (contents memes)))
     memes))
 
@@ -34,9 +37,10 @@
 
 (defgeneric remove-meme (memes meme)
   (:method ((memes memes) (meme up:meme))
-    (let ((%id-ht (%id-ht memes))
-          (%id meme))
-      (unless (gethash %id %id-ht)
+    (let ((%id (up:%id meme)))
+      (unless (get-meme memes %id)
         (error "Not exist meme"))
-      (remhash %id %id-ht)
-      (remove meme memes))))
+      (remhash %id (%id-ht memes))
+      (setf (contents memes)
+            (remove meme (contents memes)))
+      memes)))
