@@ -34,4 +34,3 @@
   (let ((key (slot-value object (slot-symbol index))))
     (remhash key (contents index)))
   index)
-

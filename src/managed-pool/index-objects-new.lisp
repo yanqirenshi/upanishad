@@ -4,8 +4,8 @@
   (let ((class (class-symbol index))
         (slot (slot-symbol index)))
     (ensure-gethash slot
-                    (ensure-gethash class 
-                                    (index-objects pool) 
+                    (ensure-gethash class
+                                    (index-objects pool)
                                     (make-hash-table))
                     index))
   index)
@@ -16,7 +16,7 @@
          (ht-class (gethash class (index-objects pool))))
     (when ht-class
       (gethash slot ht-class))
-  (list pool index)))
+    (list pool index)))
 
 ;;;
 ;;; Pool
