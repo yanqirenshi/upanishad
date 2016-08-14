@@ -50,6 +50,7 @@
                                (:file "id-counter")
                                (:file "preference")
                                (:file "index")
+                               (:file "memes")
                                (:file "index-objects-new" :depends-on ("index"))
                                (:file "index-objects" :depends-on ("transaction" "index"))
                                (:file "root-objects"  :depends-on ("index-objects"))))
