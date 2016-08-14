@@ -13,26 +13,33 @@
     (dolist (pathname (directory (merge-pathnames "*.xml" directory)))
       (delete-file pathname))))
 
+;;;
+;;; directory
+;;;
+(defvar *test-pool-root-directory* (pathname "~/var/upanishad/test/"))
 
-(defvar *test-pool-root-directory* (pathname "~/tmp/.upanishad/test/"))
+(defun ensure-directory-path (directory-path)
+  (let ((len (length directory-path)))
+    (if (string= (subseq directory-path (- len 1)) "/")
+        directory-path
+        (concatenate 'string directory-path "/"))))
 
+(defun test-pool-directory (path &key (base-directory *test-pool-root-directory*))
+  (ensure-directories-exist
+   (merge-pathnames (ensure-directory-path path) base-directory)))
 
-(defun ensure-directory-path (target)
-  (if (string= "/" (subseq target (- (length target) 1)))
-      target
-      (concatenate 'string target "/")))
-
-(defun test-pool-directory (target)
-  (assert target)
-  (merge-pathnames (ensure-directory-path target)
-                   *test-pool-root-directory*))
-
-(defmacro with-pool ((pool directory) &body body)
+;;;
+;;; with
+;;;
+(defmacro with-pool ((pool directory &key (with-id-counter t)) &body body)
   `(let ((,pool nil))
      (unwind-protect
-          (clear-pool-datastor ,directory)
-       (setf ,pool (make-pool ,directory))
-       ,@body
-       (when pool
-         (stop pool)))))
-
+          (progn
+            (clear-pool-datastor ,directory)
+            (setf ,pool (make-pool ,directory))
+            ,(when with-id-counter
+               '(execute-transaction
+                 (tx-create-%id-counter pool)))
+            ,@body)
+       (when ,pool
+         (stop ,pool)))))

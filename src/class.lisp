@@ -1,77 +1,17 @@
 ;;;;;
 ;;;;; Defince Classes
 ;;;;;
-;;;;; Contetns
-;;;;;  1. Class Graph
-;;;;;  2. Brahman
-;;;;;  3. Atman
-;;;;;  4. Meme
-;;;;;  5. Blob
-;;;;;  6. pool
-;;;;;  7. guarded-pool
-;;;;;  8. transaction
-;;;;;  9. define Getter and Setter
-;;;;;
-
 (in-package :upanishad)
 
-;;;
-;;; 1. Class Graph
-;;
-;;   +---------+
-;;   | brahman |
-;;   |=========|
-;;   |---------|
-;;   +---------+
-;;        ^
-;;        |
-;;        +--------------------------+-----------------------+
-;;        |                          |                       |
-;;   +---------+                     |                       |
-;;   | atman   |                     |                       |
-;;   |=========|                     |                       |
-;;   |r id     |                     |                       |
-;;   |---------|                     |                       |
-;;   +---------+                     |                       |
-;;        ^                          |                       |
-;;        |                          |                       |
-;;   +------------+     +-------------------------+    +-------------+
-;;   | meme       |     | pool                    |    | transaction |
-;;   |============|     |=========================|    |=============|
-;;   |------------|     |a directory              |    |a args       |
-;;   +------------+     |a root-objects           |    |a function   |
-;;        ^             |- options                |    |-------------|
-;;        |             |a snapshot               |    +-------------+
-;;   +------------+     |a transaction-log        |
-;;   | blob       |     |a transaction-log-stream |
-;;   |============|     |a serializer             |
-;;   |a name      |     |a deserializer           |
-;;   |r size      |     |a file-extension         |
-;;   |a mime-type |     |r serialization-state    |
-;;   |a keywords  |     |a transaction-hook       |
-;;   |------------|     |-------------------------|
-;;   +------------+     +-------------------------+
-;;                                   ^
-;;                                   |
-;;                            +--------------+
-;;                            | guarded-pool |
-;;                            |==============|
-;;                            |a guard       |
-;;                            |--------------|
-;;                            +--------------+
-;;
 
-;;;
-;;; 2. Brahman
-;;;
+;;;;;
+;;;;; supser class
+;;;;;
+;;; Brahman
 (defclass brahman () ()
   (:documentation "思想的/象徴的なクラス。今んところ意味はないけぇ。"))
 
-
-
-;;;
-;;; 3. Atman
-;;;
+;;; Atman
 (defclass atman (brahman)
   ((%id :documentation "Return an external, unique, immutable identifier for object (typically an integer)"
         :reader %id
@@ -79,20 +19,15 @@
         :initform -1))
   (:documentation "Superclass for objects with an id"))
 
-
-
-;;;
-;;; 4. Meme
-;;;
+;;; Meme
 (defclass meme (atman)
   ()
   (:documentation "このクラスも思想的/象徴的なクラスです。まぁぶっちゃけ不要なんですけど。"))
 
 
-
-;;;
-;;; 5. Blob
-;;;
+;;;;;
+;;;;; Blob
+;;;;;
 (defclass blob (meme)
   ((name :documentation "Return the descriptive name of blob. Set the descriptive name of blob."
          :accessor name
@@ -114,9 +49,9 @@
 
 
 
-;;;
-;;; 6. pool
-;;;
+;;;;;
+;;;;; pool
+;;;;;
 (defclass pool (brahman)
   ((directory
     :documentation ":type pathname"
@@ -126,12 +61,16 @@
     :documentation ":type hash-table"
     :accessor root-objects
     :initform (make-hash-table :test 'eq))
+   (index-objects
+    :documentation ":type hash-table"
+    :accessor index-objects
+    :initform (make-hash-table :test 'eq))
    (options
     :documentation ":type hash-table"
     :initform (make-hash-table :test 'eq))
    (snapshot
     :documentation ":type pathname"
-    :accessor get-snapshot)
+    :initform (make-hash-table :test 'eq))
    (transaction-log
     :documentation ":type pathname"
     :accessor transaction-log)
@@ -166,10 +105,9 @@
   (:documentation "Base Prevalence system implementation object"))
 
 
-
-;;;
-;;; 7. guarded-pool
-;;;
+;;;;;
+;;;;; guarded-pool
+;;;;;
 (defclass guarded-pool (pool)
   ((guard
     :documentation ":type function"
@@ -178,10 +116,9 @@
   (:documentation "A Prevalence system with a guard thunk"))
 
 
-
-;;;
-;;; 8. transaction
-;;;
+;;;;;
+;;;;; transaction
+;;;;;
 (defclass transaction (brahman)
   ((args
     :documentation ":type cons"

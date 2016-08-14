@@ -8,10 +8,7 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.transaction"))
 
-(plan 1)
-
-
-(subtest ":execute-transaction" (skip 1 "準備中"))
+(plan nil)
 
 
 (finalize)

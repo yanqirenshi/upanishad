@@ -49,13 +49,16 @@
                   :components ((:file "transaction")
                                (:file "id-counter")
                                (:file "preference")
-                               (:file "index-object" :depends-on ("transaction"))
-                               (:file "root-objects" :depends-on ("index-object"))))
+                               (:file "index")
+                               (:file "index-objects-new" :depends-on ("index"))
+                               (:file "index-objects" :depends-on ("transaction" "index"))
+                               (:file "root-objects"  :depends-on ("index-objects"))))
                  (:file "master-slave"     :depends-on ("pool"))
                  (:file "blob"             :depends-on ("managed-pool"))
                  (:file "printer"          :depends-on ("master-slave" "blob"))
                  (:file "debug-pool"       :depends-on ("printer")))))
   :depends-on (:alexandria
+               :cl-fad
                :s-xml
                :s-sysdeps
                :s-serialization
