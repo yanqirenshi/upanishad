@@ -18,12 +18,12 @@
            #:reset-known-slots)
   (:documentation "XML and s-expression based serialization for Common Lisp and CLOS"))
 
-(defpackage :upanishad.objects
+(defpackage :upanishad.memes
   (:use :cl)
-  (:export #:objects
-           #:make-objects
-           #:add-object
-           #:remove-object)
+  (:export #:memes
+           #:make-memes
+           #:add-meme
+           #:remove-meme)
   (:documentation ""))
 
 (defpackage :upanishad.index

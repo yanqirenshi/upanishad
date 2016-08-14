@@ -1,4 +1,4 @@
-(in-package :upanishad.objects)
+(in-package :upanishad.memes)
 
 (defclass memes (meme)
   ((class-symbol
