@@ -18,10 +18,34 @@
            #:reset-known-slots)
   (:documentation "XML and s-expression based serialization for Common Lisp and CLOS"))
 
+(defpackage :upanishad.objects
+  (:use :cl)
+  (:export #:objects
+           #:make-objects
+           #:add-object
+           #:remove-object)
+  (:documentation ""))
+
+(defpackage :upanishad.index
+  (:use :cl)
+  (:export #:index
+           #:class-symbol
+           #:slot-symbol
+           #:add-object
+           #:add-objects
+           #:remove-object
+           #:make-index)
+  (:documentation ""))
 
 (defpackage :upanishad
   (:use :cl :s-serialization)
   (:nicknames :up)
+  (:import-from :alexandria
+                #:ensure-gethash)
+  (:import-from :upanishad.index
+                #:index
+                #:class-symbol
+                #:slot-symbol)
   (:export #:atman
            #:meme
            #:blob
