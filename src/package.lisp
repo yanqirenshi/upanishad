@@ -21,6 +21,9 @@
 (defpackage :upanishad.memes
   (:use :cl)
   (:export #:memes
+           #:class-symbol
+           #:contents
+           #:%id-ht
            #:make-memes
            #:add-meme
            #:remove-meme)
