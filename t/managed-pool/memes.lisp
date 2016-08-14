@@ -37,9 +37,11 @@
 
 (subtest "add-meme"
   (let ((memes (make-instance 'memes))
-        (meme (make-instance 'test-meme)))
+        (meme (make-instance 'test-meme :%id 1)))
     (is (add-meme memes meme)
-        memes "can return memes")))
+        memes "can return memes")
+    (is (gethash 1 (%id-ht memes))
+        meme "can return meme")))
 
 (subtest "make-memes"
   (let ((memes (make-memes 'test-meme)))
