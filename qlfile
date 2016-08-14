@@ -1,0 +1,6 @@
+ql alexandria :latest
+ql cl-fad     :latest
+ql s-xml      :latest
+ql s-sysdeps  :latest
+ql cl-ppcre   :latest
+github s-serialization yanqirenshi/s-serialization
