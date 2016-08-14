@@ -1,21 +1,9 @@
 (in-package :upanishad)
 
-
-;;;
-;;; utility
-;;;
-(defun class-rootp (symbol)
-  (cl-ppcre:scan "^(\\S)+-ROOT$"
-                 (symbol-name symbol)))
-
 (defun get-objects-root-name (class)
   (let ((classname (if (symbolp class) (string class) (class-name class))))
     (intern (concatenate 'string classname "-ROOT") :keyword)))
 
-;;;
-;;; @export
-;;; get-object-at-%id
-;;;
 (defmethod get-object-at-%id ((pool pool) class %id)
   (cond ((eq class :all)
          (car (remove nil
@@ -24,15 +12,12 @@
                                            (get-root-object pool index)))
                               (class-%id-list pool)))))
         ((symbolp class)
-         (let ((index (index-at pool :class class :slot '%id)))
+         (let* ((index-name (get-objects-slot-index-name class '%id))
+                (index (get-root-object pool index-name)))
            (when index
              (gethash %id index))))
         (t (error "Bad class. class=~A" class))))
 
-;;;
-;;; @export
-;;; find-objects
-;;;
 (defun find-all-objects (pool class)
   (let ((root-name (get-objects-root-name class)))
     (copy-list (get-root-object pool root-name))))
@@ -53,7 +38,8 @@
              (find-all-objects pool class)))
 
 (defmethod find-objects-with-slot ((pool pool) class slot value &optional (test #'equalp))
-  (let ((index (index-at pool :class class :slot slot)))
+  (let* ((index-name (get-objects-slot-index-name class slot))
+         (index      (get-root-object pool index-name)))
     (if index
         (find-objects-with-slot-use-index pool class (gethash value index))
         (find-objects-with-slot-full-scan pool class slot value test))))
@@ -64,55 +50,46 @@
       (find-objects-with-slot pool class slot value test)
       (find-all-objects pool class)))
 
-;;;
-;;; @export
-;;; tx-create-object
-;;;
+(defun slot-value-changed-p (object slot value)
+  (or (not (slot-boundp object slot))
+      (not (eql (slot-value object slot) value))))
+
 (defmethod tx-create-object ((pool pool) class &optional slots-and-values)
   (let* ((%id (next-%id pool))
          (object (make-instance class :%id %id))
-         (index (index-at pool :class class :slot '%id :ensure t)))
+         (index-name (get-objects-slot-index-name class '%id))
+         (index (or (get-root-object pool index-name)
+                    (setf (get-root-object pool index-name) (make-hash-table)))))
     (push object (get-root-object pool (get-objects-root-name class)))
     (setf (gethash %id index) object)
     (tx-change-object-slots pool class %id slots-and-values)
     object))
 
-
-;;;
-;;; @export
-;;; tx-delete-object
-;;;
 (defmethod tx-delete-object ((pool pool) class %id)
   (let ((object (get-object-at-%id pool class %id)))
     (if object
         (let ((root-name (get-objects-root-name class))
-              (index (index-at pool :class class :slot '%id)))
-          (setf (get-root-object pool root-name)
-                (delete object (get-root-object pool root-name)))
-          (remhash %id index))
+              (index-name (get-objects-slot-index-name class '%id)))
+          (setf (get-root-object pool root-name) (delete object (get-root-object pool root-name)))
+          (remhash %id (get-root-object pool index-name)))
         (error "no object of class ~a with %id ~d found in ~s" class %id pool))))
 
-;;; @export
-;;; tx-change-object-slots
-;;;
-(defun slot-value-changed-p (object slot value)
-  (or (not (slot-boundp object slot))
-      (not (eql (slot-value object slot) value))))
-
-;; export
 (defmethod tx-change-object-slots ((pool pool) class %id slots-and-values)
   (let ((object (get-object-at-%id pool class %id)))
     (unless object (error "no object of class ~a with %id ~d found in ~s" class %id pool))
     (loop :for (slot value) :in slots-and-values
           :do (when (slot-value-changed-p object slot value)
-                (remove-object-from-index pool class slot object)
+                (remove-object-from-slot-index pool class slot object)
                 (setf (slot-value object slot) value)
-                (add-object-to-index pool class slot object)))
+                (add-object-to-slot-index pool class slot object)))
     object))
 
 ;;;
 ;;; 4. added iwasaki
 ;;;
+(defun class-rootp (symbol)
+  (cl-ppcre:scan "^(\\S)+-ROOT$"
+                 (symbol-name symbol)))
 
 (defmethod class-%id-list ((pool pool))
   (remove-if (complement #'class-%id-indexp)
@@ -127,7 +104,6 @@
 (defun object-root-name (symbol)
   (get-objects-root-name symbol))
 
-;; export
 (defmethod get-object-list ((pool pool) (class-symbol symbol))
   (get-root-object pool
                    (get-objects-root-name class-symbol)))

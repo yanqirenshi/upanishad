@@ -12,7 +12,7 @@
   ((firstname :initarg :firstname :initform "" :accessor get-firstname)
    (lastname  :initarg :lastname  :initform "" :accessor get-lastname)))
 
-(plan 15)
+(plan 13)
 
 (subtest "::class-%id-indexp"
   (is (up::class-%id-indexp 'objtect-%id-index) t)
@@ -30,44 +30,27 @@
               'error
               "class instance")))
 
-(subtest "::get-index-name"
-  (is (up::get-index-name 'person) :person-%id-index))
-
-(subtest "::make-index"
-  (let ((index (up::make-index)))
-    (ok index)
-    (eq (type-of index) 'hash-table)
-    (setf (gethash "key" index) "value")
-    (is (gethash "key" index) "value" :test 'string=)))
-
-(subtest "::make-%id-map"
-  (let ((id-map (up::make-%id-map)))
-    (ok id-map)
-    (eq (type-of id-map) 'hash-table)
-    (setf (gethash "key" id-map) "value")
-    (setf (gethash 'key id-map) "value")
-    (is (gethash (copy-seq "key") id-map) nil)
-    (is (gethash 'key id-map) "value" :test 'string=)))
+(subtest "::get-objects-slot-index-name"
+  (is (up::get-objects-slot-index-name 'person) :person-%id-index))
 
 (subtest "::index-at"
   (let* ((object-class 'person)
-         (%id-index-name (up::get-index-name object-class)))
+         (%id-index-name (up::get-objects-slot-index-name object-class)))
     (with-pool (pool *test-pool-directory*)
       (tx-create-%id-counter pool)
       (tx-create-object pool object-class)
       (ok (up::index-at pool :name %id-index-name))
-      (is-error (up::index-at pool) 'error)
-      (snapshot pool))))
+      (is-error (up::index-at pool) 'error))))
 
-(subtest "::tx-create-index-for-objects-slot" (skip 1 "準備中"))
+(subtest "::tx-create-objects-slot-index" (skip 1 "準備中"))
 (subtest "::tx-remove-objects-slot-index" (skip 1 "準備中"))
-(subtest "::%add-object-to-index" (skip 1 "準備中"))
-(subtest "::add-object-to-index" (skip 1 "準備中"))
-(subtest "::%remove-object-from-index" (skip 1 "準備中"))
-(subtest "::remove-object-from-index" (skip 1 "準備中"))
-(subtest ":add-index" (skip 1 "準備中"))
-(subtest ":drop-index" (skip 1 "準備中"))
-(subtest ":tx-remove-object-on-index" (skip 1 "準備中"))
+(subtest "::%add-object-to-slot-index" (skip 1 "準備中"))
+(subtest "::add-object-to-slot-index" (skip 1 "準備中"))
+(subtest "::%remove-object-from-slot-index" (skip 1 "準備中"))
+(subtest "::remove-object-from-slot-index" (skip 1 "準備中"))
+(subtest ":index-on" (skip 1 "準備中"))
+(subtest ":drop-index-on" (skip 1 "準備中"))
+(subtest ":tx-remove-object-on-slot-index" (skip 1 "準備中"))
 
 
 (finalize)

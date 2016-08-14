@@ -43,37 +43,17 @@
 ;;;
 ;;; snapshot file
 ;;;
-(defun snapshot-type-p (type)
-  (find type '(:object :index)))
+(defmethod get-snapshot-filename ((pool pool) &optional suffix)
+  (format nil "snapshot~@[-~a~]" suffix))
 
-(defmethod snapshot-pathnames (pool type)
-  (assert (snapshot-type-p type))
-  (let ((pathnames (slot-value pool 'snapshot)))
-    (gethash type pathnames)))
-
-(defmethod (setf snapshot-pathnames) (value pool type)
-  (assert (snapshot-type-p type))
-  (let ((pathnames (slot-value pool 'snapshot)))
-    (setf (gethash type pathnames) value)))
-
-(defmethod make-snapshot-filename ((pool pool) (type symbol) &optional suffix)
-  (assert (or (null type) (find type '(:object :index))))
-  (unless type (warn "type が nil ですよ。"))
-  (if type
-      (format nil "snapshot-~a~@[-~a~]" (string-downcase (symbol-name type)) suffix)
-      (format nil "snapshot~@[-~a~]" suffix)))
-
-(defmethod make-snapshot-pathname (pool directory type &optional suffix)
-  (merge-pathnames (make-pathname :name (make-snapshot-filename pool type suffix)
+(defun snapshot-backup-file (pool directory timetag)
+  (merge-pathnames (make-pathname :name (get-snapshot-filename pool timetag)
                                   :type (file-extension pool))
                    directory))
 
-(defun make-snapshot-backup-pathname (pool directory type timetag)
-  (make-snapshot-pathname pool directory type timetag))
-
-(defun snapshot-copy-snapshot-file (pool directory type timetag)
+(defun snapshot-copy-snapshot-file (pool directory timetag)
   (when (probe-file directory)
-    (copy-file directory (make-snapshot-backup-pathname pool directory type timetag))))
+    (copy-file directory (snapshot-backup-file pool directory timetag))))
 
 (defun backup-snapshot (snapshot snapshot-backup)
   (when (probe-file snapshot)
@@ -82,16 +62,13 @@
 ;;;
 ;;; transaction log file
 ;;;
-(defmethod make-transaction-log-filename ((pool pool) &optional suffix)
+(defmethod get-transaction-log-filename ((pool pool) &optional suffix)
   (format nil "transaction-log~@[-~a~]" suffix))
 
-(defmethod make-transaction-log-pathname (pool directory &optional suffix)
-  (merge-pathnames (make-pathname :name (make-transaction-log-filename pool suffix)
+(defun transaction-log-backup-file (pool directory timetag)
+  (merge-pathnames (make-pathname :name (get-transaction-log-filename pool timetag)
                                   :type (file-extension pool))
                    directory))
-
-(defun transaction-log-backup-file (pool directory timetag)
-  (make-transaction-log-pathname pool directory timetag))
 
 (defun snapshot-transaction-log (pool directory timetag)
   (when (probe-file directory)
@@ -104,33 +81,21 @@
 ;;;
 ;;; snapshot
 ;;;
-(defun snapshot-objects (pool snapshot type)
-  (assert (snapshot-type-p type))
-  (let ((objects (cond ((eq type :object) (root-objects pool))
-                       ((eq type :index) (index-objects pool)))))
-    (with-open-file (out snapshot :direction :output
-                                  :if-does-not-exist :create
-                                  :if-exists :supersede)
-      (funcall (serializer pool) objects out (serialization-state pool))))
-  pool)
+(defun snapshot-root-objects (pool snapshot)
+  (with-open-file (out snapshot :direction :output
+                                :if-does-not-exist :create
+                                :if-exists :supersede)
+    (funcall (serializer pool) (root-objects pool) out (serialization-state pool))))
 
 (defmethod snapshot ((pool pool))
   (let ((timetag (timetag))
         (transaction-log (transaction-log pool))
-        (snapshot-object (snapshot-pathnames pool :object))
-        (snapshot-index (snapshot-pathnames pool :index)))
+        (snapshot (get-snapshot pool)))
     (close-open-streams pool)
-    ;; backup snapshot
-    (snapshot-copy-snapshot-file pool snapshot-object :object timetag)
-    (snapshot-copy-snapshot-file pool snapshot-index :index timetag)
-    ;; snapshot
-    (snapshot-objects pool snapshot-object :object)
-    (snapshot-objects pool snapshot-index :index)
-    ;; transaction log
+    (snapshot-copy-snapshot-file pool snapshot timetag)
+    (snapshot-root-objects pool snapshot)
     (snapshot-transaction-log pool transaction-log timetag)
-    (when (fad:file-exists-p transaction-log)
-      (delete-file transaction-log))
-    pool))
+    (delete-file transaction-log)))
 
 
 ;;;
@@ -139,34 +104,25 @@
 (defmethod backup ((pool pool) &key directory)
   (let* ((timetag (timetag))
          (transaction-log (transaction-log pool))
+         (snapshot (get-snapshot pool))
          (transaction-log-backup (transaction-log-backup-file pool (or directory transaction-log) timetag))
-         (snapshot-object (snapshot-pathnames pool :object))
-         (snapshot-object-backup (make-snapshot-backup-pathname pool (or directory snapshot-object) :object timetag))
-         (snapshot-index (snapshot-pathnames pool :index))
-         (snapshot-index-backup (make-snapshot-backup-pathname pool (or directory snapshot-index) :index timetag)))
+         (snapshot-backup (snapshot-backup-file pool (or directory snapshot) timetag)))
     (close-open-streams pool)
     (backup-transaction-log transaction-log transaction-log-backup)
-    (backup-snapshot snapshot-object snapshot-object-backup)
-    (backup-snapshot snapshot-object snapshot-index-backup)
+    (backup-snapshot snapshot snapshot-backup)
     timetag))
 
 
 ;;;
 ;;; restore
 ;;;
-(defun restore-objects (pool type)
-  (assert (snapshot-type-p type))
+(defun restore-root-objects (pool)
   (let ((deserializer (deserializer pool))
         (serialization-state (serialization-state pool)))
-    (when (probe-file (snapshot-pathnames pool type))
-      (with-open-file (in (snapshot-pathnames pool type) :direction :input)
-        (cond ((eq type :object)
-               (setf (root-objects pool)
-                     (funcall deserializer in serialization-state)))
-              ((eq type :index)
-               (setf (index-objects pool)
-                     (funcall deserializer in serialization-state)))))))
-  pool)
+    (when (probe-file (get-snapshot pool))
+      (with-open-file (in (get-snapshot pool) :direction :input)
+        (setf (root-objects pool)
+              (funcall deserializer in serialization-state))))))
 
 (defun restore-transaction-log (pool)
   (when (probe-file (transaction-log pool))
@@ -184,13 +140,10 @@
               (setf position (file-position in))
               (if transaction
                   (execute-on transaction pool)
-                  (return))))))))
-  pool)
+                  (return)))))))))
 
 (defmethod restore ((pool pool))
   (clrhash (root-objects pool))
   (close-open-streams pool)
-  (restore-objects pool :object)
-  (restore-objects pool :index)
-  (restore-transaction-log pool)
-  pool)
+  (restore-root-objects pool)
+  (restore-transaction-log pool))
