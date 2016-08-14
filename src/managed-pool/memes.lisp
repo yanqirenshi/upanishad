@@ -14,6 +14,10 @@
            :initarg :%id-ht
            :initform (make-hash-table))))
 
+(defun get-meme (memes %id)
+  (when (and memes %id)
+    (gethash %id (%id-ht memes))))
+
 (defgeneric add-meme (memes meme)
   (:method ((memes memes) (meme upanishad:meme))
     (let ((%id-ht (%id-ht memes))

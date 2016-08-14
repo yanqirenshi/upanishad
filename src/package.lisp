@@ -24,8 +24,9 @@
            #:class-symbol
            #:contents
            #:%id-ht
-           #:make-memes
+           #:get-meme
            #:add-meme
+           #:make-memes
            #:remove-meme)
   (:documentation ""))
 

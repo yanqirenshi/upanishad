@@ -35,6 +35,12 @@
         (is (hash-table-count %id-ht)
             0 "empty")))))
 
+(subtest "get-meme"
+  (let ((memes (make-instance 'memes))
+        (meme (make-instance 'test-meme :%id 1)))
+    (add-meme memes meme)
+    (get-meme memes 1)))
+
 (subtest "add-meme"
   (let ((memes (make-instance 'memes))
         (meme (make-instance 'test-meme :%id 1)))
