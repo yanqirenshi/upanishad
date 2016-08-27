@@ -84,6 +84,7 @@
            ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; pool/basic
            #:poolp
+           #:memes
            #:get-root-object
            #:remove-root-object
            #:get-index-object
