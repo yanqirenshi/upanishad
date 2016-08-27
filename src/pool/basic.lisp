@@ -171,5 +171,3 @@
   prepended to the argument list as arguments and implement the actual
   transaction in a re-entrant way."
   (make-instance 'transaction :function function :args args))
-
-
