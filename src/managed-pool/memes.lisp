@@ -1,10 +1,10 @@
 (in-package :upanishad.memes)
 
 (defclass memes ()
-  ((class-symbol
+  ((meme-class
     :documentation ""
-    :accessor class-symbol
-    :initarg :class-symbol)
+    :accessor meme-class
+    :initarg :meme-class)
    (meme-list :documentation ""
               :accessor meme-list
               :initarg :meme-list
@@ -27,10 +27,10 @@
       (push meme (meme-list memes)))
     memes))
 
-(defgeneric make-memes (class-symbol &key meme-list)
+(defgeneric make-memes (meme-class &key meme-list)
   (:method ((object-symbol symbol) &key meme-list)
     (let ((new-memes (make-instance 'memes
-                                    :class-symbol object-symbol)))
+                                    :meme-class object-symbol)))
       (dolist (meme meme-list)
         (add-meme new-memes meme))
       new-memes)))

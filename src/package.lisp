@@ -20,10 +20,11 @@
 
 (defpackage :upanishad.memes
   (:use :cl)
+  (:nicknames :up.memes)
   (:export #:memes
-           #:class-symbol
-           #:contents
-           #:%id-ht
+           #:meme-class
+           #:meme-list
+           #:%id-index
            #:get-meme
            #:add-meme
            #:make-memes

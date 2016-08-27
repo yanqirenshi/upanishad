@@ -42,7 +42,6 @@
                  (:file "class"            :depends-on ("utility"))
                  (:module "pool"  :depends-on ("class")
                   :components ((:file "basic")
-                               (:file "memes" :depends-on ("basic"))
                                (:file "snapshot-backup-restore" :depends-on ("basic"))
                                (:file "guarded-pool" :depends-on ("snapshot-backup-restore"))
                                (:file "etc" :depends-on ("guarded-pool"))))
@@ -51,6 +50,9 @@
                                (:file "id-counter")
                                (:file "preference")
                                (:file "index")
+                               (:file "memes")
+                               (:file "pool" :depends-on ("memes" "index"))
+                               ;; old
                                (:file "index-objects-new" :depends-on ("index"))
                                (:file "index-objects" :depends-on ("transaction" "index"))
                                (:file "root-objects"  :depends-on ("index-objects"))))
