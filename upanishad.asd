@@ -42,6 +42,7 @@
                  (:file "class"            :depends-on ("utility"))
                  (:module "pool"  :depends-on ("class")
                   :components ((:file "basic")
+                               (:file "memes" :depends-on ("basic"))
                                (:file "snapshot-backup-restore" :depends-on ("basic"))
                                (:file "guarded-pool" :depends-on ("snapshot-backup-restore"))
                                (:file "etc" :depends-on ("guarded-pool"))))
