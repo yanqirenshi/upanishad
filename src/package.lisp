@@ -37,10 +37,11 @@
   (:export #:index
            #:class-symbol
            #:slot-symbol
-           #:add-object
-           #:add-objects
-           #:remove-object
-           #:make-index)
+           #:add-meme
+           #:add-memes
+           #:remove-meme
+           #:make-index
+           #:get-index-key)
   (:documentation ""))
 
 (defpackage :upanishad
@@ -87,6 +88,7 @@
            ;; pool/basic
            #:poolp
            #:memes
+           #:indexes
            #:get-root-object
            #:remove-root-object
            #:get-index-object
