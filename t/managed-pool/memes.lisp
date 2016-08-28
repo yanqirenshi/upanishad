@@ -1,6 +1,5 @@
 (defpackage :upanishad-test.memes
   (:use :cl
-        #:upanishad
         #:prove
         #:upanishad-test.test-utility
         #:upanishad.memes)
@@ -11,7 +10,7 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.pool"))
 
-(defclass test-meme (meme) ())
+(defclass test-meme (upanishad:meme) ())
 
 (plan nil)
 
@@ -19,17 +18,17 @@
   (let* ((contents '(1 2 3))
          (class-symbol 'number)
          (memes (make-instance 'memes
-                               :class-symbol class-symbol
-                               :contents contents)))
+                               :meme-class class-symbol
+                               :meme-list contents)))
     (ok memes "can make-isntace")
-    (is (class-symbol memes)
+    (is (meme-class memes)
         class-symbol
         "can return class-symbol")
-    (is (contents memes)
+    (is (meme-list memes)
         contents
         "can return contents")
     (subtest "can return %id-ht"
-      (let ((%id-ht (%id-ht memes)))
+      (let ((%id-ht (%id-index memes)))
         (is (type-of %id-ht)
             'hash-table "type is hash table")
         (is (hash-table-count %id-ht)
@@ -52,12 +51,12 @@
 (subtest "make-memes"
   (let ((memes (make-memes 'test-meme)))
     (ok memes "can return memes instance")
-    (is (contents memes) nil "contents is empty"))
+    (is (meme-list memes) nil "contents is empty"))
 
   (let* ((contents (list (make-instance 'test-meme :%id 1)))
-         (memes (make-memes 'test-meme :contents contents)))
+         (memes (make-memes 'test-meme :meme-list contents)))
     (ok memes "can return memes instance")
-    (is (mapcar #'%id (contents memes))
+    (is (mapcar #'%id (meme-list memes))
         (mapcar #'%id contents)
         :test 'equalp
         "can return contents")))
@@ -66,18 +65,18 @@
   (let* ((meme1 (make-instance 'test-meme :%id 1))
          (meme2 (make-instance 'test-meme :%id 2))
          (memes (make-memes 'memes
-                            :contents (list meme1 meme2))))
+                            :meme-list (list meme1 meme2))))
     (subtest "before remove-meme"
-      (is (length (contents memes)) 2)
-      (is (hash-table-count (%id-ht memes)) 2)
+      (is (length (meme-list memes)) 2)
+      (is (hash-table-count (%id-index memes)) 2)
       (ok (get-meme memes 1))
       (ok (get-meme memes 2)))
     (subtest "submit remove-meme"
       (is (remove-meme memes meme1)
           memes "can return memes"))
     (subtest "after remove-meme"
-      (is (length (contents memes)) 1)
-      (is (hash-table-count (%id-ht memes)) 1)
+      (is (length (meme-list memes)) 1)
+      (is (hash-table-count (%id-index memes)) 1)
       (ok (not (get-meme memes 1)))
       (ok (get-meme memes 2)))))
 
