@@ -1,8 +1,59 @@
 (in-package :upanishad)
 
+;;;;;
+;;;;; indexes
+;;;;;
+(defgeneric get-slot-index (pool class slot)
+  (:method ((pool pool) (class symbol) (slot symbol))
+    (let* ((class-ht (indexes pool))
+           (slot-ht (gethash class class-ht)))
+      (when slot-ht
+        (gethash slot slot-ht)))))
+
+(defun %tx-add-index (pool class slot index)
+  (let* ((class-ht (indexes pool))
+         (slot-ht (alexandria:ensure-gethash class class-ht
+                                             (make-hash-table))))
+    (when (gethash slot slot-ht)
+      (error "aledy exist index"))
+    (setf (gethash slot slot-ht) index)))
+
+(defgeneric tx-add-index (pool index)
+  (:method ((pool pool) (index up.index:index))
+    (multiple-value-bind (class slot)
+        (up.index:get-index-key index)
+      (let ((indexes (indexes pool)))
+        (when (get-slot-index pool class slot)
+          (error "Aledy exist index"))
+        (%tx-add-index indexes class slot index)))))
+
+(defgeneric tx-remove-index (pool index)
+  (:method ((pool pool) (index up.index:index))
+    (multiple-value-bind (class slot)
+        (up.index:get-index-key index)
+      (let ((slot-ht (get-slot-index pool class slot)))
+        (when slot-ht
+          (remhash slot slot-ht)
+          index)))))
+
 ;;;
-;;; memes
+;;; index
 ;;;
+(defgeneric tx-add-meme-to-index (pool slot meme)
+  (:method ((pool pool) (slot symbol) (meme meme))
+    (let ((index (get-slot-index pool (type-of meme) slot)))
+      (unless index (error "index not found"))
+      (up.index:add-meme index meme))))
+
+(defgeneric tx-remove-meme-from-index (pool slot meme)
+  (:method ((pool pool) (slot symbol) (meme meme))
+    (let ((index (get-slot-index pool (type-of meme) slot)))
+      (when index
+        (up.index:remove-meme index meme)))))
+
+;;;;;
+;;;;; memes
+;;;;;
 (defgeneric tx-add-memes (pool memes)
   (:method ((pool pool) (memes up.memes:memes))
     (let ((ht (memes pool))
@@ -58,10 +109,9 @@
         (error "no meme of class ~a with %id ~d found in ~s" class %id pool))
       (loop :for (slot value) :in slots-and-values
             :do (when (slot-value-changed-p meme slot value)
-                  ;; TODO: (remove-meme-from-index pool class slot meme)
+                  (tx-remove-meme-from-index pool slot meme)
                   (setf (slot-value meme slot) value)
-                  ;; TODO: (add-meme-to-index pool class slot meme)
-                  ))
+                  (tx-add-meme-to-index pool slot meme)))
       meme)))
 
 ;;;

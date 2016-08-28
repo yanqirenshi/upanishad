@@ -15,22 +15,60 @@
     :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
 
-(defmethod add-object ((index index) object)
-  (list index object))
+;;;
+;;; get-index-key
+;;;
+(defgeneric get-index-key (index)
+  (:method ((index index))
+    (values (up.index:class-symbol index)
+            (up.index:slot-symbol index))))
 
-(defmethod add-objects ((index index) objects)
-  (dolist (object objects)
-    (add-object index object)))
+;;;
+;;; add-meme
+;;;
+(defun assert-class (class meme)
+  (unless (eq class (type-of meme))
+    (error "index is not meme's slot index")))
 
-(defun make-index (object-symbol slot-symbol &optional objects)
-  (assert (and (symbolp object-symbol)
+(defun change-meme (index slot meme)
+  (let ((value (slot-value meme slot))
+        (ht (contents index)))
+    (let ((old-meme (gethash value ht)))
+      (unless (eq meme old-meme)
+        (setf (gethash value ht) meme)))))
+
+(defgeneric add-meme (index meme)
+  (:method ((index index) meme)
+    (multiple-value-bind (class slot)
+        (get-index-key index)
+      (assert-class class meme)
+      (change-meme index slot meme))))
+
+;;;
+;;; add-memes
+;;;
+(defgeneric add-memes (index memes)
+  (:method ((index index) memes)
+    (dolist (object memes)
+      (add-meme index object))))
+
+;;;
+;;; make-index
+;;;
+(defun make-index (class-symbol slot-symbol &optional memes)
+  (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
-               (or (null objects) (listp objects))))
-  (let ((index (make-instance 'index :object object-symbol :slot slot-symbol)))
-    (when objects
-      (add-objects index objects))))
+               (or (null memes) (listp memes))))
+  (let ((index (make-instance 'index :object class-symbol
+                                     :slot slot-symbol)))
+    (when memes
+      (add-memes index memes))))
 
-(defmethod remove-object ((index index) object)
-  (let ((key (slot-value object (slot-symbol index))))
-    (remhash key (contents index)))
-  index)
+;;;
+;;; remove-meme
+;;;
+(defgeneric remove-meme (index meme)
+  (:method ((index index) meme)
+    (let ((key (slot-value meme (slot-symbol index))))
+      (remhash key (contents index)))
+    index))
