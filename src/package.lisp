@@ -33,6 +33,7 @@
 
 (defpackage :upanishad.index
   (:use :cl)
+  (:nicknames :up.index)
   (:export #:index
            #:class-symbol
            #:slot-symbol
