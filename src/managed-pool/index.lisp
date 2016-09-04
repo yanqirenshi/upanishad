@@ -40,12 +40,12 @@
         (setf (gethash value ht) meme))))
   index)
 
-(defgeneric add-meme (index meme &key old-value)
-  (:method ((index index) meme &key (old-value nil))
+(defgeneric add-meme (index meme)
+  (:method ((index index) meme)
     (multiple-value-bind (class slot)
         (get-index-key index)
       (assert-class class meme)
-      (change-meme index slot meme :old-value old-value))))
+      (change-meme index slot meme))))
 
 ;;;
 ;;; add-memes
