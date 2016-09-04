@@ -63,10 +63,11 @@
   (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
                (or (null memes) (listp memes))))
-  (let ((index (make-instance 'index :object class-symbol
-                                     :slot slot-symbol)))
+  (let ((index (make-instance 'index :class-symbol class-symbol
+                                     :slot-symbol slot-symbol)))
     (when memes
-      (add-memes index memes))))
+      (add-memes index memes))
+    index))
 
 ;;;
 ;;; remove-meme
