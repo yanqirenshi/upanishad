@@ -131,7 +131,10 @@
           1 "contents count")
       (is (gethash (slot-value meme slot-symbol)
                    (contents index))
-          meme "can get meme"))))
+          meme "can get meme"))
+    (subtest "can raise error"
+      (is-error (add-meme index (make-instance 'test-meme-2))
+                'error "bad meme class"))))
 
 (subtest ":ADD-MEMES"
   (let* ((slot-symbol 'test-slot-a)
