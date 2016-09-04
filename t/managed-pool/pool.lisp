@@ -10,7 +10,35 @@
 
 (plan nil)
 
+;;;;;
+;;;;; indexes
+;;;;;
+(subtest "GET-SLOT-INDEX")
+(subtest "%TX-ADD-INDEX")
+(subtest "TX-ADD-INDEX")
+(subtest "TX-REMOVE-INDEX")
 
+;;;;;
+;;;;; index
+;;;;;
+(subtest "TX-ADD-MEME-TO-INDEX")
+(subtest "TX-REMOVE-MEME-FROM-INDEX")
 
+;;;;;
+;;;;; memes
+;;;;;
+(subtest "TX-ADD-MEMES")
+(subtest "TX-REMOVE-MEMES")
+(subtest "GET-MEMES-AT")
+
+;;;;;
+;;;;; meme
+;;;;;
+(subtest "GET-MEME-AT-%ID")
+(subtest "FIND-MEME")
+(subtest "SLOT-VALUE-CHANGED-P")
+(subtest "TX-CHANGE-MEME-SLOTS")
+(subtest "TX-CREATE-MEME")
+(subtest "TX-DELETE-MEME")
 
 (finalize)
