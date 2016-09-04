@@ -10,8 +10,8 @@
       (when slot-ht
         (gethash slot slot-ht)))))
 
-(defun %tx-add-slot-index (pool class slot index)
-  (let* ((class-ht (indexes pool))
+(defun %tx-add-slot-index (indexes class slot index)
+  (let* ((class-ht indexes)
          (slot-ht (alexandria:ensure-gethash class class-ht
                                              (make-hash-table))))
     (when (gethash slot slot-ht)
