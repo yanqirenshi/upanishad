@@ -151,7 +151,37 @@
       (is (gethash (slot-value meme2 slot-symbol) contents)
           meme2 "can get meme2"))))
 
-(subtest ":MAKE-INDEX")
+(subtest ":MAKE-INDEX"
+  (let* ((class-symbol 'test-meme-1)
+         (slot-symbol 'test-slot-a)
+         (meme1 (make-instance class-symbol :test-slot-a 1))
+         (meme2 (make-instance class-symbol :test-slot-a 2))
+         (memes (list meme1 meme2)))
+    (subtest "without memes"
+      (let ((index (make-index class-symbol slot-symbol)))
+        (is (type-of index)
+            'index "can return index")
+        (let ((contents (contents index)))
+          (is (hash-table-count contents)
+              0 "key count"))))
+    (subtest "with memes"
+      (let ((index (make-index class-symbol slot-symbol memes)))
+        (is (type-of index)
+            'index "can return index")
+        (let ((contents (contents index)))
+          (is (hash-table-count contents)
+              (length memes) "key count")
+          (is (gethash (slot-value meme1 slot-symbol) contents)
+              meme1 "can get meme1")
+          (is (gethash (slot-value meme2 slot-symbol) contents)
+              meme2 "can get meme2"))))
+    (subtest "can raise error"
+      (is-error (make-index 1 slot-symbol memes)
+                'error "class-symbol is not symbol")
+      (is-error (make-index class-symbol 1 memes)
+                'error "class-symbol is not symbol")
+      (is-error (make-index class-symbol slot-symbol 1)
+                'error "memes is not list"))))
 
 (subtest ":REMOVE-MEME")
 
