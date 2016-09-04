@@ -72,10 +72,32 @@
             (is (up::get-slot-index pool class-symbol-ng slot-symbol-ng2)
                 nil "bad class-symbol")))
         (subtest "can raise error"
-          (is-error(up::%tx-add-slot-index indexes class-symbol slot-symbol index)
+          (is-error (up::%tx-add-slot-index indexes class-symbol slot-symbol index)
                    'error "aledy exist indexe"))))))
 
-(subtest "::TX-ADD-INDEX")
+(subtest "::TX-ADD-INDEX"
+  (let ((class-symbol 'test-meme-1)
+        (slot-symbol 'test-slot-b)
+        (class-symbol-ng 'test-meme-2)
+        (slot-symbol-ng1 'test-slot-a)
+        (slot-symbol-ng2 'test-slot-c))
+    (with-pool (pool *test-pool-directory* :with-id-counter nil)
+      (let ((index (make-index class-symbol slot-symbol)))
+        (subtest "add index"
+          (is (up::tx-add-index pool index)
+              pool "can return pool"))
+        (subtest "after add index"
+          (is (up::get-slot-index pool class-symbol slot-symbol)
+              index "can return index")
+          (subtest "can not return index"
+            (is (up::get-slot-index pool class-symbol slot-symbol-ng1)
+                nil "bad slot-symbol")
+            (is (up::get-slot-index pool class-symbol-ng slot-symbol-ng2)
+                nil "bad class-symbol")))
+        (subtest "can raise error"
+          (is-error (up::tx-add-index pool index)
+                    'error "aledy exist indexe"))))))
+
 (subtest "::TX-REMOVE-INDEX")
 
 ;;;;;
