@@ -25,7 +25,8 @@
       (let ((indexes (indexes pool)))
         (when (get-slot-index pool class slot)
           (error "Aledy exist index"))
-        (%tx-add-slot-index indexes class slot index)))))
+        (%tx-add-slot-index indexes class slot index)))
+    pool))
 
 (defgeneric tx-remove-index (pool index)
   (:method ((pool pool) (index up.index:index))
