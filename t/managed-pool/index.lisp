@@ -133,7 +133,23 @@
                    (contents index))
           meme "can get meme"))))
 
-(subtest ":ADD-MEMES")
+(subtest ":ADD-MEMES"
+  (let* ((slot-symbol 'test-slot-a)
+         (index (make-instance 'index
+                               :class-symbol 'test-meme-1
+                               :slot-symbol slot-symbol))
+         (meme1 (make-instance 'test-meme-1 :test-slot-a 1))
+         (meme2 (make-instance 'test-meme-1 :test-slot-a 2))
+         (memes (list meme1 meme2)))
+    (is (add-memes index memes)
+        index "can return index")
+    (let ((contents (contents index)))
+      (is (hash-table-count contents)
+          (length memes) "key count")
+      (is (gethash (slot-value meme1 slot-symbol) contents)
+          meme1 "can get meme1")
+      (is (gethash (slot-value meme2 slot-symbol) contents)
+          meme2 "can get meme2"))))
 
 (subtest ":MAKE-INDEX")
 
