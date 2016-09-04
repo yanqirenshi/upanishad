@@ -186,6 +186,19 @@
       (is-error (make-index class-symbol slot-symbol 1)
                 'error "memes is not list"))))
 
-(subtest ":REMOVE-MEME")
+(subtest ":REMOVE-MEME"
+  (let* ((class-symbol 'test-meme-1)
+         (slot-symbol 'test-slot-a)
+         (meme1 (make-instance class-symbol :test-slot-a 1))
+         (meme2 (make-instance class-symbol :test-slot-a 2))
+         (memes (list meme1 meme2))
+         (index (make-index class-symbol slot-symbol memes)))
+    (is (remove-meme index meme1)
+        index "can return index")
+    (let ((contents (contents index)))
+      (is (gethash (slot-value meme1 slot-symbol) contents)
+          nil "can not get meme1")
+      (is (gethash (slot-value meme2 slot-symbol) contents)
+          meme2 "can get meme2"))))
 
 (finalize)
