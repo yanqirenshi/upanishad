@@ -1,18 +1,18 @@
 (in-package :upanishad.index)
 
 (defclass index ()
-  ((class-symbol
-    :documentation ""
-    :accessor class-symbol
-    :initarg :class-symbol)
-   (slot-symbol
-    :documentation ""
-    :accessor slot-symbol
-    :initarg :slot-symbol)
-   (contents
-    :documentation ""
-    :accessor contents
-    :initform (make-hash-table :test 'equalp)))
+  ((class-symbol :documentation ""
+                 :accessor class-symbol
+                 :initarg :class-symbol
+                 :initform nil)
+   (slot-symbol :documentation ""
+                :accessor slot-symbol
+                :initarg :slot-symbol
+                :initform nil)
+   (contents :documentation ""
+             :accessor contents
+             :initarg :contents
+             :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
 
 ;;;
