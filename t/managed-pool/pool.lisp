@@ -14,15 +14,15 @@
 ;;;;; indexes
 ;;;;;
 (subtest "GET-SLOT-INDEX")
-(subtest "%TX-ADD-INDEX")
+(subtest "%TX-ADD-SLOT-INDEX")
 (subtest "TX-ADD-INDEX")
 (subtest "TX-REMOVE-INDEX")
 
 ;;;;;
 ;;;;; index
 ;;;;;
-(subtest "TX-ADD-MEME-TO-INDEX")
-(subtest "TX-REMOVE-MEME-FROM-INDEX")
+(subtest "TX-ADD-MEME-TO-SLOT-INDEX")
+(subtest "TX-REMOVE-MEME-FROM-SLOT-INDEX")
 
 ;;;;;
 ;;;;; memes
