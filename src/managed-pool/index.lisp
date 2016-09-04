@@ -30,12 +30,15 @@
   (unless (eq class (type-of meme))
     (error "index is not meme's slot index")))
 
-(defun change-meme (index slot meme)
+(defun change-meme (index slot meme &key (old-value nil))
   (let ((value (slot-value meme slot))
         (ht (contents index)))
     (let ((old-meme (gethash value ht)))
       (unless (eq meme old-meme)
-        (setf (gethash value ht) meme)))))
+        (when old-value
+          (remhash old-value ht))
+        (setf (gethash value ht) meme))))
+  index)
 
 (defgeneric add-meme (index meme)
   (:method ((index index) meme)
