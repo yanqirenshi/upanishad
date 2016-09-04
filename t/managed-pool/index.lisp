@@ -11,7 +11,7 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.pool"))
 
-(defclass test-meme (meme)
+(defclass test-meme-1 (meme)
   ((test-slot-a :documentation ""
                 :accessor test-slot-a
                 :initarg :test-slot-a
@@ -19,6 +19,16 @@
    (test-slot-b :documentation ""
                 :accessor test-slot-b
                 :initarg :test-slot-b
+                :initform nil)))
+
+(defclass test-meme-2 (meme)
+  ((test-slot-c :documentation ""
+                :accessor test-slot-c
+                :initarg :test-slot-c
+                :initform nil)
+   (test-slot-d :documentation ""
+                :accessor test-slot-d
+                :initarg :test-slot-d
                 :initform nil)))
 
 (plan nil)
@@ -60,7 +70,7 @@
                     :contents ,contents))))))
 
 (subtest ":GET-INDEX-KEY"
-  (let ((class-symbol 'test-meme)
+  (let ((class-symbol 'test-meme-1)
         (slot-symbol 'test-slot-a))
     (multiple-value-bind (got-class-symbol got-slot-symbol)
         (get-index-key (make-instance 'index
@@ -71,7 +81,14 @@
       (is got-slot-symbol slot-symbol
           "can return slot-symbol"))))
 
-(subtest "::ASSERT-CLASS")
+(subtest "::ASSERT-CLASS"
+  (let* ((meme-class-ok 'test-meme-1)
+         (meme-class-ng 'test-meme-2)
+         (meme (make-instance meme-class-ok)))
+    (is (up.index::assert-class meme-class-ok meme)
+        nil "can not raise error")
+    (is-error (up.index::assert-class meme-class-ng meme)
+              'error "can raise error")))
 
 (subtest "::CHANGE-MEME")
 
