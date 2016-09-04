@@ -122,6 +122,15 @@
            #:tx-create-object
            #:tx-change-object-slots
            #:tx-delete-object
+           ;; memes
+           #:tx-add-memes
+           #:tx-remove-memes
+           #:get-memes-at
+           ;; meme
+           #:get-meme-at-%id
+           #:tx-change-meme-slots
+           #:tx-create-meme
+           #:tx-delete-meme
            ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; managed-pool/preference
            #:get-preference
