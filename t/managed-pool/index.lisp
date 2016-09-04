@@ -90,7 +90,29 @@
     (is-error (up.index::assert-class meme-class-ng meme)
               'error "can raise error")))
 
-(subtest "::CHANGE-MEME")
+(subtest "::CHANGE-MEME"
+  (let* ((slot-symbol 'test-slot-a)
+         (index (make-instance 'index
+                               :class-symbol 'test-meme-1
+                               :slot-symbol slot-symbol))
+         (meme (make-instance 'test-meme-1 :test-slot-a 1)))
+    (subtest "befor not exist meme on index"
+      (is (up.index::change-meme index slot-symbol meme)
+          index "can return index")
+      (let ((contents (contents index)))
+        (is (hash-table-count contents) 1)
+        (is (gethash (slot-value meme slot-symbol)
+                     contents)
+            meme)))
+    (subtest "befor exist meme on index"
+      (setf (slot-value meme slot-symbol) 2)
+      (is (up.index::change-meme index slot-symbol meme :old-value 1)
+          index "can return index")
+      (let ((contents (contents index)))
+        (is (hash-table-count contents) 1)
+        (is (gethash (slot-value meme slot-symbol)
+                     contents)
+            meme)))))
 
 (subtest ":ADD-MEME")
 
