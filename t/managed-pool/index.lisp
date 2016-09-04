@@ -132,10 +132,10 @@
           meme "can get meme"))
     (setf (slot-value meme slot-symbol) 2)
     (subtest "not exist"
-      (is (add-meme index meme :old-value 1)
+      (is (add-meme index meme)
           index "can return index")
       (is (hash-table-count (contents index))
-          1 "contents count")
+          2 "contents count")
       (is (gethash (slot-value meme slot-symbol)
                    (contents index))
           meme "can get meme"))
