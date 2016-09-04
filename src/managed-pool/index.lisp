@@ -53,7 +53,8 @@
 (defgeneric add-memes (index memes)
   (:method ((index index) memes)
     (dolist (object memes)
-      (add-meme index object))))
+      (add-meme index object))
+    index))
 
 ;;;
 ;;; make-index
