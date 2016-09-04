@@ -105,16 +105,19 @@
   (or (not (slot-boundp object slot))
       (not (eql (slot-value object slot) value))))
 
+(defun tx-change-meme-slot (pool meme slot value)
+  (when (slot-value-changed-p meme slot value)
+    (tx-remove-meme-from-slot-index pool slot meme)
+    (setf (slot-value meme slot) value)
+    (tx-add-meme-to-slot-index pool slot meme)))
+
 (defgeneric tx-change-meme-slots (pool class %id alist-slots-values)
   (:method ((pool pool) (class symbol) (%id integer) (alist-slots-values list))
     (let ((meme (get-meme-at-%id pool class %id)))
       (unless meme
         (error "no meme of class ~a with %id ~d found in ~s" class %id pool))
       (loop :for (slot value) :in alist-slots-values
-            :do (when (slot-value-changed-p meme slot value)
-                  (tx-remove-meme-from-slot-index pool slot meme)
-                  (setf (slot-value meme slot) value)
-                  (tx-add-meme-to-slot-index pool slot meme)))
+            :do (tx-change-meme-slot pool meme slot value))
       meme)))
 
 ;;;

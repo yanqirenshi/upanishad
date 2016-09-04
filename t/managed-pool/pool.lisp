@@ -139,6 +139,7 @@
 (subtest ":GET-MEME-AT-%ID")
 (subtest "::FIND-MEME")
 (subtest "::SLOT-VALUE-CHANGED-P")
+(SUBTEST "::TX-CHANGE-MEME-SLOT")
 (subtest ":TX-CHANGE-MEME-SLOTS")
 (subtest ":TX-CREATE-MEME")
 (subtest ":TX-DELETE-MEME")
