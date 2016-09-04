@@ -67,4 +67,3 @@
                :s-serialization
                :cl-ppcre)
   :in-order-to ((test-op (test-op upanishad-test))))
-
