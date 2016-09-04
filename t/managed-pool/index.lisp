@@ -11,11 +11,19 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.pool"))
 
-(defclass test-meme (meme) ())
+(defclass test-meme (meme)
+  ((test-slot-a :documentation ""
+                :accessor test-slot-a
+                :initarg :test-slot-a
+                :initform nil)
+   (test-slot-b :documentation ""
+                :accessor test-slot-b
+                :initarg :test-slot-b
+                :initform nil)))
 
 (plan nil)
 
-(subtest ":index"
+(subtest ":INDEX"
   (labels ((is-index (got expected)
              (is (class-symbol got)
                  (getf expected :class-symbol)
@@ -51,18 +59,28 @@
                     :slot-symbol ,slot-symbol
                     :contents ,contents))))))
 
-(subtest ":get-index-key")
+(subtest ":GET-INDEX-KEY"
+  (let ((class-symbol 'test-meme)
+        (slot-symbol 'test-slot-a))
+    (multiple-value-bind (got-class-symbol got-slot-symbol)
+        (get-index-key (make-instance 'index
+                                      :class-symbol class-symbol
+                                      :slot-symbol slot-symbol))
+      (is got-class-symbol class-symbol
+          "can return class-symbol")
+      (is got-slot-symbol slot-symbol
+          "can return slot-symbol"))))
 
-(subtest "::assert-class")
+(subtest "::ASSERT-CLASS")
 
-(subtest "::change-meme")
+(subtest "::CHANGE-MEME")
 
-(subtest ":add-meme")
+(subtest ":ADD-MEME")
 
-(subtest ":add-memes")
+(subtest ":ADD-MEMES")
 
-(subtest ":make-index")
+(subtest ":MAKE-INDEX")
 
-(subtest ":remove-meme")
+(subtest ":REMOVE-MEME")
 
 (finalize)
