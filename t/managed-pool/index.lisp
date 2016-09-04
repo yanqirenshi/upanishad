@@ -91,11 +91,6 @@
               'error "can raise error")))
 
 (subtest "::CHANGE-MEME"
-  (let* ((slot-symbol 'test-slot-a)
-         (index (make-instance 'index
-                               :class-symbol 'test-meme-1
-                               :slot-symbol slot-symbol))
-         (meme (make-instance 'test-meme-1 :test-slot-a 1)))
     (subtest "befor not exist meme on index"
       (is (up.index::change-meme index slot-symbol meme)
           index "can return index")
@@ -114,7 +109,29 @@
                      contents)
             meme)))))
 
-(subtest ":ADD-MEME")
+(subtest ":ADD-MEME"
+  (let* ((slot-symbol 'test-slot-a)
+         (index (make-instance 'index
+                               :class-symbol 'test-meme-1
+                               :slot-symbol slot-symbol))
+         (meme (make-instance 'test-meme-1 :test-slot-a 1)))
+    (subtest "not exist"
+      (is (add-meme index meme)
+          index "can return index")
+      (is (hash-table-count (contents index))
+          1 "contents count")
+      (is (gethash (slot-value meme slot-symbol)
+                   (contents index))
+          meme "can get meme"))
+    (setf (slot-value meme slot-symbol) 2)
+    (subtest "not exist"
+      (is (add-meme index meme :old-value 1)
+          index "can return index")
+      (is (hash-table-count (contents index))
+          1 "contents count")
+      (is (gethash (slot-value meme slot-symbol)
+                   (contents index))
+          meme "can get meme"))))
 
 (subtest ":ADD-MEMES")
 
