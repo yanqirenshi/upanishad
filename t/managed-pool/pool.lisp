@@ -98,7 +98,27 @@
           (is-error (up::tx-add-index pool index)
                     'error "aledy exist indexe"))))))
 
-(subtest "::TX-REMOVE-INDEX")
+(subtest "::TX-REMOVE-INDEX"
+  (let ((class-symbol-1 'test-meme-1)
+        (class-symbol-2 'test-meme-2)
+        (slot-symbol-a 'test-slot-a)
+        (slot-symbol-b 'test-slot-b)
+        (slot-symbol-c 'test-slot-c))
+    (with-pool (pool *test-pool-directory* :with-id-counter nil)
+      (let ((index1 (make-index class-symbol-1 slot-symbol-a))
+            (index2 (make-index class-symbol-1 slot-symbol-b))
+            (index3 (make-index class-symbol-2 slot-symbol-c)))
+        (up::tx-add-index pool index1)
+        (up::tx-add-index pool index2)
+        (up::tx-add-index pool index3)
+        (up::tx-remove-index pool index2)
+        (is (up::get-slot-index pool class-symbol-1 slot-symbol-b)
+            nil "can not return deleted index")
+        (subtest "can return not deleted index"
+          (is (up::get-slot-index pool class-symbol-1 slot-symbol-a)
+              index1)
+          (is (up::get-slot-index pool class-symbol-2 slot-symbol-c)
+              index3))))))
 
 ;;;;;
 ;;;;; index
