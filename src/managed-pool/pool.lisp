@@ -32,10 +32,12 @@
   (:method ((pool pool) (index up.index:index))
     (multiple-value-bind (class slot)
         (up.index:get-index-key index)
-      (let ((slot-ht (get-slot-index pool class slot)))
-        (when slot-ht
-          (remhash slot slot-ht)
-          index)))))
+      (let ((class-ht (indexes pool)))
+        (let ((slot-ht (gethash class class-ht)))
+          (when (gethash slot slot-ht)
+            (remhash slot slot-ht))
+          (when (= (hash-table-count slot-ht) 0)
+            (remhash class class-ht)))))))
 
 ;;;
 ;;; index
