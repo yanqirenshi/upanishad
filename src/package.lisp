@@ -37,6 +37,7 @@
   (:export #:index
            #:class-symbol
            #:slot-symbol
+           #:contents
            #:add-meme
            #:add-memes
            #:remove-meme

@@ -1,18 +1,18 @@
 (in-package :upanishad.index)
 
 (defclass index ()
-  ((class-symbol
-    :documentation ""
-    :accessor class-symbol
-    :initarg :class-symbol)
-   (slot-symbol
-    :documentation ""
-    :accessor slot-symbol
-    :initarg :slot-symbol)
-   (contents
-    :documentation ""
-    :accessor contents
-    :initform (make-hash-table :test 'equalp)))
+  ((class-symbol :documentation ""
+                 :accessor class-symbol
+                 :initarg :class-symbol
+                 :initform nil)
+   (slot-symbol :documentation ""
+                :accessor slot-symbol
+                :initarg :slot-symbol
+                :initform nil)
+   (contents :documentation ""
+             :accessor contents
+             :initarg :contents
+             :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
 
 ;;;
@@ -30,12 +30,15 @@
   (unless (eq class (type-of meme))
     (error "index is not meme's slot index")))
 
-(defun change-meme (index slot meme)
+(defun change-meme (index slot meme &key (old-value nil))
   (let ((value (slot-value meme slot))
         (ht (contents index)))
     (let ((old-meme (gethash value ht)))
       (unless (eq meme old-meme)
-        (setf (gethash value ht) meme)))))
+        (when old-value
+          (remhash old-value ht))
+        (setf (gethash value ht) meme))))
+  index)
 
 (defgeneric add-meme (index meme)
   (:method ((index index) meme)
@@ -50,7 +53,8 @@
 (defgeneric add-memes (index memes)
   (:method ((index index) memes)
     (dolist (object memes)
-      (add-meme index object))))
+      (add-meme index object))
+    index))
 
 ;;;
 ;;; make-index
@@ -59,10 +63,11 @@
   (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
                (or (null memes) (listp memes))))
-  (let ((index (make-instance 'index :object class-symbol
-                                     :slot slot-symbol)))
+  (let ((index (make-instance 'index :class-symbol class-symbol
+                                     :slot-symbol slot-symbol)))
     (when memes
-      (add-memes index memes))))
+      (add-memes index memes))
+    index))
 
 ;;;
 ;;; remove-meme
