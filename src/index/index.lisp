@@ -82,7 +82,7 @@
 ;;;
 ;;; make-index
 ;;;
-(defun make-index (class-symbol slot-symbol &optional memes)
+(defun make-slot-index (class-symbol slot-symbol &optional memes)
   (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
                (or (null memes) (listp memes))))

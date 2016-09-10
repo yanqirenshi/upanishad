@@ -44,7 +44,7 @@
            #:add-meme
            #:add-memes
            #:remove-meme
-           #:make-index
+           #:make-slot-index
            #:get-index-key)
   (:documentation ""))
 
