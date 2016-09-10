@@ -35,13 +35,16 @@
   (:use :cl)
   (:nicknames :up.index)
   (:export #:index
+           #:slot-index
+           #:slot-index-unique
+           #:slot-index-multiple
            #:class-symbol
            #:slot-symbol
            #:contents
            #:add-meme
            #:add-memes
            #:remove-meme
-           #:make-index
+           #:make-slot-index
            #:get-index-key)
   (:documentation ""))
 

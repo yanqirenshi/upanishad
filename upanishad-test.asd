@@ -25,7 +25,6 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
                  (:module "managed-pool"
                   :components ((:file "transaction")
                                (:file "root-objects")
-                               (:file "index")
                                (:file "memes")
                                (:file "pool")
                                (:file "preference")
