@@ -35,6 +35,9 @@
   (:use :cl)
   (:nicknames :up.index)
   (:export #:index
+           #:slot-index
+           #:slot-index-unique
+           #:slot-index-multiple
            #:class-symbol
            #:slot-symbol
            #:contents

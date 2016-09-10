@@ -52,16 +52,16 @@
                          (getf expected :contents)
                          "is init value"))))))
     (subtest "without init"
-      (is-index (make-instance 'index)
+      (is-index (make-instance 'slot-index-unique)
                 '(:class-symbol nil
                   :slot-symbol nil
                   :contents nil)))
 
     (subtest "without init"
-      (let ((class-symbol 'index)
+      (let ((class-symbol 'slot-index-unique)
             (slot-symbol 'contents)
             (contents (make-hash-table)))
-        (is-index (make-instance 'index
+        (is-index (make-instance 'slot-index-unique
                                  :class-symbol class-symbol
                                  :slot-symbol slot-symbol
                                  :contents contents)
@@ -73,7 +73,7 @@
   (let ((class-symbol 'test-meme-1)
         (slot-symbol 'test-slot-a))
     (multiple-value-bind (got-class-symbol got-slot-symbol)
-        (get-index-key (make-instance 'index
+        (get-index-key (make-instance 'slot-index-unique
                                       :class-symbol class-symbol
                                       :slot-symbol slot-symbol))
       (is got-class-symbol class-symbol
@@ -92,7 +92,7 @@
 
 (subtest "::CHANGE-MEME"
   (let* ((slot-symbol 'test-slot-a)
-         (index (make-instance 'index
+         (index (make-instance 'slot-index-unique
                                :class-symbol 'test-meme-1
                                :slot-symbol slot-symbol))
          (meme (make-instance 'test-meme-1 :test-slot-a 1)))
@@ -118,7 +118,7 @@
 
 (subtest ":ADD-MEME"
   (let* ((slot-symbol 'test-slot-a)
-         (index (make-instance 'index
+         (index (make-instance 'slot-index-unique
                                :class-symbol 'test-meme-1
                                :slot-symbol slot-symbol))
          (meme (make-instance 'test-meme-1 :test-slot-a 1)))
@@ -145,7 +145,7 @@
 
 (subtest ":ADD-MEMES"
   (let* ((slot-symbol 'test-slot-a)
-         (index (make-instance 'index
+         (index (make-instance 'slot-index-unique
                                :class-symbol 'test-meme-1
                                :slot-symbol slot-symbol))
          (meme1 (make-instance 'test-meme-1 :test-slot-a 1))
@@ -170,14 +170,14 @@
     (subtest "without memes"
       (let ((index (make-index class-symbol slot-symbol)))
         (is (type-of index)
-            'index "can return index")
+            'slot-index-unique "can return index")
         (let ((contents (contents index)))
           (is (hash-table-count contents)
               0 "key count"))))
     (subtest "with memes"
       (let ((index (make-index class-symbol slot-symbol memes)))
         (is (type-of index)
-            'index "can return index")
+            'slot-index-unique "can return index")
         (let ((contents (contents index)))
           (is (hash-table-count contents)
               (length memes) "key count")
