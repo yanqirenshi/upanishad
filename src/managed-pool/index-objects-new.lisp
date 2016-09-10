@@ -26,7 +26,7 @@
          (let ((index (gethash slot (gethash class (index-objects pool)))))
            (or index
                (when ensure
-                 (add-index-new pool (upanishad.index:make-slot-index object slot))))))
+                 (add-index-new pool (upanishad.index:make-slot-index object slot :unique))))))
         ((and object slot)
          (index-at pool :class (class-name (class-of object)) :slot slot))
         (t (error "bad parameter"))))

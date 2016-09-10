@@ -34,9 +34,32 @@
                 :initarg :slot-symbol
                 :initform nil)))
 
+;;;
+;;; make-index
+;;;
 (defmethod get-index-key ((slot-index slot-index))
   (values (class-symbol slot-index)
           (slot-symbol slot-index)))
+
+;;;
+;;; make-index
+;;;
+(defun get-slot-index-class (type)
+  (ecase type
+    (:unique 'slot-index-unique)
+    (:multiple 'slot-index-multiple)))
+
+(defun make-slot-index (class-symbol slot-symbol type &optional memes)
+  (assert (and (symbolp class-symbol)
+               (symbolp slot-symbol)
+               (symbolp type)
+               (or (null memes) (listp memes))))
+  (let ((index (make-instance (get-slot-index-class type)
+                              :class-symbol class-symbol
+                              :slot-symbol slot-symbol)))
+    (when memes
+      (add-memes index memes))
+    index))
 
 ;;;;;
 ;;;;; Slot Index Unique
@@ -78,19 +101,6 @@
   (dolist (object memes)
     (add-meme index object))
   index)
-
-;;;
-;;; make-index
-;;;
-(defun make-slot-index (class-symbol slot-symbol &optional memes)
-  (assert (and (symbolp class-symbol)
-               (symbolp slot-symbol)
-               (or (null memes) (listp memes))))
-  (let ((index (make-instance 'slot-index-unique :class-symbol class-symbol
-                                                 :slot-symbol slot-symbol)))
-    (when memes
-      (add-memes index memes))
-    index))
 
 ;;;
 ;;; remove-meme

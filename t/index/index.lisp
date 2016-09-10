@@ -168,14 +168,14 @@
          (meme2 (make-instance class-symbol :test-slot-a 2))
          (memes (list meme1 meme2)))
     (subtest "without memes"
-      (let ((index (make-slot-index class-symbol slot-symbol)))
+      (let ((index (make-slot-index class-symbol slot-symbol :unique)))
         (is (type-of index)
             'slot-index-unique "can return index")
         (let ((contents (contents index)))
           (is (hash-table-count contents)
               0 "key count"))))
     (subtest "with memes"
-      (let ((index (make-slot-index class-symbol slot-symbol memes)))
+      (let ((index (make-slot-index class-symbol slot-symbol :unique memes)))
         (is (type-of index)
             'slot-index-unique "can return index")
         (let ((contents (contents index)))
@@ -186,11 +186,11 @@
           (is (gethash (slot-value meme2 slot-symbol) contents)
               meme2 "can get meme2"))))
     (subtest "can raise error"
-      (is-error (make-slot-index 1 slot-symbol memes)
+      (is-error (make-slot-index 1 slot-symbol :unique memes)
                 'error "class-symbol is not symbol")
-      (is-error (make-slot-index class-symbol 1 memes)
+      (is-error (make-slot-index class-symbol 1 :unique memes)
                 'error "class-symbol is not symbol")
-      (is-error (make-slot-index class-symbol slot-symbol 1)
+      (is-error (make-slot-index class-symbol slot-symbol :unique 1)
                 'error "memes is not list"))))
 
 (subtest ":REMOVE-MEME"
@@ -199,7 +199,7 @@
          (meme1 (make-instance class-symbol :test-slot-a 1))
          (meme2 (make-instance class-symbol :test-slot-a 2))
          (memes (list meme1 meme2))
-         (index (make-slot-index class-symbol slot-symbol memes)))
+         (index (make-slot-index class-symbol slot-symbol :unique memes)))
     (is (remove-meme index meme1)
         index "can return index")
     (let ((contents (contents index)))
