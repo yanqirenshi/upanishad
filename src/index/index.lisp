@@ -1,10 +1,29 @@
 (in-package :upanishad.index)
 
+#|
+
+# Contents
+
+1. Index
+1. Slot Index
+1. Slot Index Unique
+1. Slot Index multiple
+
+|#
+
+;;;;;
+;;;;; Index
+;;;;;
 (defclass index () ())
 
-;;;
-;;; slot-index
-;;;
+(defgeneric get-index-key (index))
+(defgeneric add-meme (index meme))
+(defgeneric add-memes (index memes))
+(defgeneric remove-meme (index meme))
+
+;;;;;
+;;;;; Slot Index
+;;;;;
 (defclass slot-index (index)
   ((class-symbol :documentation ""
                  :accessor class-symbol
@@ -15,27 +34,19 @@
                 :initarg :slot-symbol
                 :initform nil)))
 
+(defmethod get-index-key ((slot-index slot-index))
+  (values (class-symbol slot-index)
+          (slot-symbol slot-index)))
+
+;;;;;
+;;;;; Slot Index Unique
+;;;;;
 (defclass slot-index-unique (slot-index)
   ((contents :documentation ""
              :accessor contents
              :initarg :contents
              :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
-
-(defclass slot-index-multiple (slot-index)
-  ((contents :documentation ""
-             :accessor contents
-             :initarg :contents
-             :initform (make-hash-table :test 'equalp)))
-  (:documentation ""))
-
-;;;
-;;; get-index-key
-;;;
-(defgeneric get-index-key (slot-index-unique)
-  (:method ((slot-index-unique slot-index-unique))
-    (values (up.index:class-symbol slot-index-unique)
-            (up.index:slot-symbol slot-index-unique))))
 
 ;;;
 ;;; add-meme
@@ -54,21 +65,19 @@
         (setf (gethash value ht) meme))))
   slot-index-unique)
 
-(defgeneric add-meme (index meme)
-  (:method ((slot-index-unique slot-index-unique) meme)
-    (multiple-value-bind (class slot)
-        (get-index-key slot-index-unique)
-      (assert-class class meme)
-      (change-meme slot-index-unique slot meme))))
+(defmethod add-meme ((index slot-index-unique) meme)
+  (multiple-value-bind (class slot)
+      (get-index-key index)
+    (assert-class class meme)
+    (change-meme index slot meme)))
 
 ;;;
 ;;; add-memes
 ;;;
-(defgeneric add-memes (index memes)
-  (:method ((slot-index-unique slot-index-unique) memes)
-    (dolist (object memes)
-      (add-meme slot-index-unique object))
-    slot-index-unique))
+(defmethod add-memes ((index slot-index-unique) memes)
+  (dolist (object memes)
+    (add-meme index object))
+  index)
 
 ;;;
 ;;; make-index
@@ -77,17 +86,27 @@
   (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
                (or (null memes) (listp memes))))
-  (let ((slot-index-unique (make-instance 'slot-index-unique :class-symbol class-symbol
-                                                             :slot-symbol slot-symbol)))
+  (let ((index (make-instance 'slot-index-unique :class-symbol class-symbol
+                                                 :slot-symbol slot-symbol)))
     (when memes
-      (add-memes slot-index-unique memes))
-    slot-index-unique))
+      (add-memes index memes))
+    index))
 
 ;;;
 ;;; remove-meme
 ;;;
-(defgeneric remove-meme (index meme)
-  (:method ((slot-index-unique slot-index-unique) meme)
-    (let ((key (slot-value meme (slot-symbol slot-index-unique))))
-      (remhash key (contents slot-index-unique)))
-    slot-index-unique))
+(defmethod remove-meme ((index slot-index-unique) meme)
+  (let ((key (slot-value meme (slot-symbol index))))
+    (remhash key (contents index)))
+  index)
+
+
+;;;;;
+;;;;; Slot Index multiple
+;;;;;
+(defclass slot-index-multiple (slot-index)
+  ((contents :documentation ""
+             :accessor contents
+             :initarg :contents
+             :initform (make-hash-table :test 'equalp)))
+  (:documentation ""))
