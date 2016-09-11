@@ -225,7 +225,13 @@
 ;;;;;
 ;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (subtest ":slot-index-multiple")
-(subtest "::make-object->object")
+
+(subtest "::make-object->object"
+  (let ((object->object (up.index::make-object->object)))
+    (is (type-of object->object) 'hash-table "can return hash table")
+    (is (hash-table-test object->object) 'eql ":test is 'eql")
+    (is (hash-table-count object->object) 0 "count is zero")))
+
 (subtest "::remove-on-object->object")
 (subtest "::ensure-object->object")
 (subtest "::remove-on-index-core")
