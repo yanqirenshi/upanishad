@@ -137,20 +137,26 @@
   (setf (gethash object object->value) value)
   (setf (gethash value value->objects) object))
 
+(defun change-on-index-core (value->objects value-old value-new
+                             object->value object)
+  (unless (equalp value-old value-new)
+    (remove-on-index-core value->objects value-old
+                          object->value object))
+  (unless (gethash value-new value->objects)
+    (add-on-index-core value->objects value-old
+                       object->value object)))
+
 (defmethod add-meme ((index slot-index-multiple) object)
   (multiple-value-bind (class slot)
       (get-index-key index)
     (assert-class class object)
-    (let* ((value->objects (value->objects index))
-           (object->value (object->value index))
-           (value-new     (slot-value slot object))
-           (value-old     (gethash object object->value)))
-      (unless (equalp value-old value-new)
-        (remove-on-index-core value->objects value-old
-                              object->value object))
-      (unless (gethash value-new value->objects)
-        (add-on-index-core value->objects value-old
-                           object->value object))))
+    (let ((value->objects (value->objects index))
+          (object->value  (object->value  index)))
+      (change-on-index-core value->objects
+                            (gethash object object->value)
+                            (slot-value slot object)
+                            object->value
+                            object)))
   index)
 
 (defmethod add-memes ((index slot-index-multiple) objects)
@@ -161,9 +167,8 @@
   (multiple-value-bind (class)
       (get-index-key index)
     (assert-class class object)
-    (let* ((value->objects (value->objects index))
-           (object->value (object->value index))
-           (value         (gethash object object->value)))
-      (remove-on-index-core value->objects value
+    (let ((value->objects (value->objects index))
+          (object->value  (object->value  index)))
+      (remove-on-index-core value->objects (gethash object object->value)
                             object->value object)))
   index)
