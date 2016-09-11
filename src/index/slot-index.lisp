@@ -116,7 +116,8 @@
 
 (defun remove-on-object->object (object->object object)
   (when (gethash object object->object)
-    (remhash object object->object)))
+    (remhash object object->object))
+  object->object)
 
 (defun ensure-object->object (value->objects value)
   (let ((object->object (gethash value value->objects)))

@@ -232,7 +232,31 @@
     (is (hash-table-test object->object) 'eql ":test is 'eql")
     (is (hash-table-count object->object) 0 "count is zero")))
 
-(subtest "::remove-on-object->object")
+(subtest "::remove-on-object->object"
+  (let ((meme1 (make-instance 'test-meme-1))
+        (meme2 (make-instance 'test-meme-2))
+        (object->object (up.index::make-object->object)))
+    (setf (gethash meme1 object->object) meme1)
+    (setf (gethash meme2 object->object) meme2)
+
+    (subtest "before"
+      (ok (gethash meme1 object->object) "can return meme1")
+      (ok (gethash meme2 object->object) "can return meme2"))
+
+    (subtest "remove meme1"
+      (is (up.index::remove-on-object->object object->object meme1)
+          object->object "can return object->object")
+      (is (gethash meme1 object->object)
+          nil "can not return meme1")
+      (ok (gethash meme2 object->object) "can return meme2"))
+
+    (subtest "re remove meme1"
+      (is (up.index::remove-on-object->object object->object meme1)
+          object->object "can return object->object")
+      (is (gethash meme1 object->object)
+          nil "can not return meme1")
+      (ok (gethash meme2 object->object) "can return meme2"))))
+
 (subtest "::ensure-object->object")
 (subtest "::remove-on-index-core")
 (subtest "::add-on-index-core")
