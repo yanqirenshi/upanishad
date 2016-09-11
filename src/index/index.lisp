@@ -36,11 +36,7 @@
    (object->value :documentation ""
                   :accessor object->value
                   :initarg :object->value
-                  :initform (make-hash-table))
-   (valu->object :documentation ""
-                 :accessor value->object
-                 :initarg :value->object
-                 :initform (make-hash-table))))
+                  :initform (make-hash-table))))
 
 ;;;
 ;;; make-index
@@ -76,7 +72,11 @@
   ((contents :documentation ""
              :accessor contents
              :initarg :contents
-             :initform (make-hash-table :test 'equalp)))
+             :initform (make-hash-table :test 'equalp))
+   (valu->object :documentation ""
+                 :accessor value->object
+                 :initarg :value->object
+                 :initform (make-hash-table)))
   (:documentation ""))
 
 ;;;
@@ -122,30 +122,34 @@
 ;;;;;
 ;;;;; Slot Index multiple
 ;;;;;
-(defclass slot-index-multiple (slot-index) ()
+(defclass slot-index-multiple (slot-index)
+  ((value->objects :documentation ""
+                   :accessor value->objects
+                   :initarg :value->objects
+                   :initform (make-hash-table)))
   (:documentation ""))
 
-(defun remove-on-index-core (value->object value object->value object)
+(defun remove-on-index-core (value->objects value object->value object)
   (remhash object object->value)
-  (remhash value value->object))
+  (remhash value value->objects))
 
-(defun add-on-index-core (value->object value object->value object)
+(defun add-on-index-core (value->objects value object->value object)
   (setf (gethash object object->value) value)
-  (setf (gethash value value->object) object))
+  (setf (gethash value value->objects) object))
 
 (defmethod add-meme ((index slot-index-multiple) object)
   (multiple-value-bind (class slot)
       (get-index-key index)
     (assert-class class object)
-    (let* ((value->object (value->object index))
+    (let* ((value->objects (value->objects index))
            (object->value (object->value index))
            (value-new     (slot-value slot object))
            (value-old     (gethash object object->value)))
       (unless (equalp value-old value-new)
-        (remove-on-index-core value->object value-old
+        (remove-on-index-core value->objects value-old
                               object->value object))
-      (unless (gethash value-new value->object)
-        (add-on-index-core value->object value-old
+      (unless (gethash value-new value->objects)
+        (add-on-index-core value->objects value-old
                            object->value object))))
   index)
 
@@ -157,9 +161,9 @@
   (multiple-value-bind (class)
       (get-index-key index)
     (assert-class class object)
-    (let* ((value->object (value->object index))
+    (let* ((value->objects (value->objects index))
            (object->value (object->value index))
            (value         (gethash object object->value)))
-      (remove-on-index-core value->object value
+      (remove-on-index-core value->objects value
                             object->value object)))
   index)
