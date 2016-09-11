@@ -32,7 +32,15 @@
    (slot-symbol :documentation ""
                 :accessor slot-symbol
                 :initarg :slot-symbol
-                :initform nil)))
+                :initform nil)
+   (object->value :documentation ""
+                  :accessor object->value
+                  :initarg :object->value
+                  :initform (make-hash-table))
+   (valu->object :documentation ""
+                 :accessor value->object
+                 :initarg :value->object
+                 :initform (make-hash-table))))
 
 ;;;
 ;;; make-index
@@ -114,9 +122,44 @@
 ;;;;;
 ;;;;; Slot Index multiple
 ;;;;;
-(defclass slot-index-multiple (slot-index)
-  ((contents :documentation ""
-             :accessor contents
-             :initarg :contents
-             :initform (make-hash-table :test 'equalp)))
+(defclass slot-index-multiple (slot-index) ()
   (:documentation ""))
+
+(defun remove-on-index-core (value->object value object->value object)
+  (remhash object object->value)
+  (remhash value value->object))
+
+(defun add-on-index-core (value->object value object->value object)
+  (setf (gethash object object->value) value)
+  (setf (gethash value value->object) object))
+
+(defmethod add-meme ((index slot-index-multiple) object)
+  (multiple-value-bind (class slot)
+      (get-index-key index)
+    (assert-class class object)
+    (let* ((value->object (value->object index))
+           (object->value (object->value index))
+           (value-new     (slot-value slot object))
+           (value-old     (gethash object object->value)))
+      (unless (equalp value-old value-new)
+        (remove-on-index-core value->object value-old
+                              object->value object))
+      (unless (gethash value-new value->object)
+        (add-on-index-core value->object value-old
+                           object->value object))))
+  index)
+
+(defmethod add-memes ((index slot-index-multiple) objects)
+  (dolist (object objects)
+    (add-meme index object)))
+
+(defmethod remove-meme ((index slot-index-multiple) object)
+  (multiple-value-bind (class)
+      (get-index-key index)
+    (assert-class class object)
+    (let* ((value->object (value->object index))
+           (object->value (object->value index))
+           (value         (gethash object object->value)))
+      (remove-on-index-core value->object value
+                            object->value object)))
+  index)
