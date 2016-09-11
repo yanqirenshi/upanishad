@@ -257,7 +257,23 @@
           nil "can not return meme1")
       (ok (gethash meme2 object->object) "can return meme2"))))
 
-(subtest "::ensure-object->object")
+(subtest "::ensure-object->object"
+  (let* ((object->object-1 (make-hash-table))
+         (value->objects
+           (alexandria:alist-hash-table `(("1" .  ,object->object-1))
+                                        :test 'equalp)))
+    (subtest "can return object->object"
+      (is (up.index::ensure-object->object value->objects "1")
+          object->object-1 "exist object->object")
+      (subtest "not exist object->object"
+        (let ((object->object-2 (up.index::ensure-object->object value->objects "2")))
+          (is (type-of object->object-2) 'hash-table
+              "can return hashtable")
+          (is (hash-table-test object->object-2) 'eql
+              "test is eql")
+          (is (hash-table-count object->object-2) 0
+              "count is 0"))))))
+
 (subtest "::remove-on-index-core")
 (subtest "::add-on-index-core")
 (subtest "::change-on-index-core")
