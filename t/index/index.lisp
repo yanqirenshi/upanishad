@@ -274,8 +274,33 @@
           (is (hash-table-count object->object-2) 0
               "count is 0"))))))
 
+(subtest "::add-on-index-core"
+  (let ((value->objects (make-hash-table :test 'equalp))
+        (value "1")
+        (object->value (make-hash-table))
+        (object (make-instance 'test-meme-1)))
+
+    (is (up.index::add-on-index-core value->objects value
+                                     object->value object)
+        object "can return object")
+
+    (is (gethash object object->value)
+        value "can add object->value")
+
+    (subtest "can add value->object"
+      (let ((object->object (gethash value value->objects)))
+        (is (type-of object->object) 'hash-table
+            "is hash table")
+        (is (hash-table-test object->object) 'eql
+            "test is euqalp")
+        (is (hash-table-count object->object) 1
+            "count is 1")))
+
+    (is (up.index::add-on-index-core value->objects value
+                                     object->value object)
+        nil "can return nil")))
+
 (subtest "::remove-on-index-core")
-(subtest "::add-on-index-core")
 (subtest "::change-on-index-core")
 (subtest ":add-object")
 (subtest ":add-objects")

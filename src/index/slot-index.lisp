@@ -128,18 +128,18 @@
 ;;;
 ;;; core
 ;;;
+(defun add-on-index-core (value->objects value object->value object)
+  (setf (gethash object object->value) value)
+  (let ((object->object (ensure-object->object value->objects value)))
+    (unless (gethash object object->object)
+      (setf (gethash object object->object) object))))
+
 (defun remove-on-index-core (value->objects value object->value object)
   (remhash object object->value)
   (let ((object->object (gethash object value->objects)))
     (remove-on-object->object object->object object)
     (when (= (hash-table-count object->object) 0)
       (remhash value value->objects))))
-
-(defun add-on-index-core (value->objects value object->value object)
-  (setf (gethash object object->value) value)
-  (let ((object->object (ensure-object->object value->objects value)))
-    (unless (gethash object object->object)
-      (setf (gethash object object->object) object))))
 
 (defun change-on-index-core (value->objects value-old value-new
                              object->value object)
