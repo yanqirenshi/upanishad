@@ -69,6 +69,11 @@
                     :slot-symbol ,slot-symbol
                     :contents ,contents))))))
 
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;
+;;;;; Slot Index
+;;;;;
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (subtest ":GET-INDEX-KEY"
   (let ((class-symbol 'test-meme-1)
         (slot-symbol 'test-slot-a))
@@ -90,6 +95,11 @@
     (is-error (up.index::assert-class meme-class-ng meme)
               'error "can raise error")))
 
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;
+;;;;; Slot Index multiple
+;;;;;
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (subtest "::CHANGE-OBJECT"
   (let* ((slot-symbol 'test-slot-a)
          (index (make-instance 'slot-index-unique
@@ -207,5 +217,22 @@
           nil "can not get meme1")
       (is (gethash (slot-value meme2 slot-symbol) contents)
           meme2 "can get meme2"))))
+
+
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;
+;;;;; Slot Index multiple
+;;;;;
+;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(subtest ":slot-index-multiple")
+(subtest "::make-object->object")
+(subtest "::remove-on-object->object")
+(subtest "::ensure-object->object")
+(subtest "::remove-on-index-core")
+(subtest "::add-on-index-core")
+(subtest "::change-on-index-core")
+(subtest ":add-object")
+(subtest ":add-objects")
+(subtest ":remove-object")
 
 (finalize)

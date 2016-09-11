@@ -44,6 +44,10 @@
       (add-objects index objects))
     index))
 
+(defun assert-class (class meme)
+  (unless (eq class (type-of meme))
+    (error "index is not meme's slot index")))
+
 ;;;;;
 ;;;;; Slot Index Unique
 ;;;;;
@@ -61,10 +65,6 @@
 ;;;
 ;;; add-object
 ;;;
-(defun assert-class (class meme)
-  (unless (eq class (type-of meme))
-    (error "index is not meme's slot index")))
-
 (defun change-object (slot-index-unique slot meme &key (old-value nil))
   (let ((value (slot-value meme slot))
         (ht (contents slot-index-unique)))
