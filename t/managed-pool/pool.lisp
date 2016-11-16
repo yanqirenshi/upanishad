@@ -5,7 +5,7 @@
         #:s-serialization
         #:upanishad-test.test-utility)
   (:import-from :up.index
-                #:make-index))
+                #:make-slot-index))
 (in-package :upanishad-test.managed-pool.pool)
 
 (defparameter *test-pool-directory* (test-pool-directory "managed-pool.pool"))
@@ -29,6 +29,9 @@
                 :accessor test-slot-d
                 :initarg :test-slot-d
                 :initform nil)))
+
+(defun make-index (class slot)
+  (make-slot-index class slot :unique))
 
 (plan nil)
 
