@@ -1,15 +1,5 @@
 (in-package :upanishad.index)
 
-;;;;;
-;;;;; Slot Index multiple
-;;;;;
-(defclass slot-index-multiple (slot-index)
-  ((value->objects :documentation ""
-                   :accessor value->objects
-                   :initarg :value->objects
-                   :initform (make-hash-table :test 'equalp)))
-  (:documentation ""))
-
 ;;;
 ;;; object->object
 ;;;
