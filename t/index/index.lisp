@@ -224,7 +224,8 @@
 ;;;;; Slot Index multiple
 ;;;;;
 ;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(subtest ":slot-index-multiple")
+(subtest ":slot-index-multiple"
+  (skip 3 "TODO: #111"))
 
 (subtest "::make-object->object"
   (let ((object->object (up.index::make-object->object)))
@@ -300,10 +301,19 @@
                                      object->value object)
         nil "can return nil")))
 
-(subtest "::remove-on-index-core")
-(subtest "::change-on-index-core")
-(subtest ":add-object")
-(subtest ":add-objects")
-(subtest ":remove-object")
+(subtest "::remove-on-index-core"
+  (skip 3 "TODO: #111"))
+
+(subtest "::change-on-index-core"
+  (skip 3 "TODO: #111"))
+
+(subtest ":add-object"
+  (skip 3 "TODO: #111"))
+
+(subtest ":add-objects"
+  (skip 3 "TODO: #111"))
+
+(subtest ":remove-object"
+  (skip 3 "TODO: #111"))
 
 (finalize)

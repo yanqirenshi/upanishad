@@ -36,16 +36,15 @@
             ;; printer
             ;; (end)
             ;;
+    :serial t
     :components ((:file "package")
-                 (:file "utility"          :depends-on ("package"))
-                 (:file "generic-function" :depends-on ("utility"))
+                 (:file "utility")
+                 (:file "generic-function")
                  (:module "class" :depends-on ("utility")
-                  :serial t
                   :components ((:file "data")
                                (:file "pool")
                                (:file "transaction")))
                  (:module "index" :depends-on ("class")
-                  :serial t
                   :components ((:file "index")
                                (:file "utility")
                                (:file "slot-index")
@@ -53,23 +52,23 @@
                                (:file "slot-index-multiple")))
                  (:module "pool" :depends-on ("index")
                   :components ((:file "basic")
-                               (:file "snapshot-backup-restore" :depends-on ("basic"))
-                               (:file "guarded-pool" :depends-on ("snapshot-backup-restore"))
-                               (:file "etc" :depends-on ("guarded-pool"))))
+                               (:file "snapshot-backup-restore")
+                               (:file "guarded-pool")
+                               (:file "etc")))
                  (:module "managed-pool"  :depends-on ("pool")
                   :components ((:file "transaction")
                                (:file "id-counter")
                                (:file "preference")
                                (:file "memes")
-                               (:file "pool" :depends-on ("memes"))
+                               (:file "pool")
                                ;; old
                                (:file "index-objects-new")
-                               (:file "index-objects" :depends-on ("transaction"))
-                               (:file "root-objects"  :depends-on ("index-objects"))))
-                 (:file "master-slave"     :depends-on ("pool"))
-                 (:file "blob"             :depends-on ("managed-pool"))
-                 (:file "printer"          :depends-on ("master-slave" "blob"))
-                 (:file "debug-pool"       :depends-on ("printer")))))
+                               (:file "index-objects")
+                               (:file "root-objects")))
+                 (:file "master-slave")
+                 (:file "blob")
+                 (:file "printer")
+                 (:file "debug-pool"))))
   :depends-on (:alexandria
                :cl-fad
                :s-xml
