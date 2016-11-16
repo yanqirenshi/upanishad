@@ -46,13 +46,13 @@
   (:method ((pool pool) (slot symbol) (meme meme))
     (let ((index (get-slot-index pool (type-of meme) slot)))
       (unless index (error "index not found"))
-      (up.index:add-meme index meme))))
+      (up.index:add-object index meme))))
 
 (defgeneric tx-remove-meme-from-slot-index (pool slot meme)
   (:method ((pool pool) (slot symbol) (meme meme))
     (let ((index (get-slot-index pool (type-of meme) slot)))
       (when index
-        (up.index:remove-meme index meme)))))
+        (up.index:remove-object index meme)))))
 
 ;;;;;
 ;;;;; memes
