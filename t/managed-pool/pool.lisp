@@ -126,25 +126,46 @@
 ;;;;;
 ;;;;; index
 ;;;;;
-(subtest "::TX-ADD-MEME-TO-SLOT-INDEX")
-(subtest "::TX-REMOVE-MEME-FROM-SLOT-INDEX")
+(subtest "::TX-ADD-MEME-TO-SLOT-INDEX"
+  (skip 1 "TODO: #102"))
+
+(subtest "::TX-REMOVE-MEME-FROM-SLOT-INDEX"
+  (skip 1 "TODO: #102"))
 
 ;;;;;
 ;;;;; memes
 ;;;;;
-(subtest ":TX-ADD-MEMES")
-(subtest ":TX-REMOVE-MEMES")
-(subtest ":GET-MEMES-AT")
+(subtest ":TX-ADD-MEMES"
+  (skip 1 "TODO: #102"))
+
+(subtest ":TX-REMOVE-MEMES"
+  (skip 1 "TODO: #102"))
+
+(subtest ":GET-MEMES-AT"
+  (skip 1 "TODO: #102"))
 
 ;;;;;
 ;;;;; meme
 ;;;;;
-(subtest ":GET-MEME-AT-%ID")
-(subtest "::FIND-MEME")
-(subtest "::SLOT-VALUE-CHANGED-P")
-(SUBTEST "::TX-CHANGE-MEME-SLOT")
-(subtest ":TX-CHANGE-MEME-SLOTS")
-(subtest ":TX-CREATE-MEME")
-(subtest ":TX-DELETE-MEME")
+(subtest ":GET-MEME-AT-%ID"
+  (skip 1 "TODO: #102"))
+
+(subtest "::FIND-MEME"
+  (skip 1 "TODO: #102"))
+
+(subtest "::SLOT-VALUE-CHANGED-P"
+  (skip 1 "TODO: #102"))
+
+(SUBTEST "::TX-CHANGE-MEME-SLOT"
+  (skip 1 "TODO: #102"))
+
+(subtest ":TX-CHANGE-MEME-SLOTS"
+  (skip 1 "TODO: #102"))
+
+(subtest ":TX-CREATE-MEME"
+  (skip 1 "TODO: #102"))
+
+(subtest ":TX-DELETE-MEME"
+  (skip 1 "TODO: #102"))
 
 (finalize)
