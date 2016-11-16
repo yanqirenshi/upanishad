@@ -41,9 +41,9 @@
            #:class-symbol
            #:slot-symbol
            #:contents
-           #:add-meme
-           #:add-memes
-           #:remove-meme
+           #:add-object
+           #:add-objects
+           #:remove-object
            #:make-slot-index
            #:get-index-key)
   (:documentation ""))
