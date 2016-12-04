@@ -56,15 +56,15 @@
   (let ((pathnames (slot-value pool 'snapshot)))
     (setf (gethash type pathnames) value)))
 
-(defmethod make-snapshot-filename ((pool pool) (type symbol) &optional suffix)
-  (assert (or (null type) (find type '(:object :index))))
+(defun make-snapshot-filename (type &optional suffix)
+  (assert (or (null type) (find type '(:object :index :memes :indexes))))
   (unless type (warn "type が nil ですよ。"))
   (if type
       (format nil "snapshot-~a~@[-~a~]" (string-downcase (symbol-name type)) suffix)
       (format nil "snapshot~@[-~a~]" suffix)))
 
 (defmethod make-snapshot-pathname (pool directory type &optional suffix)
-  (merge-pathnames (make-pathname :name (make-snapshot-filename pool type suffix)
+  (merge-pathnames (make-pathname :name (make-snapshot-filename type suffix)
                                   :type (file-extension pool))
                    directory))
 
@@ -140,8 +140,10 @@
   (let* ((timetag (timetag))
          (transaction-log (transaction-log pool))
          (transaction-log-backup (transaction-log-backup-file pool (or directory transaction-log) timetag))
+         ;; object
          (snapshot-object (snapshot-pathnames pool :object))
          (snapshot-object-backup (make-snapshot-backup-pathname pool (or directory snapshot-object) :object timetag))
+         ;; index
          (snapshot-index (snapshot-pathnames pool :index))
          (snapshot-index-backup (make-snapshot-backup-pathname pool (or directory snapshot-index) :index timetag)))
     (close-open-streams pool)
