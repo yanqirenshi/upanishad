@@ -43,8 +43,10 @@
 ;;;
 ;;; snapshot file
 ;;;
+(defvar *snapshot-types* '(:object :index :memes :indexes))
+
 (defun snapshot-type-p (type)
-  (find type '(:object :index)))
+  (find type *snapshot-types*))
 
 (defmethod snapshot-pathnames (pool type)
   (assert (snapshot-type-p type))
@@ -57,7 +59,7 @@
     (setf (gethash type pathnames) value)))
 
 (defun make-snapshot-filename (type &optional suffix)
-  (assert (or (null type) (find type '(:object :index :memes :indexes))))
+  (assert (snapshot-type-p type))
   (unless type (warn "type が nil ですよ。"))
   (if type
       (format nil "snapshot-~a~@[-~a~]" (string-downcase (symbol-name type)) suffix)
