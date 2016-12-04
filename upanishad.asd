@@ -22,20 +22,6 @@
   :long-description "Common Lisp Prevalence is an implementation of Object Prevalence for Common Lisp"
   :components
   ((:module "src"
-            ;;
-            ;; (start)
-            ;; package
-            ;; [serialization]
-            ;; generic-function
-            ;; class
-            ;; pool
-            ;;   +-----------------+
-            ;; managed-pool  master-slave
-            ;; blob                |
-            ;;   +-----------------+
-            ;; printer
-            ;; (end)
-            ;;
     :serial t
     :components ((:file "package")
                  (:file "utility")
