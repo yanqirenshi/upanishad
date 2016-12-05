@@ -3,14 +3,28 @@
 ;;;
 ;;; Pool
 ;;;
+(defun set-pathname (pool type directory)
+  "pool の snapshot に pathname を追加します。"
+  (setf (snapshot-pathnames pool type)
+        (make-snapshot-pathname pool directory type)))
+
+(defun init-snapshot-pathname (pool directory)
+  "pool の snapshot を初期化します。"
+  (dolist (type '(:object :index :memes :indexes))
+    (set-pathname pool type directory)))
+
+(defun init-transaction-log-pathname (pool directory)
+  "pool の transaction-log を初期化します。"
+  (setf (transaction-log pool)
+        (make-transaction-log-pathname pool directory)))
+
 (defmethod initialize-instance :after ((pool pool) &rest initargs &key &allow-other-keys)
   "After a pool is initialized, derive its file paths and try to restore it"
   (declare (ignore initargs))
   (with-slots (directory) pool
     (ensure-directories-exist directory)
-    (setf (snapshot-pathnames pool :object) (make-snapshot-pathname pool directory :object)
-          (snapshot-pathnames pool :index) (make-snapshot-pathname pool directory :index)
-          (transaction-log pool) (make-transaction-log-pathname pool directory)))
+    (init-snapshot-pathname pool directory)
+    (init-transaction-log-pathname pool directory))
   (restore pool))
 
 (defmethod transaction-log-stream :before ((pool pool))

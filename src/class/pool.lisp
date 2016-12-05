@@ -1,11 +1,7 @@
 (in-package :upanishad)
 
 (defclass pool (brahman)
-  ((directory
-    :documentation ":type pathname"
-    :accessor get-directory
-    :initarg :directory)
-   (root-objects
+  ((root-objects
     :documentation ":type hash-table"
     :accessor root-objects
     :initform (make-hash-table :test 'eq))
@@ -24,6 +20,10 @@
    (options
     :documentation ":type hash-table"
     :initform (make-hash-table :test 'eq))
+   (directory
+    :documentation ":type pathname"
+    :accessor get-directory
+    :initarg :directory)
    (snapshot
     :documentation ":type pathname"
     :initform (make-hash-table :test 'eq))
