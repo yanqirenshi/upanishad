@@ -3,7 +3,7 @@
 ;;;;;
 ;;;;; indexes
 ;;;;;
-(defgeneric get-slot-index (pool class slot)
+(defgeneric get-index (pool class slot)
   (:method ((pool pool) (class symbol) (slot symbol))
     (let* ((class-ht (indexes pool))
            (slot-ht (gethash class class-ht)))
@@ -23,7 +23,7 @@
     (multiple-value-bind (class slot)
         (up.index:get-index-key index)
       (let ((indexes (indexes pool)))
-        (when (get-slot-index pool class slot)
+        (when (get-index pool class slot)
           (error "Aledy exist index"))
         (%tx-add-index indexes class slot index)))))
 
@@ -31,7 +31,7 @@
   (:method ((pool pool) (index up.index:index))
     (multiple-value-bind (class slot)
         (up.index:get-index-key index)
-      (let ((slot-ht (get-slot-index pool class slot)))
+      (let ((slot-ht (get-index pool class slot)))
         (when slot-ht
           (remhash slot slot-ht)
           index)))))
@@ -41,13 +41,13 @@
 ;;;
 (defgeneric tx-add-meme-to-index (pool slot meme)
   (:method ((pool pool) (slot symbol) (meme meme))
-    (let ((index (get-slot-index pool (type-of meme) slot)))
+    (let ((index (get-index pool (type-of meme) slot)))
       (unless index (error "index not found"))
       (up.index:add-object index meme))))
 
 (defgeneric tx-remove-meme-from-index (pool slot meme)
   (:method ((pool pool) (slot symbol) (meme meme))
-    (let ((index (get-slot-index pool (type-of meme) slot)))
+    (let ((index (get-index pool (type-of meme) slot)))
       (when index
         (up.index:remove-object index meme)))))
 
@@ -76,7 +76,7 @@
       (when (gethash key ht)
         (remhash key ht)))))
 
-(defgeneric get-memes-at (pool &key class)
+(defgeneric get-memes (pool &key class)
   (:method ((pool pool) &key class)
     (let ((ht (memes pool))
           (key class))
@@ -85,9 +85,9 @@
 ;;;;;
 ;;;;; meme
 ;;;;;
-(defgeneric get-meme-at-%id (pool class &key %id)
+(defgeneric get-meme (pool class &key %id)
   (:method ((pool pool) (class symbol) &key %id)
-    (let ((memes (get-memes-at pool :class class)))
+    (let ((memes (get-memes pool :class class)))
       (up.memes:get-meme memes %id))))
 
 ;;;
@@ -104,7 +104,7 @@
 
 (defgeneric tx-change-meme-slots (pool class %id slots-and-values)
   (:method ((pool pool) (class symbol) (%id integer) (slots-and-values list))
-    (let ((meme (get-meme-at-%id pool class :%id %id)))
+    (let ((meme (get-meme pool class :%id %id)))
       (unless meme
         (error "no meme of class ~a with %id ~d found in ~s" class %id pool))
       (loop :for (slot value) :in slots-and-values
@@ -121,7 +121,7 @@
   (:method ((pool pool) class &optional slots-and-values)
     (let* ((%id (next-%id pool))
            (meme (make-instance class :%id %id))
-           (memes (get-memes-at pool :class class)))
+           (memes (get-memes pool :class class)))
       (up.memes:add-meme memes meme)
       (tx-change-meme-slots pool class %id slots-and-values))))
 
@@ -130,8 +130,8 @@
 ;;;
 (defgeneric tx-delete-meme (pool class %id)
   (:method ((pool pool) (class symbol) (%id integer))
-    (let ((memes (get-memes-at pool :class class))
-          (meme (get-meme-at-%id pool class :%id %id)))
+    (let ((memes (get-memes pool :class class))
+          (meme (get-meme pool class :%id %id)))
       (if meme
           (progn
             ;; TODO: remove all index
