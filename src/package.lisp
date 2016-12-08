@@ -39,6 +39,7 @@
                 #:index
                 #:class-symbol
                 #:slot-symbol)
+  ;; classes
   (:export #:atman
            #:meme
            #:blob
@@ -56,23 +57,14 @@
            #:get-keywords
            #:%id
            #:guard
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; blob
            #:*blob-root*
            #:get-file
            #:copy-to-stream
            #:fill-from-stream
            #:fill-from-file
-           #:destroy
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; debug-pool
-           #:print-transaction-log
-           #:show-transaction-log
-           #:print-snapshot
-           #:transaction-log-tail
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; pool/basic
-           #:poolp
+           #:destroy)
+  (:export #:poolp ;; pool/basic
            #:memes
            #:indexes
            #:get-root-object
@@ -88,18 +80,10 @@
            #:totally-destroy
            #:make-pool
            #:make-transaction
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; pool/guarded-pool
            #:execute
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; pool/snapshot-backup-restore
-           #:snapshot
-           #:backup
-           #:restore
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; managed-pool/transaction
            #:execute-transaction
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; managed-pool/root-objects
            #:get-object-at-%id
            #:find-objects
@@ -107,25 +91,47 @@
            #:tx-create-object
            #:tx-change-object-slots
            #:tx-delete-object
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; managed-pool/preference
-           #:get-preference
-           #:tx-set-preference
-           #:all-preferences-keys
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; managed-pool/%id-counter
            #:tx-create-%id-counter
            #:next-%id
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; managed-pool/index
            #:index-at
            #:add-index
            #:drop-index
-           #:tx-remove-object-on-index
-           ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; master slave
-           #:start-master-client
+           #:tx-remove-object-on-index)
+  ;; pool/snapshot-backup-restore
+  (:export #:snapshot
+           #:backup
+           #:restore)
+  ;; managed-pool/preference
+  (:export #:get-preference
+           #:tx-set-preference
+           #:all-preferences-keys)
+  ;; master slave
+  (:export #:start-master-client
            #:stop-master-client
            #:start-slave-server
            #:stop-slave-server)
+  ;; pool - index
+  (:export #:get-index
+           #:tx-add-index
+           #:tx-remove-index)
+  ;; pool - index - meme
+  (:export #:tx-add-meme-to-index
+           #:tx-remove-meme-from-index)
+  ;; pool - memes
+  (:export #:tx-add-memes
+           #:tx-remove-memes
+           #:get-memes)
+  ;; pool - meme
+  (:export #:get-meme
+           #:find-meme
+           #:tx-change-meme-slots
+           #:tx-create-meme
+           #:tx-delete-meme)
+  ;; debug-pool
+  (:export #:print-transaction-log
+           #:show-transaction-log
+           #:print-snapshot
+           #:transaction-log-tail)
   (:documentation "An implementation of Object Prevalence for Common Lisp"))
