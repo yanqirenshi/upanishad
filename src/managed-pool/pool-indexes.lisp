@@ -1,0 +1,41 @@
+(in-package :upanishad)
+
+(defgeneric get-index (pool class slot)
+  (:method ((pool pool) (class symbol) (slot symbol))
+    (let* ((class-ht (indexes pool))
+           (slot-ht (gethash class class-ht)))
+      (when slot-ht
+        (gethash slot slot-ht)))))
+
+(defun %tx-add-index (indexes class slot index)
+  (let* ((class-ht indexes)
+         (slot-ht (alexandria:ensure-gethash class class-ht
+                                             (make-hash-table))))
+    (when (gethash slot slot-ht)
+      (error "aledy exist index"))
+    (setf (gethash slot slot-ht) index)))
+
+(defgeneric tx-add-index (pool index)
+  (:method ((pool pool) (index up.index:index))
+    (multiple-value-bind (class slot)
+        (up.index:get-index-key index)
+      (let ((indexes (indexes pool)))
+        (when (get-index pool class slot)
+          (error "Aledy exist index"))
+        (%tx-add-index indexes class slot index)))))
+
+(defun %tx-remove-index (pool class slot)
+  (assert (or pool class slot))
+  (let* ((classht (indexes pool))
+         (slotht (gethash class classht)))
+    (when (gethash slot slotht)
+      (remhash slot slotht)
+      (when (= (hash-table-count slotht) 0)
+        (remhash class classht)))))
+
+(defgeneric tx-remove-index (pool index)
+  (:method ((pool pool) (index up.index:index))
+    (multiple-value-bind (class slot)
+        (up.index:get-index-key index)
+      (%tx-remove-index pool class slot))
+    pool))

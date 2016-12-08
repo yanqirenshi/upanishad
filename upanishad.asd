@@ -49,7 +49,10 @@
                                (:file "id-counter")
                                (:file "preference")
                                (:file "memes")
-                               (:file "pool")
+                               (:file "pool-indexes")
+                               (:file "pool-index")
+                               (:file "pool-memes")
+                               (:file "pool-meme")
                                ;; old
                                (:file "index-objects-new")
                                (:file "index-objects")
