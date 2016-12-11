@@ -16,28 +16,25 @@
                 :accessor slot-symbol
                 :initarg :slot-symbol
                 :initform nil)
-   (object->value :documentation ""
-                  :accessor object->value
-                  :initarg :object->value
-                  :initform (make-hash-table))))
+   (%id->value :documentation ""
+               :accessor %id->value
+               :initarg :%id->value
+               :initform (make-hash-table :test 'eq))))
 
 (defclass slot-index-unique (slot-index)
-  ((contents :documentation ""
-             :accessor contents
-             :initarg :contents
-             :initform (make-hash-table :test 'equalp))
-   (value->object :documentation ""
+  ((value->object :documentation "value:object=1:1"
                   :accessor value->object
                   :initarg :value->object
                   :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
 
 (defclass slot-index-multiple (slot-index)
-  ((value->objects :documentation ""
+  ((value->objects :documentation "value:object=1:n"
                    :accessor value->objects
                    :initarg :value->objects
                    :initform (make-hash-table :test 'equalp)))
   (:documentation ""))
+
 
 ;;;;;
 ;;;;; Method
@@ -53,3 +50,6 @@
 
 (defgeneric remove-object (index object)
   (:documentation "インデックスからオブジェクトを削除します。"))
+
+(defgeneric change-object (index object)
+  (:documentation ""))

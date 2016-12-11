@@ -24,9 +24,6 @@
     (let ((index1 (up.index:make-slot-index 'meme1 'slot1 :unique))
           (index2 (up.index:make-slot-index 'meme1 'slot2 :unique))
           (index3 (up.index:make-slot-index 'meme2 'slot2 :unique)))
-
-      (declare (ignore index2))
-
       (subtest "can add index"
         (is (tx-add-index pool index1) index1 "meme1 slot1")
         (is (tx-add-index pool index2) index2 "meme1 slot2")

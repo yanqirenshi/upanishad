@@ -1,61 +1,55 @@
 (in-package :upanishad.index)
 
 ;;;
-;;; object->object
+;;; util
 ;;;
-(defun make-object->object ()
-  (make-hash-table))
+(defun slot-index-multiple-contexts (index meme)
+  "slot-index-multiple の処理に必要な値を返す。
+各オペレータの let が長くなる。それを短かくするための関数。"
+  (multiple-value-bind (class slot)
+      (get-index-key index)
+    (assert-class class meme)
+    (let* ((%id (up:%id meme))
+           (value (slot-value meme slot))
+           (value->objects (value->objects meme)))
+      (values %id
+              value
+              (%id->value index)
+              (ensure-%id->object value->objects value)
+              value->objects))))
 
-(defun remove-on-object->object (object->object object)
-  (when (gethash object object->object)
-    (remhash object object->object))
-  object->object)
-
-(defun ensure-object->object (value->objects value)
-  (let ((object->object (gethash value value->objects)))
-    (or object->object
-        (setf (gethash value value->objects)
-              (make-object->object)))))
-
-;;;
-;;; core
-;;;
-(defun add-on-index-core (value->objects value object->value object)
-  (setf (gethash object object->value) value)
-  (let ((object->object (ensure-object->object value->objects value)))
-    (unless (gethash object object->object)
-      (setf (gethash object object->object) object))))
-
-(defun remove-on-index-core (value->objects value object->value object)
-  (remhash object object->value)
-  (let ((object->object (gethash object value->objects)))
-    (remove-on-object->object object->object object)
-    (when (= (hash-table-count object->object) 0)
-      (remhash value value->objects))))
-
-(defun change-on-index-core (value->objects value-old value-new
-                             object->value object)
-  (unless (equalp value-old value-new)
-    (remove-on-index-core value->objects value-old
-                          object->value object))
-  (unless (gethash value-new value->objects)
-    (add-on-index-core value->objects value-old
-                       object->value object)))
+(defun ensure-%id->object (value->objects value)
+  "%id-object を返す。
+slot-index-multiple.value-objects に %id-object(連想配列)が存在しない場合
+連想配列を作成してそれを返す。"
+  (or (gethash value value->objects)
+      (setf (gethash value value->objects)
+            (make-hash-table :test 'equalp))))
 
 ;;;
 ;;; add-object
 ;;;
-(defmethod add-object ((index slot-index-multiple) object)
-  (multiple-value-bind (class slot)
-      (get-index-key index)
-    (assert-class class object)
-    (let ((value->objects (value->objects index))
-          (object->value  (object->value  index)))
-      (change-on-index-core value->objects
-                            (gethash object object->value)
-                            (slot-value slot object)
-                            object->value
-                            object)))
+(defun add-object-add-multi (meme
+                             value
+                             %id
+                             %id->object
+                             %id->value)
+  "meme を index に追加するオペレータ。
+add/change の両方からコールするので汎用的に別出し。"
+  (assert (or meme value %id %id->object %id->value))
+  (setf (gethash %id %id->value) value)
+  (setf (gethash %id %id->object) meme))
+
+(defmethod add-object ((index slot-index-multiple) meme)
+  "meme を index に追加するオペレータ。
+処理は実質 `add-object-add-multi` で行っている。"
+  (multiple-value-bind (%id value %id->value %id->object)
+      (slot-index-multiple-contexts index meme)
+    (if (gethash %id %id->value)
+        (unless (equalp (gethash %id %id->value) value)
+          (error "すでに他の値で登録されています。"))
+        (add-object-add-multi meme value %id
+                              %id->object %id->value)))
   index)
 
 ;;;
@@ -68,12 +62,41 @@
 ;;;
 ;;; remove-meme
 ;;;
-(defmethod remove-object ((index slot-index-multiple) object)
-  (multiple-value-bind (class)
-      (get-index-key index)
-    (assert-class class object)
-    (let ((value->objects (value->objects index))
-          (object->value  (object->value  index)))
-      (remove-on-index-core value->objects (gethash object object->value)
-                            object->value object)))
-  index)
+(defun add-object-remove-multi (value
+                                %id
+                                %id->object
+                                %id->value
+                                value->objects)
+  "meme を index から削除するためのオペレータ。
+add/change の両方からコールするので汎用的に別出し。"
+  (assert (or value %id %id->object %id->value value->objects))
+  (remhash %id %id->value)
+  (remhash %id %id->object)
+  (when (= (hash-table-count %id->object) 0)
+    (remhash value->objects value)))
+
+
+(defmethod remove-object ((index slot-index-multiple) meme)
+  "meme を index から削除するためのオペレータ。
+処理は実質 `add-object-remove-multi` で行っている。"
+  (multiple-value-bind (%id value
+                        %id->value %id->object value->objects)
+      (slot-index-multiple-contexts index meme)
+    (add-object-remove-multi value
+                             %id
+                             %id->object
+                             %id->value
+                             value->objects)))
+
+;;;
+;;; change-meme
+;;;
+(defmethod change-object ((index slot-index-multiple) meme)
+  (multiple-value-bind (%id value
+                        %id->value %id->object value->objects)
+      (slot-index-multiple-contexts index meme)
+    (add-object-add-multi meme value %id
+                          %id->object %id->value)
+    (add-object-remove-multi value %id
+                             %id->object %id->value value->objects)
+    index))

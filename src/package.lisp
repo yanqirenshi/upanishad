@@ -22,10 +22,13 @@
            #:slot-index-multiple
            #:class-symbol
            #:slot-symbol
-           #:contents
+           #:%id->value
+           #:value->object
+           #:value->objects
            #:add-object
            #:add-objects
            #:remove-object
+           #:change-object
            #:make-slot-index
            #:get-index-key)
   (:documentation ""))

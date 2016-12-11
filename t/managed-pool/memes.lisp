@@ -38,14 +38,14 @@
   (let ((memes (make-instance 'memes))
         (meme (make-instance 'test-meme :%id 1)))
     (add-meme memes meme)
-    (get-meme memes 1)))
+    (get-meme memes :%id 1)))
 
 (subtest "add-meme"
   (let ((memes (make-instance 'memes))
         (meme (make-instance 'test-meme :%id 1)))
     (is (add-meme memes meme)
         memes "can return memes")
-    (is (get-meme memes 1)
+    (is (get-meme memes :%id 1)
         meme "can return meme")))
 
 (subtest "make-memes"
@@ -69,15 +69,15 @@
     (subtest "before remove-meme"
       (is (length (meme-list memes)) 2)
       (is (hash-table-count (%id-index memes)) 2)
-      (ok (get-meme memes 1))
-      (ok (get-meme memes 2)))
+      (ok (get-meme memes :%id 1))
+      (ok (get-meme memes :%id 2)))
     (subtest "submit remove-meme"
       (is (remove-meme memes meme1)
           memes "can return memes"))
     (subtest "after remove-meme"
       (is (length (meme-list memes)) 1)
       (is (hash-table-count (%id-index memes)) 1)
-      (ok (not (get-meme memes 1)))
-      (ok (get-meme memes 2)))))
+      (ok (not (get-meme memes :%id 1)))
+      (ok (get-meme memes :%id 2)))))
 
 (finalize)

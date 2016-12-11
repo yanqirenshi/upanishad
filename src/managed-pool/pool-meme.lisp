@@ -3,10 +3,20 @@
 ;;;
 ;;; get-meme
 ;;;
-(defgeneric get-meme (pool class &key %id)
-  (:method ((pool pool) (class symbol) &key %id)
+(defun get-meme-at-slot (pool class slot value)
+  (let ((index (get-index pool class slot)))
+    (if index
+        index ;; TODO: write
+        (up.memes:get-meme (get-memes pool :class class)
+                           :slot slot
+                           :value value))))
+
+(defgeneric get-meme (pool class &key %id slot value)
+  (:method ((pool pool) (class symbol) &key %id slot value)
     (let ((memes (get-memes pool :class class)))
-      (up.memes:get-meme memes %id))))
+      (cond (%id (up.memes:get-meme memes :%id %id))
+            (slot (get-meme-at-slot pool class slot value))
+            (t nil)))))
 
 ;;;
 ;;; find-meme

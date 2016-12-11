@@ -5,6 +5,9 @@
           (slot-symbol slot-index)))
 
 (defun make-slot-index (class-symbol slot-symbol type &optional objects)
+  "slot-index のインスタンスを作成する。
+必要があれば meme を追加できる。
+type= :unique or :multiple"
   (assert (and (symbolp class-symbol)
                (symbolp slot-symbol)
                (symbolp type)
