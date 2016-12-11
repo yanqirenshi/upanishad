@@ -46,4 +46,6 @@
     (is-error (up.index::assert-class meme-class-ng meme)
               'error "can raise error")))
 
+(subtest "make-slot-index" (skip 1 "wait"))
+
 (finalize)
