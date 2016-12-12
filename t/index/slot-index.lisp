@@ -37,15 +37,36 @@
       (is got-slot-symbol slot-symbol
           "can return slot-symbol"))))
 
-(subtest "::ASSERT-CLASS"
-  (let* ((meme-class-ok 'meme1)
-         (meme-class-ng 'meme2)
-         (meme (make-instance meme-class-ok)))
-    (is (up.index::assert-class meme-class-ok meme)
-        nil "can not raise error")
-    (is-error (up.index::assert-class meme-class-ng meme)
-              'error "can raise error")))
+(subtest ":MAKE-SLOT-INDEX"
 
-(subtest "make-slot-index" (skip 1 "wait"))
+  (subtest "without :objects"
+    (subtest "type = :unique"
+      (let ((index (make-slot-index 'meme1 'slot1 :unique)))
+        (is (class-name (class-of index)) 'slot-index-unique)
+        (is (class-symbol index) 'meme1)
+        (is (slot-symbol index) 'slot1)
+        (is (hash-table-count (value->object index)) 0)))
+    (subtest "type = :multiple"
+      (let ((index (make-slot-index 'meme1 'slot1 :multiple)))
+        (is (class-name (class-of index)) 'slot-index-multiple)
+        (is (class-symbol index) 'meme1)
+        (is (slot-symbol index) 'slot1)
+        (is (hash-table-count (value->objects index)) 0))))
+
+  (subtest "with :objects"
+    (let ((meme1-1 (make-instance 'meme1 :%id 1 :slot1 1))
+          (meme1-2 (make-instance 'meme1 :%id 2 :slot1 1))
+          (meme1-3 (make-instance 'meme1 :%id 3 :slot1 2)))
+
+      (let ((index (make-slot-index 'meme1 'slot1 :unique (list meme1-1 meme1-3))))
+        (is (hash-table-count (value->object index)) 2))
+
+      (let ((index (make-slot-index 'meme1 'slot1 :multiple (list meme1-1 meme1-2 meme1-3))))
+        (is-%id->value (up.index::%id->value index)
+                       '((1 . 1) (2 . 1) (3 . 2))
+                       "can update %id->value")
+        (is-value->objects (value->objects index)
+                           `((1 (,meme1-1 ,meme1-2)) (2 (,meme1-3)))
+                           "can update value->objects")))))
 
 (finalize)
