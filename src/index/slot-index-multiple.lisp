@@ -3,6 +3,14 @@
 ;;;
 ;;; util
 ;;;
+(defun ensure-%id->object (value->objects value)
+  "%id-object を返す。
+slot-index-multiple.value-objects に %id-object(連想配列)が存在しない場合
+連想配列を作成してそれを返す。"
+  (or (gethash value value->objects)
+      (setf (gethash value value->objects)
+            (make-hash-table :test 'equalp))))
+
 (defun slot-index-multiple-contexts (index meme)
   "slot-index-multiple の処理に必要な値を返す。
 各オペレータの let が長くなる。それを短かくするための関数。"
@@ -17,14 +25,6 @@
               (%id->value index)
               (ensure-%id->object value->objects value)
               value->objects))))
-
-(defun ensure-%id->object (value->objects value)
-  "%id-object を返す。
-slot-index-multiple.value-objects に %id-object(連想配列)が存在しない場合
-連想配列を作成してそれを返す。"
-  (or (gethash value value->objects)
-      (setf (gethash value value->objects)
-            (make-hash-table :test 'equalp))))
 
 ;;;
 ;;; add-object
@@ -70,10 +70,11 @@ add/change の両方からコールするので汎用的に別出し。"
   "meme を index から削除するためのオペレータ。
 add/change の両方からコールするので汎用的に別出し。"
   (assert (or value %id %id->object %id->value value->objects))
+
   (remhash %id %id->value)
   (remhash %id %id->object)
   (when (= (hash-table-count %id->object) 0)
-    (remhash value->objects value)))
+    (remhash value value->objects)))
 
 
 (defmethod remove-object ((index slot-index-multiple) meme)
@@ -95,8 +96,15 @@ add/change の両方からコールするので汎用的に別出し。"
   (multiple-value-bind (%id value
                         %id->value %id->object value->objects)
       (slot-index-multiple-contexts index meme)
-    (add-object-add-multi meme value %id
-                          %id->object %id->value)
-    (add-object-remove-multi value %id
-                             %id->object %id->value value->objects)
-    index))
+
+    (let ((old-value (gethash %id %id->value)))
+      (add-object-remove-multi old-value
+                               %id
+                               %id->object
+                               (gethash old-value value->objects)
+                               value->objects)
+
+      (add-object-add-multi meme value %id
+                            %id->object %id->value)
+
+      index)))
