@@ -16,21 +16,22 @@
 (defpackage :upanishad.index
   (:use :cl)
   (:nicknames :up.index)
-  (:export #:index
-           #:slot-index
-           #:slot-index-unique
-           #:slot-index-multiple
+  (:export #:index)
+  (:export #:slot-index
            #:class-symbol
            #:slot-symbol
-           #:%id->value
-           #:value->object
-           #:value->objects
+           #:%id->value)
+  (:export #:slot-index-unique
+           #:value->object)
+  (:export #:slot-index-multiple
+           #:value->objects)
+  (:export #:make-slot-index
+           #:get-index-key
+           #:get-at-value
            #:add-object
            #:add-objects
            #:remove-object
-           #:change-object
-           #:make-slot-index
-           #:get-index-key)
+           #:change-object)
   (:documentation ""))
 
 (defpackage :upanishad

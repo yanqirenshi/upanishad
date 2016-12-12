@@ -40,7 +40,10 @@
 ;;;;; Method
 ;;;;;
 (defgeneric get-index-key (index)
-  (:documentation ""))
+  (:documentation "インデックスの情報を返す。"))
+
+(defgeneric get-at-value (index value)
+  (:documentation "インデックスを値で検索し、その値に紐付くオブジェクトを返す。"))
 
 (defgeneric add-object (index object)
   (:documentation "インデックスにオブジェクトを追加します。"))

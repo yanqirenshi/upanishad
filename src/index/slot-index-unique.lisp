@@ -72,3 +72,9 @@
              (change-object-remove index old-val meme)
              (change-object-add index new-val meme)))))
   index)
+
+;;;
+;;;
+;;;
+(defmethod get-at-value ((index slot-index-unique) value)
+  (gethash value (value->object index)))

@@ -108,3 +108,10 @@ add/change の両方からコールするので汎用的に別出し。"
                             %id->object %id->value)
 
       index)))
+
+;;;
+;;; 
+;;;
+(defmethod get-at-value ((index slot-index-multiple) value)
+  (let ((%id->object (gethash value (value->objects value))))
+    (alexandria:hash-table-values %id->object)))

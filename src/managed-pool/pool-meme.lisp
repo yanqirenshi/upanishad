@@ -6,7 +6,7 @@
 (defun get-meme-at-slot (pool class slot value)
   (let ((index (get-index pool class slot)))
     (if index
-        index ;; TODO: write
+        (up.index:get-at-value index value)
         (up.memes:get-meme (get-memes pool :class class)
                            :slot slot
                            :value value))))
