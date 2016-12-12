@@ -17,7 +17,7 @@ slot-index-multiple.value-objects に %id-object(連想配列)が存在しない
   (multiple-value-bind (class slot)
       (get-index-key index)
     (assert-class class meme)
-    (let* ((%id (up:%id meme))
+    (let* ((%id (%id meme))
            (value (slot-value meme slot))
            (value->objects (value->objects index)))
       (values %id

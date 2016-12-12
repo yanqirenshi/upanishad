@@ -1,3 +1,21 @@
+(in-package :cl-user)
+
+(defpackage :upanishad.memes
+  (:use :cl)
+  (:nicknames :up.memes)
+  (:import-from #:upanishad.meme
+                #:meme
+                #:%id)
+  (:export #:memes
+           #:meme-class
+           #:meme-list
+           #:%id-index
+           #:get-meme
+           #:add-meme
+           #:make-memes
+           #:remove-meme)
+  (:documentation ""))
+
 (in-package :upanishad.memes)
 
 (defclass memes ()
@@ -24,8 +42,8 @@
         (t nil)))
 
 (defgeneric add-meme (memes meme)
-  (:method ((memes memes) (meme upanishad:meme))
-    (let ((%id (up:%id meme)))
+  (:method ((memes memes) (meme meme))
+    (let ((%id (%id meme)))
       (when (get-meme memes :%id %id)
         (error "Aledy exist meme"))
       (setf (gethash %id (%id-index memes)) meme)
@@ -41,8 +59,8 @@
       new-memes)))
 
 (defgeneric remove-meme (memes meme)
-  (:method ((memes memes) (meme up:meme))
-    (let ((%id (up:%id meme)))
+  (:method ((memes memes) (meme meme))
+    (let ((%id (%id meme)))
       (unless (get-meme memes :%id %id)
         (error "Not exist meme"))
       (remhash %id (%id-index memes))

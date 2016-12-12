@@ -1,15 +1,3 @@
-;;;; -*- Mode: LISP -*-
-;;;;
-;;;; $Id$
-;;;;
-;;;; The CL-PREVALENCE ASDF system definition
-;;;;
-;;;; Copyright (C) 2003, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
-;;;;
-;;;; You are granted the rights to distribute and use this software
-;;;; as governed by the terms of the Lisp Lesser General Public License
-;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
-
 (in-package :asdf)
 
 (defsystem :upanishad
@@ -23,21 +11,21 @@
   :components
   ((:module "src"
     :serial t
-    :components ((:file "package")
-                 (:file "utility")
-                 (:file "generic-function")
-                 (:module "class" :depends-on ("utility")
-                  :components ((:file "data")
-                               (:file "pool")
-                               (:file "transaction")))
-                 (:module "index" :depends-on ("class")
+    :components ((:file "meme")
+                 (:module "index"
                   :components ((:file "index")
                                (:file "utility")
                                (:file "slot-index")
                                (:file "slot-index-unique")
                                (:file "slot-index-multiple")))
+                 (:file "memes")
                  (:module "pool" :depends-on ("index")
-                  :components ((:file "basic")
+                  :components ((:file "package")
+                               (:file "utility")
+                               (:file "generic-function")
+                               (:file "class-pool")
+                               (:file "class-transaction")
+                               (:file "basic")
                                (:file "files")
                                (:file "snapshot")
                                (:file "backup")
@@ -48,7 +36,6 @@
                   :components ((:file "transaction")
                                (:file "id-counter")
                                (:file "preference")
-                               (:file "memes")
                                (:file "pool-indexes")
                                (:file "pool-index")
                                (:file "pool-memes")

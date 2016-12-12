@@ -44,7 +44,7 @@
 (defun change-object-remove (index value meme)
   (let ((value->object (value->object index))
         (%id->value (%id->value index))
-        (%id (up:%id meme)))
+        (%id (%id meme)))
     ;; remove: value->object
     (remhash value value->object)
     ;; remove: %id->value
@@ -53,7 +53,7 @@
 (defun change-object-add (index value meme)
   (let ((value->object (value->object index))
         (%id->value (%id->value index))
-        (%id (up:%id meme)))
+        (%id (%id meme)))
     ;; add: value->object
     (setf (gethash value value->object) meme)
     ;; add: %id->value
@@ -64,7 +64,7 @@
   (multiple-value-bind (class slot)
       (get-index-key index)
     (assert-class class meme)
-    (let ((old-val (gethash (up:%id meme) (%id->value index)))
+    (let ((old-val (gethash (%id meme) (%id->value index)))
           (new-val (slot-value meme slot)))
       (cond ((null old-val)
              (change-object-add index new-val meme))

@@ -1,45 +1,13 @@
 (in-package :cl-user)
 
-(defpackage :upanishad.memes
-  (:use :cl)
-  (:nicknames :up.memes)
-  (:export #:memes
-           #:meme-class
-           #:meme-list
-           #:%id-index
-           #:get-meme
-           #:add-meme
-           #:make-memes
-           #:remove-meme)
-  (:documentation ""))
-
-(defpackage :upanishad.index
-  (:use :cl)
-  (:nicknames :up.index)
-  (:export #:index)
-  (:export #:slot-index
-           #:class-symbol
-           #:slot-symbol
-           #:%id->value)
-  (:export #:slot-index-unique
-           #:value->object)
-  (:export #:slot-index-multiple
-           #:value->objects)
-  (:export #:make-slot-index
-           #:get-index-key
-           #:get-at-value
-           #:add-object
-           #:add-objects
-           #:remove-object
-           #:change-object)
-  (:documentation ""))
-
 (defpackage :upanishad
-  (:use :cl :s-serialization)
+  (:use #:cl
+        #:s-serialization
+        #:upanishad.meme)
   (:nicknames :up)
-  (:import-from :alexandria
+  (:import-from #:alexandria
                 #:ensure-gethash)
-  (:import-from :upanishad.index
+  (:import-from #:upanishad.index
                 #:index
                 #:class-symbol
                 #:slot-symbol)
