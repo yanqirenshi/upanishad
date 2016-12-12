@@ -5,7 +5,9 @@
         #:s-serialization)
   (:export #:clear-pool-datastor
            #:test-pool-directory
-           #:with-pool))
+           #:with-pool
+           #:is-%id->value
+           #:is-value->objects))
 (in-package :upanishad-test.test-utility)
 
 (defun clear-pool-datastor (directory)
@@ -43,3 +45,29 @@
             ,@body)
        (when ,pool
          (stop ,pool)))))
+
+;;;
+;;; is-xxx
+;;;
+(defun is-%id->value (got-ht expect &optional comment)
+  (is (sort (alexandria:hash-table-alist got-ht)
+            #'(lambda (a b)
+                (< (car a) (car b))))
+      expect
+      :test 'equalp comment))
+
+(defun is-value->objects (got-ht expect &optional comment)
+  (labels ((2alist (%id->object)
+             (let ((out nil))
+               (maphash #'(lambda (k v)
+                            (push (list k
+                                        (sort (alexandria:hash-table-values v)
+                                              #'(lambda (a b)
+                                                  (< (up:%id a) (up:%id b)))))
+                                  out))
+                        %id->object)
+               (sort out #'(lambda (a b) (< (car a) (car b)))))))
+    (is (2alist got-ht)
+        expect
+        comment)))
+
