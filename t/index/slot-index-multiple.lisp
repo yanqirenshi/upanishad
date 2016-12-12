@@ -11,18 +11,6 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "upanishad-test.slot-index-multiple"))
 
-(defclass meme1 (meme)
-  ((slot1 :documentation ""
-          :accessor slot1 :initarg :slot1 :initform nil)
-   (slot2 :documentation ""
-          :accessor slot2 :initarg :slot2 :initform nil)))
-
-(defclass meme2 (meme)
-  ((slot1 :documentation ""
-          :accessor slot1 :initarg :slot1 :initform nil)
-   (slot2 :documentation ""
-          :accessor slot2 :initarg :slot2 :initform nil)))
-
 (plan nil)
 
 (subtest "::slot-index-multiple-contexts" (skip 1 "wait"))

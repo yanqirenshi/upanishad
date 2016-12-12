@@ -7,7 +7,11 @@
            #:test-pool-directory
            #:with-pool
            #:is-%id->value
-           #:is-value->objects))
+           #:is-value->objects)
+  (:export #:meme1
+           #:meme2
+           #:slot1
+           #:slot2))
 (in-package :upanishad-test.test-utility)
 
 (defun clear-pool-datastor (directory)
@@ -71,3 +75,17 @@
         expect
         comment)))
 
+;;;
+;;; class
+;;;
+(defclass meme1 (meme)
+  ((slot1 :documentation ""
+          :accessor slot1 :initarg :slot1 :initform nil)
+   (slot2 :documentation ""
+          :accessor slot2 :initarg :slot2 :initform nil)))
+
+(defclass meme2 (meme)
+  ((slot1 :documentation ""
+          :accessor slot1 :initarg :slot1 :initform nil)
+   (slot2 :documentation ""
+          :accessor slot2 :initarg :slot2 :initform nil)))

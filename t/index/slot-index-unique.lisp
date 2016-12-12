@@ -11,35 +11,14 @@
 
 (defparameter *test-pool-directory* (test-pool-directory "upanishad-test.slot-index-unique"))
 
-(defclass test-meme-1 (meme)
-  ((test-slot-a :documentation ""
-                :accessor test-slot-a
-                :initarg :test-slot-a
-                :initform nil)
-   (test-slot-b :documentation ""
-                :accessor test-slot-b
-                :initarg :test-slot-b
-                :initform nil)))
-
-(defclass test-meme-2 (meme)
-  ((test-slot-c :documentation ""
-                :accessor test-slot-c
-                :initarg :test-slot-c
-                :initform nil)
-   (test-slot-d :documentation ""
-                :accessor test-slot-d
-                :initarg :test-slot-d
-                :initform nil)))
-
 (plan nil)
 
-
 (subtest "::CHANGE-OBJECT"
-  (let* ((slot-symbol 'test-slot-a)
+  (let* ((slot-symbol 'slot1)
          (index (make-instance 'slot-index-unique
-                               :class-symbol 'test-meme-1
+                               :class-symbol 'meme1
                                :slot-symbol slot-symbol))
-         (meme (make-instance 'test-meme-1 :test-slot-a 1)))
+         (meme (make-instance 'meme1 :slot1 1)))
 
     (subtest "befor not exist meme on index"
       (is (change-object index meme)
@@ -63,11 +42,11 @@
             meme "can get meme")))))
 
 (subtest ":ADD-OBJECT"
-  (let* ((slot-symbol 'test-slot-a)
+  (let* ((slot-symbol 'slot1)
          (index (make-instance 'slot-index-unique
-                               :class-symbol 'test-meme-1
+                               :class-symbol 'meme1
                                :slot-symbol slot-symbol))
-         (meme (make-instance 'test-meme-1 :test-slot-a 1)))
+         (meme (make-instance 'meme1 :slot1 1)))
 
     (subtest "not exist"
       (is (add-object index meme)
@@ -89,16 +68,16 @@
           meme "can get meme"))
 
     (subtest "can raise error"
-      (is-error (add-object index (make-instance 'test-meme-2))
+      (is-error (add-object index (make-instance 'meme2))
                 'error "bad meme class"))))
 
 (subtest ":ADD-OBJECTS"
-  (let* ((slot-symbol 'test-slot-a)
+  (let* ((slot-symbol 'slot1)
          (index (make-instance 'slot-index-unique
-                               :class-symbol 'test-meme-1
+                               :class-symbol 'meme1
                                :slot-symbol slot-symbol))
-         (meme1 (make-instance 'test-meme-1 :test-slot-a 1))
-         (meme2 (make-instance 'test-meme-1 :test-slot-a 2))
+         (meme1 (make-instance 'meme1 :slot1 1))
+         (meme2 (make-instance 'meme1 :slot1 2))
          (memes (list meme1 meme2)))
     (is (add-objects index memes)
         index "can return index")
@@ -111,10 +90,10 @@
           meme2 "can get meme2"))))
 
 (subtest ":MAKE-SLOT-INDEX"
-  (let* ((class-symbol 'test-meme-1)
-         (slot-symbol 'test-slot-a)
-         (meme1 (make-instance class-symbol :test-slot-a 1))
-         (meme2 (make-instance class-symbol :test-slot-a 2))
+  (let* ((class-symbol 'meme1)
+         (slot-symbol 'slot1)
+         (meme1 (make-instance class-symbol :slot1 1))
+         (meme2 (make-instance class-symbol :slot1 2))
          (memes (list meme1 meme2)))
     (subtest "without memes"
       (let ((index (make-slot-index class-symbol slot-symbol :unique)))
@@ -143,10 +122,10 @@
                 'error "memes is not list"))))
 
 (subtest ":REMOVE-OBJECT"
-  (let* ((class-symbol 'test-meme-1)
-         (slot-symbol 'test-slot-a)
-         (meme1 (make-instance class-symbol :test-slot-a 1))
-         (meme2 (make-instance class-symbol :test-slot-a 2))
+  (let* ((class-symbol 'meme1)
+         (slot-symbol 'slot1)
+         (meme1 (make-instance class-symbol :slot1 1))
+         (meme2 (make-instance class-symbol :slot1 2))
          (memes (list meme1 meme2))
          (index (make-slot-index class-symbol slot-symbol :unique memes)))
     (is (remove-object index meme1)
