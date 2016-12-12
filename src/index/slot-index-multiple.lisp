@@ -11,7 +11,7 @@
     (assert-class class meme)
     (let* ((%id (up:%id meme))
            (value (slot-value meme slot))
-           (value->objects (value->objects meme)))
+           (value->objects (value->objects index)))
       (values %id
               value
               (%id->value index)
