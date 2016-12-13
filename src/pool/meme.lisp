@@ -16,12 +16,14 @@
     (let ((memes (get-memes pool :class class)))
       (cond (%id (up.memes:get-meme memes :%id %id))
             (slot (get-meme-at-slot pool class slot value))
-            (t nil)))))
+            (t nil))))
+  (:documentation ""))
 
 ;;;
 ;;; find-meme
 ;;;
-(defgeneric find-meme (pool class &key slot value test))
+(defgeneric find-meme (pool class &key slot value test)
+  (:documentation ""))
 
 ;;;
 ;;; tx-change-meme-slots
@@ -40,7 +42,8 @@
                   (tx-remove-meme-from-index pool slot meme)
                   (setf (slot-value meme slot) value)
                   (tx-add-meme-to-index pool slot meme)))
-      meme)))
+      meme))
+  (:documentation ""))
 
 ;;;
 ;;; tx-create-meme
@@ -51,7 +54,8 @@
            (meme (make-instance class :%id %id))
            (memes (get-memes pool :class class)))
       (up.memes:add-meme memes meme)
-      (tx-change-meme-slots pool class %id slots-and-values))))
+      (tx-change-meme-slots pool class %id slots-and-values)))
+  (:documentation ""))
 
 ;;;
 ;;; tx-delete-meme
@@ -64,4 +68,5 @@
           (progn
             ;; TODO: remove all index
             (up.memes:remove-meme memes meme))
-          (error "no meme of class ~a with %id ~d found in ~s" class %id pool)))))
+          (error "no meme of class ~a with %id ~d found in ~s" class %id pool))))
+  (:documentation ""))

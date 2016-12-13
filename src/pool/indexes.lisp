@@ -5,7 +5,8 @@
     (let* ((class-ht (indexes pool))
            (slot-ht (gethash class class-ht)))
       (when slot-ht
-        (gethash slot slot-ht)))))
+        (gethash slot slot-ht))))
+  (:documentation "プールに登録されているスロット・インデックスを取得します。"))
 
 (defun %tx-add-index (indexes class slot index)
   (let* ((class-ht indexes)
@@ -22,7 +23,8 @@
       (let ((indexes (indexes pool)))
         (when (get-index pool class slot)
           (error "Aledy exist index"))
-        (%tx-add-index indexes class slot index)))))
+        (%tx-add-index indexes class slot index))))
+  (:documentation "プールにスロット・インデックスを登録します。"))
 
 (defun %tx-remove-index (pool class slot)
   (assert (or pool class slot))
@@ -38,4 +40,5 @@
     (multiple-value-bind (class slot)
         (up.index:get-index-key index)
       (%tx-remove-index pool class slot))
-    pool))
+    pool)
+  (:documentation "プールからスロット・インデックスを削除します。"))
