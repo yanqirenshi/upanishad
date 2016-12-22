@@ -17,13 +17,16 @@
       (cond (%id (up.memes:get-meme memes :%id %id))
             (slot (get-meme-at-slot pool class slot value))
             (t nil))))
-  (:documentation ""))
+  (:documentation "プールからmemeを取得する。
+しかし、これは find-meme との差がつかない。
+get - find の名前に問題(限界)があるのかな。。。"))
 
 ;;;
 ;;; find-meme
 ;;;
 (defgeneric find-meme (pool class &key slot value test)
-  (:documentation ""))
+  (:documentation "プールからmemeを取得する。
+get-meme との差別化が。。。"))
 
 ;;;
 ;;; tx-change-meme-slots
@@ -43,7 +46,7 @@
                   (setf (slot-value meme slot) value)
                   (tx-add-meme-to-index pool slot meme)))
       meme))
-  (:documentation ""))
+  (:documentation "meme のスロットの値を変更する。"))
 
 ;;;
 ;;; tx-create-meme
@@ -55,7 +58,7 @@
            (memes (get-memes pool :class class)))
       (up.memes:add-meme memes meme)
       (tx-change-meme-slots pool class %id slots-and-values)))
-  (:documentation ""))
+  (:documentation "meme を新規に作成しプールに追加する。"))
 
 ;;;
 ;;; tx-delete-meme
@@ -69,4 +72,4 @@
             ;; TODO: remove all index
             (up.memes:remove-meme memes meme))
           (error "no meme of class ~a with %id ~d found in ~s" class %id pool))))
-  (:documentation ""))
+  (:documentation "プールから meme を削除する。"))

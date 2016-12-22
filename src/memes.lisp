@@ -30,7 +30,8 @@
    (%id-index :documentation ""
               :accessor %id-index
               :initarg :%id-index
-              :initform (make-hash-table))))
+              :initform (make-hash-table)))
+  (:documentation ""))
 
 (defun get-meme (memes &key %id slot value)
   (assert memes)
@@ -48,7 +49,8 @@
         (error "Aledy exist meme"))
       (setf (gethash %id (%id-index memes)) meme)
       (push meme (meme-list memes)))
-    memes))
+    memes)
+  (:documentation ""))
 
 (defgeneric make-memes (meme-class &key meme-list)
   (:method ((object-symbol symbol) &key meme-list)
@@ -56,7 +58,8 @@
                                     :meme-class object-symbol)))
       (dolist (meme meme-list)
         (add-meme new-memes meme))
-      new-memes)))
+      new-memes))
+  (:documentation ""))
 
 (defgeneric remove-meme (memes meme)
   (:method ((memes memes) (meme meme))
@@ -66,4 +69,5 @@
       (remhash %id (%id-index memes))
       (setf (meme-list memes)
             (remove meme (meme-list memes)))
-      memes)))
+      memes))
+  (:documentation ""))

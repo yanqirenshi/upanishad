@@ -11,6 +11,10 @@
 
 (plan nil)
 
+(subtest ":TX-CREATE-MEME"
+  ;; (tx-create-meme pool 'meme1 '((slot1 "1") (slot2 "2")))
+  (skip 1 "wait"))
+
 (subtest ":GET-MEME"
   (skip 1 "wait"))
 
@@ -18,9 +22,6 @@
   (skip 1 "wait"))
 
 (subtest ":TX-CHANGE-MEME-SLOTS"
-  (skip 1 "wait"))
-
-(subtest ":TX-CREATE-MEME"
   (skip 1 "wait"))
 
 (subtest ":TX-DELETE-MEME"

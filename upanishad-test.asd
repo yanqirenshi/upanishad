@@ -19,7 +19,7 @@ Copyright (c) 2014 Satoshi Iwasaki (yanqirenshi@gmail.com)
   :components
   ((:module "t"
     :components ((:file "test-utility")
-                 (:file "package" :depends-on ("test-utility"))
+                 (:file "upanishad")
                  (:file "blob")
                  (:file "debug-pool")
                  (:module "index"
