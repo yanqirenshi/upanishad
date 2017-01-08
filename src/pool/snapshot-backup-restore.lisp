@@ -95,7 +95,8 @@
     (snapshot-copy-snapshot-file pool snapshot timetag)
     (snapshot-root-objects pool snapshot)
     (snapshot-transaction-log pool transaction-log timetag)
-    (delete-file transaction-log)))
+    (when (fad:file-exists-p transaction-log)
+      (delete-file transaction-log))))
 
 
 ;;;

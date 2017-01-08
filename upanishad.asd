@@ -59,6 +59,6 @@
                :s-xml
                :s-sysdeps
                :s-serialization
-               :cl-ppcre)
+               :cl-ppcre
+               :cl-fad)
   :in-order-to ((test-op (test-op upanishad-test))))
-
