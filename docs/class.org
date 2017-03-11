@@ -1,0 +1,153 @@
+#+TITLE: Class
+#+AUTHOR: yanqirenshi@gmail.com
+#+EMAIL: 
+#+LANGUAGE: ja
+#+OPTIONS: toc:nil num:nil author:nil creator:nil LaTeX:t
+#+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
+#+MACRO: em @<font size=+1 color=red>$1@</font>
+
+* Class BRAHMAN
+
+** Class Precedence List:
+
+t
+
+** Description:
+
+upanishad 内の全てのクラスのスーパークラス。。。
+いやスーパークラスのスーパークラスかな。
+
+梵我一如を表わすための思想的/象徴的なクラス。
+
+BRAHMAN自体は実態を持たない。
+
+** Slots
+
+なし
+
+** See Also:
+
+* Class ATMAN
+
+** Class Precedence List
+
+BRAHMAN, t
+
+** Description
+
+upanishad 内の全てのクラスのスーパークラス。
+
+梵我一如 を表わすための思想的/象徴的なクラス。
+
+ATMAN は実態を持つ全てのもの。
+
+** Slots
+
+| slot | description            |
+|------+------------------------|
+| %id  | an Integer. default -1 |
+
+*** %id
+
+オブジェクトのプライマリキーとなるスロット。
+
+いまのところ pool 毎に連番で採番している。
+
+オブジェクト毎に採番したほうが良いのかとも思うが今はまだそのようになっていない。
+
+* Class MEME
+
+** Class Precedence List
+
+ATMAN, t
+
+** Description
+このクラスも思想的/象徴的なクラスです。
+
+まぁぶっちゃけ不要なんですけど。
+
+オブジェクトを蓄積するクラスをPOOLとしたのでMEMEとしています。
+
+** Slots
+
+* Class BLOB
+
+** Class Precedence List
+
+MEME, t
+
+** Description
+
+A blob is a file-like collection of bytes with related metadata
+
+** Slots
+
+| slot      | description                                                             |
+|-----------+-------------------------------------------------------------------------|
+| name      | Return the descriptive name of blob. Set the descriptive name of blob.  |
+| size      | Return the size of blob in bytes. Set the mime-type string of blob.     |
+| mime-type | Return the mime-type of blob as a string. Set the keywords list of blob |
+|           |                                                                         |
+| keywords  | Return the list of keywords associated with blob                        |
+
+* Class POOL
+
+** Class Precedence List
+
+brahman, t
+
+** Description
+
+** Slots
+
+| slot                   | description |
+|------------------------+-------------|
+| root-objects           |             |
+| index-objects          |             |
+| memes                  |             |
+| indexes                |             |
+| options                |             |
+| directory              |             |
+| snapshot               |             |
+| transaction-log        |             |
+| transaction-log-stream |             |
+| serializer             |             |
+| deserializer           |             |
+| file-extension         |             |
+| serialization-state    |             |
+| transaction-hook       |             |
+
+* Class GUARDED-POOL
+
+** Class Precedence List
+
+brahman, t
+
+** Description
+
+A Prevalence system with a guard thunk
+
+** Slots
+
+| slot  | description |
+|-------+-------------|
+| guard |             |
+
+* Class TRANSACTION
+
+** Class Precedence List
+
+brahman, t
+
+** Description
+
+A simple Transaction object joining a function and its arguments
+
+** Slots
+
+| slot     | description |
+|----------+-------------|
+| args     |             |
+| function |             |
+
+
