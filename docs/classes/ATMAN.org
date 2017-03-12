@@ -1,0 +1,34 @@
+#+TITLE: Class ATMAN
+#+AUTHOR: 岩崎仁是
+#+EMAIL: yanqirenshi@gmail.com
+#+LANGUAGE: ja
+#+OPTIONS: toc:nil num:nil author:nil creator:nil LaTeX:t
+#+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
+#+MACRO: em @<font size=+1 color=red>$1@</font>
+
+** Class Precedence List
+
+BRAHMAN, t
+
+** Description
+
+upanishad 内の全てのクラスのスーパークラス。
+
+梵我一如 を表わすための思想的/象徴的なクラス。
+
+ATMAN は実態を持つ全てのもの。
+
+** Slots
+
+| slot | description            |
+|------+------------------------|
+| %id  | an Integer. default -1 |
+
+*** %id
+
+オブジェクトのプライマリキーとなるスロット。
+
+いまのところ pool 毎に連番で採番している。
+
+オブジェクト毎に採番したほうが良いのかとも思うが今はまだそのようになっていない。
+

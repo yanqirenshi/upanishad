@@ -1,0 +1,20 @@
+#+TITLE: Upanishad の機能
+#+AUTHOR: yanqirenshi@gmail.com
+#+EMAIL: 
+#+LANGUAGE: ja
+#+OPTIONS: toc:nil num:nil author:nil creator:nil LaTeX:t
+#+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
+#+MACRO: em @<font size=+1 color=red>$1@</font>
+
+1. MEME
+   - 作成
+   - 変更
+   - 削除
+2. INDEX
+2. POOLについて
+   - [[./pool-basic.html][起動/停止]]
+   - マスター/スレーブ構成
+   - プロパティ
+   - オプション
+   - Gcehharded
+3. トランザクション

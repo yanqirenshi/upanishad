@@ -6,5 +6,32 @@
 #+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
 #+MACRO: em @<font size=+1 color=red>$1@</font>
 
+- [[./functions/index.html][Upanishadの機能]]
+- [[./classes/index.html][Classes]]
+- [[./operators/index.html][Operators]]
 
-<a href="./class.html">class</a>
+Object Database です。
+
+まず、Database のは POOL というクラスで表現されます。
+POOL が Object を管理します。
+
+Object は MEME というクラスで表現されています。
+
+
+MEME に対する操作は基本以下の三つです。
+
+1. MEME を追加する。
+2. MEME のスロットを変更する。
+3. MEME を変更する。
+
+
+POOL に対する操作は基本以下の四つです。
+
+1. POOL を起動させる。
+2. POOL を停止させる。
+3. POOL 管理している MEME をシリアライズしてファイルに保管する。
+4. ファイルに保管したシリアライズ化された MEME を POOL にロードする。
+
+
+POOL には MEME に対する操作をトランザクション化する機能があります。
+これにより、操作をログ化することでなんやらかんやらあります。

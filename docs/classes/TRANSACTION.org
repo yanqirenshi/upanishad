@@ -1,0 +1,24 @@
+#+TITLE: Class TRANSACTION
+#+AUTHOR: 岩崎仁是
+#+EMAIL: yanqirenshi@gmail.com
+#+LANGUAGE: ja
+#+OPTIONS: toc:nil num:nil author:nil creator:nil LaTeX:t
+#+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
+#+MACRO: em @<font size=+1 color=red>$1@</font>
+
+* Class Precedence List
+
+brahman, t
+
+* Description
+
+A simple Transaction object joining a function and its arguments
+
+* Slots
+
+| slot     | description |
+|----------+-------------|
+| args     |             |
+| function |             |
+
+
