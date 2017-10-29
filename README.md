@@ -7,10 +7,10 @@
 * DBも Common Lisp のみで完結させたい。
 
 そんなに学習コストもかからないと思います。
-わからんかったら Issue書くかメールしてつかぁさい。
 
 # Usage
 データを保管する(snapshotと言う)ためのディレクトリを作成したら。。。
+
 ```shell
 cd ~/
 mkdir ~/up
@@ -37,7 +37,6 @@ mkdir ~/up
 ```
 
 # Dependencies
-ほぼ、まじりっけなし。
 
 | libraly    | description |
 |------------|-------------|
@@ -47,7 +46,7 @@ mkdir ~/up
 | [s-sysdeps](https://github.com/svenvc/s-sysdeps)  |マスタとスレーブでソケット通信するのに利用。|
 
 # Installation
-飾りっけなし。
+
 ``` lisp
 (ql:quickload :upanishad)
 (ql:quickload :upanishad-test)
