@@ -13,7 +13,112 @@
 
         <h1 class="title is-1">UPANISHAD</h1>
 
-        <packages></packages>
+        <section class="section">
+            <div class="container">
+                <h1 class="title">Description</h1>
+                <!-- <p class="subtitle"></p> -->
+                <p>
+                    <a href="http://prevayler.org/">Object Prevalence</a> の Common Lips の実装です。
+
+                    こんな人は使ってみてください。
+
+                    <ul>
+                        <li>CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズ処理書いたりすんの面倒くせぇ。</li>
+                        <li>WindowsでRDB(MySQL)とかに接続すんのが上手くイカねぇ。イラつく。</li>
+                        <li>DBも Common Lisp のみで完結させたい。</li>
+                    </ul>
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h1 class="title">Usage</h1>
+                <!-- <p class="subtitle"></p> -->
+                <p>
+                    データを保管する(snapshotと言う)ためのディレクトリを作成したら。。。
+                    <pre>
+                        <code>
+cd ~/
+mkdir ~/up
+                        </code>
+                    </pre>
+                </p>
+                <pre>
+                    <code>
+;; pool の開始 ※pool は db に脳内変換すると違和感がなくなります。
+(defvar *pool* (make-pool "~/up/"))
+(execute-transaction (tx-create-id-counter *pool*))
+    ：
+  ※いろいろな処理。 準備中
+    ：
+;; snapshot の実行。  ※snapshot は commit に脳内変換。
+(snapshot *test-system*)
+    ：
+  ※いろいろな処理。 準備中
+    ：
+;; restore の実行  ※restore は rollback に脳内変換。
+(restore *bank-system*)
+
+;; pool の停止
+(close-open-streams *test-system*)
+                    </code>
+                </pre>
+                <p>
+                    あとは lisp でこんな感じ。
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h1 class="title">
+                    Packages
+                </h1>
+                <p class="subtitle">........</p>
+                <p>
+                    飾りっけなし。
+
+                    <pre><code>
+(ql:quickload :upanishad)
+(ql:quickload :upanishad-test)
+(upanishad-test:run!)
+                    </code></pre>
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h1 class="title">
+                    Packages
+                </h1>
+                <p class="subtitle">........</p>
+                <table class="table is-bordered is-striped is-narrow is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>package</th>
+                            <th>description</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td><a href="./package">upanishad</a></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><a href="./meme/package">upanishad.meme</a></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><a href="./memes/package">upanishad.memes</a></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <script>riot.mount('*')</script>
     </body>
