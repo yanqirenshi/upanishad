@@ -12,4 +12,8 @@
             </div>
         </div>
     </footer>
+
+    <style>
+    </style>
+
 </footer-global>

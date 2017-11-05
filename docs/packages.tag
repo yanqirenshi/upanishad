@@ -1,8 +1,8 @@
 <packages>
     <section class="section">
         <div class="container">
-            <h1 class="title is-2">Packages (no-tag)</h1>
-            <p class="subtitle">........</p>
+            <h1 class="title is-2">Packages</h1>
+            <p class="subtitle">徐々に分解中</p>
             <table class="table is-bordered is-striped is-narrow is-fullwidth">
                 <thead>
                     <tr>
@@ -28,4 +28,11 @@
             </table>
         </div>
     </section>
+
+    <style>
+     packages > .section {
+         padding-top: 11px;
+         padding-bottom: 11px;
+     }
+    </style>
 </packages>
