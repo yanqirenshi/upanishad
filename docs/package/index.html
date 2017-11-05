@@ -3,20 +3,35 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>upanishad package</title>
+        <title>Package: UPANISHAD</title>
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
     </head>
     <body>
-        <section class="section">
+        <script type="riot/tag" src="../tags/navbar-global.tag"></script>
+        <script type="riot/tag" src="../tags/footer-global.tag"></script>
+        <script type="riot/tag" src="classes.tag"></script>
+        <script type="riot/tag" src="functions.tag"></script>
+        <script type="riot/tag" src="generic-functions.tag"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
+
+        <navbar-global></navbar-global>
+
+        <section class="section" style="padding-bottom: 22px; padding-bottom: 22px; margin-top: 22px;">
             <div class="container">
-                <h1 class="title">
-                    Hello World
-                </h1>
-                <p class="subtitle">
-                    My first website with <strong>Bulma</strong>!
-                </p>
+                <h1 class="title is-1">Package: UPANISHAD</h1>
+                <p class="subtitle"></p>
             </div>
         </section>
+
+        <classes></classes>
+        <functions></functions>
+        <generic-functions></generic-functions>
+
+        <footer-global></footer-global>
+
+        <script>riot.mount('*')</script>
     </body>
 </html>
