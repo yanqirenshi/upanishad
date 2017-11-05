@@ -1,4 +1,4 @@
-<packages>
+<instration>
     <section class="section">
         <div class="container">
             <h1 class="title">Packages (no-tag)</h1>
@@ -28,4 +28,4 @@
             </table>
         </div>
     </section>
-</packages>
+</instration>
