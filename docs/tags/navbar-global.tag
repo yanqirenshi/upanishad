@@ -1,4 +1,4 @@
-<navbar>
+<navbar-global>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="https://yanqirenshi.github.io/upanishad/">
@@ -15,4 +15,4 @@
             </button>
         </div>
     </nav>
-</navbar>
+</navbar-global>

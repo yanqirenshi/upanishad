@@ -1,5 +1,5 @@
 <usage>
-    <section class="section">
+    <section class="section is-2">
         <div class="container">
             <h1 class="title">Usage</h1>
             <!-- <p class="subtitle"></p> -->
