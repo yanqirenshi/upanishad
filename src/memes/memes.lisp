@@ -1,37 +1,4 @@
-(in-package :cl-user)
-
-(defpackage :upanishad.memes
-  (:use :cl)
-  (:nicknames :up.memes)
-  (:import-from #:upanishad.meme
-                #:meme
-                #:%id)
-  (:export #:memes
-           #:meme-class
-           #:meme-list
-           #:%id-index
-           #:get-meme
-           #:add-meme
-           #:make-memes
-           #:remove-meme)
-  (:documentation ""))
-
 (in-package :upanishad.memes)
-
-(defclass memes ()
-  ((meme-class
-    :documentation ""
-    :accessor meme-class
-    :initarg :meme-class)
-   (meme-list :documentation ""
-              :accessor meme-list
-              :initarg :meme-list
-              :initform nil)
-   (%id-index :documentation ""
-              :accessor %id-index
-              :initarg :%id-index
-              :initform (make-hash-table)))
-  (:documentation ""))
 
 (defun get-meme (memes &key %id slot value)
   (assert memes)

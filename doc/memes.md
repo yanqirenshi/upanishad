@@ -1,9 +1,12 @@
 # Overview
 
+meme を管理するための器です。
+
+memes は POOL の memes スロットで管理されます。
 
 # Objects
 
-#+BEGIN_SRC
+```
  +---------------+
  | pool          |
  |===============|      +-----------+
@@ -24,7 +27,15 @@
                                             | key (%id)       |    :
                                             | value           |o- -+
                                             +-----------------+
-#+END_SRC
+```
+
+## pool
+
+## memes
+
+### objects
+
+### %id-index
 
 # snapshot, restor
 
