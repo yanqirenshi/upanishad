@@ -3,7 +3,7 @@
 (defsystem :upanishad
   :name "UPANISHAD"
   :author "Satoshi Iwasaki<yanqirenshi@gmail.com>"
-  :version "0.1"
+  :version "1.0"
   :maintainer "Satoshi Iwasaki<yanqirenshi@gmail.com>"
   :licence "Lesser Lisp General Public License"
   :description "Common Lisp Prevalence Package"
@@ -23,29 +23,25 @@
                  (:module "memes" :components ((:file "package")
                                                (:file "class")
                                                (:file "memes")))
-                 (:module "pool"
-                  :components ((:file "package")
-                               (:file "utility")
-                               (:file "generic-function")
-                               (:file "class")
-                               (:file "basic")
-                               (:module "serialize" :components ((:file "files")
-                                                                 (:file "snapshot")
-                                                                 (:file "backup")
-                                                                 (:file "restore")))
-                               (:file "guarded-pool")
-                               (:file "etc")
-                               ;; move from managed-pool
-                               (:file "transaction")
-                               (:file "id-counter")
-                               (:file "preference")
-                               (:file "indexes")
-                               (:file "index")
-                               (:file "memes")
-                               (:file "meme")
-                               (:module "old" :components ((:file "index-objects-new")
-                                                           (:file "index-objects")
-                                                           (:file "root-objects")))))
+                 (:module "pool" :components ((:file "package")
+                                              (:file "utility")
+                                              (:file "generic-function")
+                                              (:file "class")
+                                              (:file "basic")
+                                              (:module "serialize" :components ((:file "files")
+                                                                                (:file "snapshot")
+                                                                                (:file "backup")
+                                                                                (:file "restore")))
+                                              (:file "guarded-pool")
+                                              (:file "etc")
+                                              ;; move from managed-pool
+                                              (:file "transaction")
+                                              (:file "id-counter")
+                                              (:file "preference")
+                                              (:file "indexes")
+                                              (:file "index")
+                                              (:file "memes")
+                                              (:file "meme")))
                  (:file "master-slave")
                  (:file "blob")
                  (:file "printer")
