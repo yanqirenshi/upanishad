@@ -1,0 +1,26 @@
+#+TITLE: Class BLOB
+#+AUTHOR: 岩崎仁是
+#+EMAIL: yanqirenshi@gmail.com
+#+LANGUAGE: ja
+#+OPTIONS: toc:nil num:nil author:nil creator:nil LaTeX:t
+#+STYLE: <link rel="stylesheet" type="text/css" href="org.css">
+#+MACRO: em @<font size=+1 color=red>$1@</font>
+
+* Class Precedence List
+
+MEME, t
+
+* Description
+
+A blob is a file-like collection of bytes with related metadata
+
+* Slots
+
+| slot      | description                                                             |
+|-----------+-------------------------------------------------------------------------|
+| name      | Return the descriptive name of blob. Set the descriptive name of blob.  |
+| size      | Return the size of blob in bytes. Set the mime-type string of blob.     |
+| mime-type | Return the mime-type of blob as a string. Set the keywords list of blob |
+|           |                                                                         |
+| keywords  | Return the list of keywords associated with blob                        |
+

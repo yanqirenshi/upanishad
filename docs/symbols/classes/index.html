@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Classes</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+        <script src="../../data/classes.js"></script>
+    </head>
+    <body>
+        <script type="riot/tag" src="../../tags/nav-global.tsg"></script>
+        <script type="riot/tag" src="../../tags/footer-global.tag"></script>
+
+        <script type="riot/tag" src="./classes-table.tag"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
+
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title is-1">Classes</h1>
+                    <h2 class="subtitle">
+                        UPANISHAD でのクラスの情報です。
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h1 class="title">List</h1>
+                <h2 class="subtitle">
+                    クラスの一覧
+                </h2>
+                <classes-table data={CLASSES}></classes-table>
+            </div>
+        </section>
+
+        <footer-global></footer-global>
+
+        <nav-global></nav-global>
+
+        <script>
+         riot.mount('*')
+        </script>
+    </body>
+</html>
