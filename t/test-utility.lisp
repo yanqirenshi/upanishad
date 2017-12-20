@@ -5,6 +5,7 @@
   (:import-from :upanishad.meme
                 #:%id)
   (:import-from :upanishad.pool
+                #:stop
                 #:make-pool
                 #:execute-transaction
                 #:tx-create-%id-counter)
@@ -51,9 +52,9 @@
           (progn
             (clear-pool-datastor ,directory)
             (setf ,pool (make-pool ,directory))
-            ,(when with-id-counter
-               '(execute-transaction
-                 (tx-create-%id-counter pool)))
+            (when ,with-id-counter
+               (execute-transaction
+                 (tx-create-%id-counter ,pool)))
             ,@body)
        (when ,pool
          (stop ,pool)))))
