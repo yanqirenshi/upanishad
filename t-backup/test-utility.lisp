@@ -1,16 +1,8 @@
 (defpackage :upanishad-test.test-utility
   (:use #:cl
+        #:upanishad.pool
         #:prove
         #:s-serialization)
-  (:import-from :upanishad.meme
-                #:%id)
-  (:import-from :upanishad.pool
-                #:make-pool
-                #:execute-transaction
-                #:tx-create-%id-counter)
-  (:import-from :alexandria
-                #:hash-table-alist
-                #:hash-table-values)
   (:export #:clear-pool-datastor
            #:test-pool-directory
            #:with-pool
@@ -62,7 +54,7 @@
 ;;; is-xxx
 ;;;
 (defun is-%id->value (got-ht expect &optional comment)
-  (is (sort (hash-table-alist got-ht)
+  (is (sort (alexandria:hash-table-alist got-ht)
             #'(lambda (a b)
                 (< (car a) (car b))))
       expect
@@ -73,9 +65,9 @@
              (let ((out nil))
                (maphash #'(lambda (k v)
                             (push (list k
-                                        (sort (hash-table-values v)
+                                        (sort (alexandria:hash-table-values v)
                                               #'(lambda (a b)
-                                                  (< (%id a) (%id b)))))
+                                                  (< (up:%id a) (up:%id b)))))
                                   out))
                         %id->object)
                (sort out #'(lambda (a b) (< (car a) (car b)))))))
