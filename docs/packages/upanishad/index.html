@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Package: UPANISHAD</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+
+        <script src="../../data/config.js"></script>
+        <script src="../../data/classes.js"></script>
+        <script src="../../data/packages.js"></script>
+        <script src="../../data/symbols.js"></script>
+
+        <script src="./data.js"></script>
+
+        <script src="../../src/libs/simple-redux/simple-redux.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
+    </head>
+    <body>
+        <script type="riot/tag" src="../../src/tags/up-header.tag"></script>
+        <script type="riot/tag" src="../../src/tags/up-section.tag"></script>
+        <script type="riot/tag" src="../../src/tags/up-footer.tag"></script>
+        <script type="riot/tag" src="../../src/tags/up-nav.tag"></script>
+
+        <script type="riot/tag" src="symbol-list.tag"></script>
+        <script type="riot/tag" src="operater-over-view.tag"></script>
+        <script type="riot/tag" src="app.tag"></script>
+
+        <app></app>
+
+        <script>
+
+         var REDUCER = new Simple_Redux_Reducer ();
+         var ACTIONS = new Simple_Redux_Actions ();
+         var STORE = new Simple_Redux_Store (REDUCER, {
+             config: CONFIG
+             , classes: CLASSES
+             , packages: PACKAGES
+             , symbols: SYMBOLS
+             , elements: ELEMENTS
+         });
+
+         riot.mount('app')
+        </script>
+    </body>
+</html>

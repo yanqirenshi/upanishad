@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Class: POOL</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+        <script src="../../../data/classes.js"></script>
+    </head>
+    <body>
+        <script type="riot/tag" src="../../../tags/nav-global.tsg"></script>
+        <script type="riot/tag" src="../../../tags/footer-global.tag"></script>
+
+        <script type="riot/tag" src="./class-header.tag"></script>
+        <script type="riot/tag" src="./class-precedence.tag"></script>
+        <script type="riot/tag" src="./description.tag"></script>
+
+        <script type="riot/tag" src="./slot-table.tag"></script>
+
+        <script type="riot/tag" src="./slot/deserializer.tag"></script>
+        <script type="riot/tag" src="./slot/directory.tag"></script>
+        <script type="riot/tag" src="./slot/file-extension.tag"></script>
+        <script type="riot/tag" src="./slot/indexes.tag"></script>
+        <script type="riot/tag" src="./slot/memes.tag"></script>
+        <script type="riot/tag" src="./slot/options.tag"></script>
+        <script type="riot/tag" src="./slot/serialization-state.tag"></script>
+        <script type="riot/tag" src="./slot/serializer.tag"></script>
+        <script type="riot/tag" src="./slot/snapshot.tag"></script>
+        <script type="riot/tag" src="./slot/transaction-hook.tag"></script>
+        <script type="riot/tag" src="./slot/transaction-log-stream.tag"></script>
+        <script type="riot/tag" src="./slot/transaction-log.tag"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
+
+        <class-header></class-header>
+        <class-precedence></class-precedence>
+        <description></description>
+        <section class="section">
+            <div class="container">
+                <h1 class="title is-2">Slots</h1>
+                <h2 class="subtitle">
+                    スロットの一覧
+                </h2>
+
+                <slot-table></slot-table>
+
+                <memes></memes>
+                <indexes></indexes>
+                <options></options>
+                <directory></directory>
+                <file-extension></file-extension>
+                <snapshot></snapshot>
+                <serializer></serializer>
+                <deserializer></deserializer>
+                <serialization-state></serialization-state>
+                <transaction-log></transaction-log>
+                <transaction-log-stream></transaction-log-stream>
+                <transaction-hook></transaction-hook>
+            </div>
+        </section>
+        <footer-global></footer-global>
+        <nav-global></nav-global>
+
+        <script>
+         riot.mount('*')
+        </script>
+    </body>
+</html>
