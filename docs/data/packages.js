@@ -4,6 +4,10 @@ var PACKAGES = [
         "description": ""
     }
     , {
+        "name": "upanishad.pool",
+        "description": "データベースの本体です。"
+    }
+    , {
         "name": "upanishad.meme",
         "description": ""
     }
