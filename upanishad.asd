@@ -42,6 +42,7 @@
                                                      (:file "index")
                                                      (:file "memes")
                                                      (:file "meme")))
+                 (:file "package")
                  (:module "replication" :components ((:file "master-slave")))
                  (:module "utility"     :components ((:file "printer")
                                                      (:file "debug-pool")))
