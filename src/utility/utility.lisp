@@ -5,7 +5,7 @@
 ;;;;;  1. define Getter / Setter
 ;;;;;
 
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 
 ;;;

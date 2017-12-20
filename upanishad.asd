@@ -42,11 +42,11 @@
                                                      (:file "index")
                                                      (:file "memes")
                                                      (:file "meme")))
-                 (:file "package")
                  (:module "replication" :components ((:file "master-slave")))
                  (:module "utility"     :components ((:file "printer")
                                                      (:file "debug-pool")))
-                 (:module "data-type"   :components ((:file "blob"))))))
+                 (:module "data-type"   :components ((:file "blob")))
+                 (:file "package"))))
   :depends-on (:alexandria
                :cl-fad
                :s-xml

@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defun get-snapshot-objects (pool type)
   "pool からシリアライズするオブジェクトを取得する。"

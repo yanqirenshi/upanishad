@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defun start-master-client (pool &key (host "localhost") (port 7651))
   "Start a connection to host:port to deliver transactions from pool"

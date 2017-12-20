@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 (defmethod execute ((pool guarded-pool) (transaction transaction))
   "Execute a transaction on a pool controlled by a guard"
   (funcall (guard pool)

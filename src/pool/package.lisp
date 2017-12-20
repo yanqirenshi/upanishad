@@ -1,10 +1,10 @@
 (in-package :cl-user)
 
-(defpackage :upanishad
+(defpackage :upanishad.pool
   (:use #:cl
         #:s-serialization
         #:upanishad.meme)
-  (:nicknames :up)
+  (:nicknames :up.pool)
   (:import-from #:alexandria
                 #:ensure-gethash)
   (:import-from #:upanishad.index

@@ -1,16 +1,5 @@
-;;;;;
-;;;;; Utilities
-;;;;;
-;;;;; Contents
-;;;;;  1. define Getter / Setter
-;;;;;
+(in-package :upanishad.pool)
 
-(in-package :upanishad)
-
-
-;;;
-;;; 1. define Getter / Setter
-;;;
 (defun getter-name (slot-name)
   (intern (string-upcase (format nil "get-~a" slot-name))))
 

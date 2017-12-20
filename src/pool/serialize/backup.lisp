@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defmethod backup ((pool pool) &key directory)
   (let* ((timetag (timetag))

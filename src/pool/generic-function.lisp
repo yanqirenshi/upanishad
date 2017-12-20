@@ -1,13 +1,4 @@
-;;;;;
-;;;;; Defince Generic function
-;;;;;
-;;;;; Contents
-;;;;;  1. Managed pool
-;;;;;  2. Pool
-;;;;;  3. blob
-;;;;;
-
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 ;;;
 ;;; 1. Managed pool

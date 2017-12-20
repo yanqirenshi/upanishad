@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defgeneric tx-add-memes (pool memes)
   (:method ((pool pool) (memes up.memes:memes))

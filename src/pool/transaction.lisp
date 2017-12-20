@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defmacro execute-transaction (transaction-call)
   `(if (not (poolp ,(second transaction-call)))

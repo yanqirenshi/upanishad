@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defgeneric tx-add-meme-to-index (pool slot meme)
   (:method ((pool pool) (slot symbol) (meme meme))

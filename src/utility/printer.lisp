@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defun print-root-objects (pool)
   (maphash #'(lambda (k v)

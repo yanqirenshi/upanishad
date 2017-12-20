@@ -3,7 +3,7 @@
 ;;;;;  1. the code for #'s-xml::echo-xml is in "echo.lisp" in S-XML's test code
 ;;;;;
 
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 ;;;
 ;;; 1. the code for #'s-xml::echo-xml is in "echo.lisp" in S-XML's test code

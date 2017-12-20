@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defun restore-objects (pool type)
   (assert (snapshot-type-p type))

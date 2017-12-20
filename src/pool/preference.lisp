@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defmethod get-preference ((pool pool) key)
   (let ((preferences (get-root-object pool :preferences)))

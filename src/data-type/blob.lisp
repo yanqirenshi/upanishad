@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 
 (defmethod print-object ((blob blob) stream)

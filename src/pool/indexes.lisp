@@ -1,4 +1,4 @@
-(in-package :upanishad)
+(in-package :upanishad.pool)
 
 (defgeneric get-index (pool class slot)
   (:method ((pool pool) (class symbol) (slot symbol))

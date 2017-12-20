@@ -15,4 +15,8 @@ var PACKAGES = [
         "name": "upanishad.memes",
         "description": ""
     }
+    , {
+        "name": "upanishad.index",
+        "description": ""
+    }
 ];
