@@ -24,9 +24,15 @@
         (remhash key ht))))
   (:documentation "プールの memes スロットから memes を削除する。"))
 
-(defgeneric get-memes (pool &key class)
-  (:method ((pool pool) &key class)
-    (let ((ht (memes pool))
-          (key class))
-      (gethash key ht)))
+(defun %get-memes (pool class)
+  (let ((ht (memes pool))
+        (key class))
+    (gethash key ht)))
+
+(defgeneric get-memes (pool &key class ensure)
+  (:method ((pool pool) &key class (ensure t))
+    (let ((memes (%get-memes pool class)))
+      (or memes
+          (when ensure
+            (tx-add-memes pool class)))))
   (:documentation "プールの memes スロットから memes クラスのインスタンスを取得する。"))

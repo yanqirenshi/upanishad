@@ -8,10 +8,18 @@
                 #:meme)
   (:import-from :upanishad.pool
                 #:make-pool
-                #:stop)
+                #:stop
+                #:tx-create-meme
+                #:tx-delete-meme
+                #:find-meme
+                #:get-meme)
   (:export #:%id
            #:meme
            ;; from :upanishad.pool
            #:make-pool
-           #:stop)
+           #:stop
+           #:tx-create-meme
+           #:tx-delete-meme
+           #:find-meme
+           #:get-meme)
   (:documentation ""))
