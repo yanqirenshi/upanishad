@@ -2,7 +2,8 @@
   (:use #:cl
         #:upanishad
         #:prove
-        #:s-serialization)
+        #:s-serialization
+        #:upanishad-test.test-utility)
   (:nicknames :up-test))
 (in-package :upanishad-test)
 
