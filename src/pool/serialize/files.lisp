@@ -73,7 +73,7 @@
   (let ((pathnames (slot-value pool 'snapshot)))
     (setf (gethash type pathnames) value)))
 
-(defun make-snapshot-filename (type &optional suffix)
+(defmethod make-snapshot-filename (type &optional suffix)
   "snapshot のファイル名を返す。"
   (assert (snapshot-type-p type))
   (unless type (warn "type が nil ですよ。"))

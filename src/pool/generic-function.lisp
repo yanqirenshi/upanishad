@@ -117,7 +117,7 @@
 (defgeneric log-transaction (pool transaction)
   (:documentation "執筆中"))
 
-(defgeneric make-snapshot-filename (pool type &optional suffix)
+(defgeneric make-snapshot-filename (type &optional suffix)
   (:documentation "執筆中"))
 
 (defgeneric make-snapshot-pathname (pool directory type &optional suffix)
