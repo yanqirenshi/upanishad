@@ -383,6 +383,120 @@ var SYMBOLS = [
         "type": "generic-function",
         "description": ""
     }
+    , {
+        "package": "upanishad.index",
+        "name": "index",
+        "type": "class",
+        "description": "インデックスのスーパークラスです。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "slot-index",
+        "type": "class",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "slot-index-unique",
+        "type": "class",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "slot-index-multiple",
+        "type": "class",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "get-index-key",
+        "type": "generic-function",
+        "description": "インデックスの情報を返す。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "get-at-value",
+        "type": "generic-function",
+        "description": "インデックスを値で検索し、その値に紐付くオブジェクトを返す。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "add-object",
+        "type": "generic-function",
+        "description": "インデックスにオブジェクトを追加します。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "add-objects",
+        "type": "generic-function",
+        "description": "インデックスに複数のオブジェクトを追加します。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "remove-object",
+        "type": "generic-function",
+        "description": "インデックスからオブジェクトを削除します。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "change-object",
+        "type": "generic-function",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "make-slot-index",
+        "type": "function",
+        "description": "slot-index のインスタンスを作成する。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "ensure-%id->object",
+        "type": "function",
+        "description": "%id-object を返す。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "slot-index-multiple-contexts",
+        "type": "function",
+        "description": "slot-index-multiple の処理に必要な値を返す。"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "add-object-add-multi",
+        "type": "function",
+        "description": "meme を index に追加する"
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "add-object-remove-multi",
+        "type": "function",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "change-object-remove",
+        "type": "function",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "change-object-add",
+        "type": "function",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "get-slot-index-class",
+        "type": "function",
+        "description": ""
+    }
+    , {
+        "package": "upanishad.index",
+        "name": "assert-class",
+        "type": "function",
+        "description": ""
+    }
 ];
 /*
     , {

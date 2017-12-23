@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Package: UPANISHAD</title>
+        <title>Package: UPANISHAD.MEME</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
 
@@ -14,8 +14,6 @@
 
         <script src="../../src/libs/ht.js"></script>
         <script src="../../src/libs/simple-redux.js"></script>
-        <script src="./Action.js"></script>
-        <script src="./Reducer.js"></script>
 
         <script src="../../src/libs/route.min.js"></script>
 
@@ -30,14 +28,20 @@
         <script type="riot/tag" src="../../src/tags/symbol-list.tag"></script>
         <script type="riot/tag" src="app.tag"></script>
 
-        <script type="riot/tag" src="home.tag"></script>
-        <script type="riot/tag" src="./symbols/generic-function/make-memes.tag"></script>
-        <script type="riot/tag" src="./symbols/generic-function/add-meme.tag"></script>
-        <script type="riot/tag" src="./symbols/function/get-meme.tag"></script>
-        <script type="riot/tag" src="./symbols/generic-function/remove-meme.tag"></script>
-
         <app></app>
 
-        <script src="index.js"></script>
+        <script>
+         var STORE = new Simple_Redux_Store (null, {
+             package: {
+                 name: 'upanishad.memes'
+             }
+             , config: CONFIG
+             , classes: CLASSES
+             , packages: PACKAGES
+             , symbols: SYMBOLS
+         });
+
+         riot.mount('*');
+        </script>
     </body>
 </html>
