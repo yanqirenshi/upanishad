@@ -8,8 +8,7 @@
   (:export #:index)
   (:export #:slot-index
            #:class-symbol
-           #:slot-symbol
-           #:%id->value)
+           #:slot-symbol)
   (:export #:slot-index-unique
            #:value->object)
   (:export #:slot-index-multiple

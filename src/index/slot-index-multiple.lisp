@@ -22,6 +22,7 @@ slot-index-multiple.value-objects に %id-object(連想配列)が存在しない
            (value->objects (value->objects index)))
       (values %id
               value
+              ;; TODO: 
               (%id->value index)
               (ensure-%id->object value->objects value)
               value->objects))))
