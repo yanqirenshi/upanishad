@@ -1,0 +1,11 @@
+(in-package :upanishad.memes)
+
+(defgeneric add-meme (memes meme)
+  (:method ((memes memes) (meme meme))
+    (let ((%id (%id meme)))
+      (when (get-meme memes :%id %id)
+        (error "Aledy exist meme"))
+      (add-object (%id-index memes)  meme)
+      (push meme (meme-list memes)))
+    memes)
+  (:documentation ""))

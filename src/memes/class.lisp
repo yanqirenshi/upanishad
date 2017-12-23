@@ -12,5 +12,5 @@
    (%id-index :documentation ""
               :accessor %id-index
               :initarg :%id-index
-              :initform (make-hash-table)))
+              :initform nil))
   (:documentation ""))

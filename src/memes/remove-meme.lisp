@@ -1,0 +1,12 @@
+(in-package :upanishad.memes)
+
+(defgeneric remove-meme (memes meme)
+  (:method ((memes memes) (meme meme))
+    (let ((%id (%id meme)))
+      (unless (get-meme memes :%id %id)
+        (error "Not exist meme"))
+      (remove-object (%id-index memes) meme)
+      (setf (meme-list memes)
+            (remove meme (meme-list memes)))
+      memes))
+  (:documentation ""))

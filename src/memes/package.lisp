@@ -3,9 +3,14 @@
 (defpackage :upanishad.memes
   (:use :cl)
   (:nicknames :up.memes)
-  (:import-from #:upanishad.meme
+  (:import-from :upanishad.meme
                 #:meme
                 #:%id)
+  (:import-from :upanishad.index
+                #:slot-index-unique
+                #:get-at-value
+                #:add-object
+                #:remove-object)
   (:export #:memes
            #:meme-class
            #:meme-list
