@@ -294,7 +294,7 @@ var SYMBOLS = [
         "description": ""
     }
     , {
-        "package": "upanishad",
+        "package": "upanishad.pool",
         "name": "get-index",
         "type": "generic-function",
         "description": ""
