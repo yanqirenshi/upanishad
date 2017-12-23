@@ -13,32 +13,19 @@
 
     <up-section title="Description">
         <p>
-        CLASS の SLOT-INDEX を取得する。
+            CLASS の SLOT-INDEX を取得する。
         </p>
         <p>
-        スロットが %id の場合は MEMES から取得する。<br/>
-        それ以外のスロットの場合は POOL の INDEXES スロットから取得する。
+            スロットが %id の場合は MEMES から取得する。<br/>
+            それ以外のスロットの場合は POOL の INDEXES スロットから取得する。
         </p>
     </up-section>
 
     <up-section title="Arguments">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>name</th>
-                    <th>type</th>
-                    <th>description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>pool</td><td></td><td></td></tr>
-                <tr><td>class</td><td></td><td></td></tr>
-                <tr><td>slot</td><td></td><td></td></tr>
-            </tbody>
-        </table>
+        <arguments-list args={this.args}></arguments-list>
     </up-section>
 
-    <up-section title="Results">
+    <up-section title="Values">
     </up-section>
 
     <up-section title="Conditions">
@@ -47,4 +34,24 @@
 
     <up-section title="See also">
     </up-section>
+
+    <script>
+     this.args = [
+         {
+             name: 'pool',
+             type: 'Class: POOL',
+             description: ''
+         }
+         , {
+             name: 'class',
+             type: 'CLASS',
+             description: ''
+         }
+         , {
+             name: 'slot',
+             type: 'Symbol',
+             description: ''
+         }
+     ];
+    </script>
 </get-index>
