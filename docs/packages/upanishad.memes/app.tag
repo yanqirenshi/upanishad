@@ -5,8 +5,11 @@
     </up-section>
 
     <up-section title="Symbols">
-        <symbol-list data={STORE.state().symbols}
-                     package={STORE.state().package.name}>
+        <sbutitle>エクスポートされているシンボルの一覧です。</sbutitle>
+        <p>全てのシンボルの一覧は <a href="./symbols">./symbols</a> を参照してください。</p>
+        <symbol-list data={STORE.get('symbols')}
+                     package={STORE.get('package.name')}
+                     export={true}>
         </symbol-list>
     </up-section>
 

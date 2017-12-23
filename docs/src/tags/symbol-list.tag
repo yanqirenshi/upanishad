@@ -52,7 +52,6 @@
          }
          return package_ret && type_ret;
      };
-
      this.filter = function (symbols) {
          var out = [];
          var conditions = {
