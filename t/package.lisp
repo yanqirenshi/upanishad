@@ -7,4 +7,4 @@
   (:nicknames :up-test))
 (in-package :upanishad-test)
 
-(setf prove:*default-reporter* :dot)
+(setf prove:*default-reporter* :list)

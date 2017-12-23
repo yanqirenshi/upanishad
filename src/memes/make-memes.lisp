@@ -1,9 +1,7 @@
 (in-package :upanishad.memes)
 
 (defun make-%id-index (class)
-  (make-instance 'slot-index-unique
-                 :class-symbol class
-                 :slot-symbol '%id))
+  (make-slot-index class '%id :unique))
 
 (defun %make-memes (object-symbol)
   (make-instance 'memes

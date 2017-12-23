@@ -7,7 +7,7 @@
                 #:meme
                 #:%id)
   (:import-from :upanishad.index
-                #:slot-index-unique
+                #:make-slot-index
                 #:get-at-value
                 #:add-object
                 #:remove-object)
