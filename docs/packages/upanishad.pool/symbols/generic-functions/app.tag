@@ -1,6 +1,6 @@
 <app>
     <home style={STYLE.display(STORE.get('tags.home'))}></home>
-    <get-index style={STYLE.display(STORE.get('tags.get-index'))}></add-meme>
+    <get-index style={STYLE.display(STORE.get('tags.get-index'))}></get-index>
 
     <up-footer></up-footer>
     <up-nav></up-nav>
