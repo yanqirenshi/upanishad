@@ -3,14 +3,13 @@
 (defgeneric tx-add-memes (pool memes)
   (:method ((pool pool) (memes up.memes:memes))
     (let ((ht (memes pool))
-          (key (up.memes:meme-class memes)))
+          (key (meme-class memes)))
       (when (gethash key ht)
         (error "このキーの memes は既に存在します。"))
       (setf (gethash key ht) memes)
       memes))
   (:method ((pool pool) (class symbol))
-    (let ((memes (make-instance 'up.memes:memes
-                                :meme-class class)))
+    (let ((memes (up.memes:make-memes class)))
       (tx-add-memes pool memes)))
   (:documentation "プールの memes スロットに memes を追加する。"))
 

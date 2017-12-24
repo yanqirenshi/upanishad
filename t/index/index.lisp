@@ -9,28 +9,13 @@
 
 (plan nil)
 
-;;;
-;;; slot-index.lisp
-;;;
-(diag "slot-index.lisp")
+(diag "utility.lisp")
 
 (with-pool (pool *test-pool-directory*)
-  (subtest "make-slot-index"
+  (subtest "get-slot-index-class"
     (skip 1 "wait ...."))
 
-  (subtest "get-index-key"
+  (subtest "assert-class"
     (skip 1 "wait ....")))
-
-;;;
-;;; slot-index-unique.lisp
-;;;
-(diag "slot-index-unique.lisp")
-
-
-;;;
-;;; slot-index-multiple.lisp
-;;;
-(diag "slot-index-multiple.lisp")
-
 
 (finalize)

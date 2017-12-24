@@ -9,6 +9,8 @@ var STORE = new Simple_Redux_Store (REDUCER, {
     , tags: {
         "home": true
         , "get-index": false
+        , "get-memes": false
+        , "tx-add-memes": false
     }
 });
 

@@ -15,8 +15,13 @@
   ((:module "t"
     :components ((:file "test-utility")
                  (:file "package")
-                 ;; (:file "upanishad")
-                 (:file "index")
+                 (:file "upanishad")
+                 (:module "index"
+                  :components ((:file "index")
+                               (:file "utility")
+                               (:file "slot-index")
+                               (:file "slot-index-unique")
+                               (:file "slot-index-multiple")))
                  ;; (:module "index"       :components ((:file "slot-index")
                  ;;                                     (:file "slot-index-unique")
                  ;;                                     (:file "slot-index-multiple")))

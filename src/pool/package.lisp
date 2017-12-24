@@ -11,6 +11,8 @@
                 #:index
                 #:class-symbol
                 #:slot-symbol)
+  (:import-from #:upanishad.memes
+                #:meme-class)
   ;; classes
   (:export #:atman
            #:meme
