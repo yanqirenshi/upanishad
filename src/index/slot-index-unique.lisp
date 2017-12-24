@@ -9,13 +9,11 @@
   (multiple-value-bind (class slot)
       (get-index-key index)
     (assert-class class meme)
-    (let* ((valht (value->object index))
-           (val (slot-value meme slot))
-           (old-object (gethash val valht)))
-      (if old-object
-          (unless (eq old-object meme)
-            (error "exist!"))
-          (setf (gethash val valht) meme))))
+    (let* ((val->obj (value->object index))
+           (val (slot-value meme slot)))
+      (when (eq (gethash val val->obj) meme)
+        (error "exist!"))
+      (setf (gethash val val->obj) meme)))
   index)
 
 ;;;

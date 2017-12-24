@@ -7,4 +7,4 @@
   (:nicknames :up-test))
 (in-package :upanishad-test)
 
-(setf prove:*default-reporter* :fiveam)
+(setf prove:*default-reporter* :list)
