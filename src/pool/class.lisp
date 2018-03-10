@@ -1,6 +1,6 @@
 (in-package :upanishad.pool)
 
-(defclass pool (brahman)
+(defclass pool-core ()
   ((memes
     :documentation ":type hash-table"
     :accessor memes
@@ -12,24 +12,19 @@
    (options
     :documentation ":type hash-table"
     :initform (make-hash-table :test 'eq))
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; これは分割しても良さそう。トランザクション用/永続化用で
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (directory
-    :documentation ":type pathname"
-    :accessor get-directory
-    :initarg :directory
-    :type 'pathname)
-   (file-extension
+   ;; 以下、廃棄予定スロット
+   (root-objects
     :documentation ""
-    :accessor file-extension
-    :initarg :file-extension
-    :initform "xml"
-    :type 'string)
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; 以下、トランザクション用のスロット
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (transaction-hook
+    :accessor root-objects
+    :initform (make-hash-table :test 'eq)
+    :type 'hash-table)
+   (index-objects
+    :documentation ":type hash-table"
+    :accessor index-objects
+    :initform (make-hash-table :test 'eq))))
+
+(defclass pool-transaction ()
+  ((transaction-hook
     :documentation ":type function"
     :accessor transaction-hook
     :initarg :transaction-hook
@@ -43,11 +38,10 @@
    (transaction-log-stream
     :documentation ":type stream"
     :accessor transaction-log-stream
-    :initform nil)
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; 以下、永続化用のスロット
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (serializer
+    :initform nil)))
+
+(defclass pool-persistence ()
+  ((serializer
     :documentation ":type function"
     :accessor serializer
     :initarg :serializer
@@ -60,19 +54,21 @@
    (serialization-state
     :documentation ":type serialization-state"
     :reader serialization-state
-    :initform (make-serialization-state))
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; 以下、廃棄予定スロット
-   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (root-objects
+    :initform (make-serialization-state))))
+
+(defclass pool (brahman pool-core pool-transaction pool-persistence)
+  ;; これらは分割しても良さそう。トランザクション用/永続化用で
+  ((directory
+    :documentation ":type pathname"
+    :accessor get-directory
+    :initarg :directory
+    :type 'pathname)
+   (file-extension
     :documentation ""
-    :accessor root-objects
-    :initform (make-hash-table :test 'eq)
-    :type 'hash-table)
-   (index-objects
-    :documentation ":type hash-table"
-    :accessor index-objects
-    :initform (make-hash-table :test 'eq)))
+    :accessor file-extension
+    :initarg :file-extension
+    :initform "xml"
+    :type 'string))
   (:documentation "Base Prevalence system implementation object"))
 
 
