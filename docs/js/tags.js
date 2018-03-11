@@ -19,9 +19,26 @@ riot.tag2('app', '<gloval-header></gloval-header> <app-tab data="{STORE.state().
      this.on('mount', function () { this.displayTabContents(); }.bind(this));
 
      ACTIONS.loadDataPage1();
+     ACTIONS.loadDataPage2();
+     ACTIONS.loadDataPage3();
+});
+
+riot.tag2('class-list', '<table class="table"> <thead> <th>PACKAGE</th> <th>NAME</th> <th>PARENTS</th> <th>DESCRIPTION</th> </thead> <tbody> <tr each="{opts.data}"> <td>{package}</td> <td>{symbol}</td> <td>{parentsStr(parents)}</td> <td>{description}</td> </tr> </tbody> </table>', '', '', function(opts) {
+     this.parentsStr = function (parents) {
+         let out = '';
+         for (var i in parents)
+             out += parents + ' ';
+         return out;
+     }.bind();
 });
 
 riot.tag2('package-list', '<table class="table"> <thead> <th>NAME</th> <th>DESCRIPTION</th> </thead> <tbody> <tr each="{opts.data}"> <td>{name}</td> <td>{description}</td> </tr> </tbody> </table>', '', '', function(opts) {
+});
+
+riot.tag2('symbol-list', '<table class="table"> <thead> <th>PACKAGE</th> <th>NAME</th> <th>TYPE</th> <th>DESCRIPTION</th> </thead> <tbody> <tr each="{opts.data}"> <td>{package}</td> <td>{name}</td> <td>{type}</td> <td>{description}</td> </tr> </tbody> </table>', '', '', function(opts) {
+     this.on('mount', function () {
+         console.log(this.opts.data)
+     }.bind(this));
 });
 
 riot.tag2('app-tab', '<div class="tabs"> <ul> <li each="{page , code in opts.data}" class="{page.display ? \'is-active\' : \'\'}"> <a code="{code}" onclick="{onClickTab}"> {page.label} </a> </li> </ul> </div>', '', '', function(opts) {
@@ -70,22 +87,30 @@ riot.tag2('packages', '<package-upanishad> </package-upanishad>', '', '', functi
 riot.tag2('page-1', '<section class="section"> <div class="container"> <h1 class="title">Packages</h1> <h2 class="subtitle"> </h2> <div class="contents"> <package-list data="{state().packages}"></package-list> </div> </div> <section class="section"> <div class="container"> <h1 class="title is-3">UPANISHAD</h1> <div class="contents"> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-3">UPANISHAD.POOL</h1> <div class="contents"> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-3">UPANISHAD.MEME</h1> <div class="contents"> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-3">UPANISHAD.MEMES</h1> <div class="contents"> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-3">UPANISHAD.INDEX</h1> <div class="contents"> </div> </div> </section> </section>', '', '', function(opts) {
      this.state = function () { return STORE.state().pages['page-1']; };
 
-     this.on('update', function () {
-         console.log(this.state());
-     }.bind(this));
-
      STORE.subscribe(function (action) {
-         console.log(action.type=='LOADED-DATA-PAGE-1');
          if (!action.type=='LOADED-DATA-PAGE-1') return;
 
          this.update();
      }.bind(this));
 });
 
-riot.tag2('page-2', '<section class="section"> <div class="container"> <h1 class="title">Page-2</h1> <h2 class="subtitle"> </h2> </div> </section>', '', '', function(opts) {
+riot.tag2('page-2', '<section class="section"> <div class="container"> <h1 class="title">Classes</h1> <h2 class="subtitle"> </h2> <div class="contents"> <class-list data="{state().classes}"></class-list> </div> </div> </section>', '', '', function(opts) {
+     this.state = function () { return STORE.state().pages['page-2']; };
+
+     STORE.subscribe(function (action) {
+         if (!action.type=='LOADED-DATA-PAGE-2') return;
+
+         this.update();
+     }.bind(this));
 });
 
-riot.tag2('page-3', '<section class="section"> <div class="container"> <h1 class="title">Page-3</h1> <h2 class="subtitle"> </h2> </div> </section>', '', '', function(opts) {
+riot.tag2('page-3', '<section class="section"> <div class="container"> <h1 class="title">Symbols</h1> <h2 class="subtitle"> </h2> <div class="contents"> <symbol-list data="{state().symbols}"></symbol-list> </div> </div> </section>', '', '', function(opts) {
+     this.state = function () { return STORE.state().pages['page-3']; };
+
+     STORE.subscribe(function (action) {
+         if (!action.type=='LOADED-DATA-PAGE-3') return;
+         this.update();
+     }.bind(this));
 });
 
 riot.tag2('readme-author', '<section class="section"> <div class="container"> <h1 class="title">Author</h1> </div> </section>', '', '', function(opts) {

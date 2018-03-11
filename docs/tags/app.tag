@@ -32,6 +32,9 @@
      STORE.subscribe(function (action) { this.displayTabContents(); }.bind(this));
      this.on('mount', function () { this.displayTabContents(); }.bind(this));
 
+     // 一旦全画面のデータをロードする。
      ACTIONS.loadDataPage1();
+     ACTIONS.loadDataPage2();
+     ACTIONS.loadDataPage3();
     </script>
 </app>

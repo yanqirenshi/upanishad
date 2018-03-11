@@ -1,4 +1,3 @@
-console.log([location.protocol, location.host, location.port]);
 var API = new Vanilla_Ajax({
     scheme: location.protocol,
     host: location.host,
@@ -12,12 +11,16 @@ var STORE = new Store(REDUCER, {
         'page-1': { code:'page-1', label:'Packages', display: false,
                     packages: []
                   },
-        'page-2': { code:'page-2', label:'Page-1', display: false },
-        'page-3': { code:'page-3', label:'Page-2', display: false }
+        'page-2': { code:'page-2', label:'Classes', display: false,
+                    classes: []
+                  },
+        'page-3': { code:'page-3', label:'Symbols', display: false,
+                    symbols: []
+                  }
     }
 });
 
 route(function (a) {});
 route.start();
 
-riot.mount('*');
+riot.mount('app');

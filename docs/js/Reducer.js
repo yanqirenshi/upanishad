@@ -6,7 +6,12 @@ class Reducer extends Vanilla_Redux_Reducer {
             return this.merge(state, action.data);
 
         case 'LOADED-DATA-PAGE-1':
-            console.log(action.data);
+            return this.merge(state, action.data);
+
+        case 'LOADED-DATA-PAGE-2':
+            return this.merge(state, action.data);
+
+        case 'LOADED-DATA-PAGE-3':
             return this.merge(state, action.data);
 
         default:

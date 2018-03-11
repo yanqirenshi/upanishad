@@ -54,12 +54,7 @@
     <script>
      this.state = function () { return STORE.state().pages['page-1']; };
 
-     this.on('update', function () {
-         console.log(this.state());
-     }.bind(this));
-
      STORE.subscribe(function (action) {
-         console.log(action.type=='LOADED-DATA-PAGE-1');
          if (!action.type=='LOADED-DATA-PAGE-1') return;
 
          this.update();
