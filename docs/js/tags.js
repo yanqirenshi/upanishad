@@ -36,9 +36,6 @@ riot.tag2('package-list', '<table class="table"> <thead> <th>NAME</th> <th>DESCR
 });
 
 riot.tag2('symbol-list', '<table class="table"> <thead> <th>PACKAGE</th> <th>NAME</th> <th>TYPE</th> <th>DESCRIPTION</th> </thead> <tbody> <tr each="{opts.data}"> <td>{package}</td> <td>{name}</td> <td>{type}</td> <td>{description}</td> </tr> </tbody> </table>', '', '', function(opts) {
-     this.on('mount', function () {
-         console.log(this.opts.data)
-     }.bind(this));
 });
 
 riot.tag2('app-tab', '<div class="tabs"> <ul> <li each="{page , code in opts.data}" class="{page.display ? \'is-active\' : \'\'}"> <a code="{code}" onclick="{onClickTab}"> {page.label} </a> </li> </ul> </div>', '', '', function(opts) {

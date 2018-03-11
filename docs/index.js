@@ -24,3 +24,34 @@ route(function (a) {});
 route.start();
 
 riot.mount('app');
+
+/* DevCode */
+let Metronome = new Vanilla_metronome({
+    interval: 1000,
+    tick: function (count) {
+        if (location.host=='localhost')
+            return;
+
+        let page = function () {
+            let pages = STORE.state().pages;
+            for (var k in pages)
+                if (pages[k].display)
+                    return pages[k];
+            return null;
+        }();
+
+        switch (page.code) {
+        case 'page-1':
+            ACTIONS.loadDataPage1();
+            break;
+        case 'page-2':
+            ACTIONS.loadDataPage2();
+            break;
+        case 'page-3':
+            ACTIONS.loadDataPage3();
+            break;
+        }
+
+    }
+});
+Metronome.start();
