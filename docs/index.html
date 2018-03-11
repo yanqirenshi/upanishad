@@ -3,47 +3,22 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>UPANISHAD</title>
+        <title>Github Docs</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
 
-        <script src="./src/libs/simple-redux/simple-redux.js"></script>
+        <script src="./libs/vanilla.js"></script>
+        <script src="./libs/riot.min.js"></script>
+        <script src="./libs/route.min.js"></script>
     </head>
     <body>
-        <script type="riot/tag" src="./src/tags/nav-global.tsg"></script>
-        <script type="riot/tag" src="./src/tags/navbar-global.tag"></script>
-        <script type="riot/tag" src="./src/tags/footer-global.tag"></script>
+        <app></app>
 
-        <script type="riot/tag" src="./usage.tag"></script>
-        <script type="riot/tag" src="./packages.tag"></script>
-        <script type="riot/tag" src="./instration.tag"></script>
-        <script type="riot/tag" src="./dependencies.tag"></script>
+        <script src="./js/Actions.js"></script>
+        <script src="./js/Reducer.js"></script>
+        <script src="./js/Store.js"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
-
-        <section class="section" style="padding-bottom: 22px; padding-bottom: 22px;">
-            <div class="container">
-                <h1 class="title is-1">UPANISHAD</h1>
-                <p class="subtitle"><a href="http://prevayler.org/">Object Prevalence</a> の Common Lips の実装です。</p>
-                こんな人は使ってみてください。
-                <ul>
-                    <li>CLOSオブジェクトをファイルに保管、読み込みしたいけどシリアライズ処理書いたりすんの面倒くせぇ。</li>
-                    <li>WindowsでRDB(MySQL)とかに接続すんのが上手くイカねぇ。イラつく。</li>
-                    <li>DBも Common Lisp のみで完結させたい。</li>
-                </ul>
-            </div>
-        </section>
-
-        <description></description>
-        <usage></usage>
-        <instration></instration>
-        <packages></packages>
-        <dependencies></dependencies>
-
-        <footer-global></footer-global>
-
-        <nav-global></nav-global>
-
-        <script>riot.mount('*')</script>
+        <script src="./js/tags.js"></script>
+        <script src="index.js"></script>
     </body>
 </html>
