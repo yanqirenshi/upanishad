@@ -31,5 +31,7 @@
 
      STORE.subscribe(function (action) { this.displayTabContents(); }.bind(this));
      this.on('mount', function () { this.displayTabContents(); }.bind(this));
+
+     ACTIONS.loadDataPage1();
     </script>
 </app>

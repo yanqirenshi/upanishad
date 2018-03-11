@@ -25,24 +25,22 @@ class Vanilla_Ajax {
         };
         this.callback = params.callback ? params.callback : {};
     }
-
     makeUri (path) {
+        let uri_path = path;
         var port = '';
         if (this.port)
             port = ':' + this.port;
 
-        return this.protcol + '://'
+        return this.protcol + '//'
             + this.host
             + port
-            + this.path.prefix
-            + path;
+            + (this.path.prefix ? this.path.prefix : '')
+            + uri_path;
     }
-
     error401 () {
         location.href = '/sign-in.html';
         return {};
     }
-
     errorCase (response) {
         let status = response.status;
         let callback = this.callback[status];
@@ -55,7 +53,6 @@ class Vanilla_Ajax {
 
         return {};
     }
-
     makeData (method, body) {
         var data =  {
             method: method ? method : 'GET',
@@ -79,7 +76,6 @@ class Vanilla_Ajax {
 
         return data;
     }
-
     get (path, callback) {
         var uri = this.makeUri(path);
         fetch(uri, this.makeData())
@@ -94,7 +90,6 @@ class Vanilla_Ajax {
                 this.dump(error);
             }.bind(this));
     }
-
     post (path, data, callback) {
         var uri = this.makeUri(path);
         fetch(uri, this.makeData('POST', data))
@@ -106,7 +101,6 @@ class Vanilla_Ajax {
             })
             .then(callback);
     }
-
     put (path, data, callback) {
         var uri = this.makeUri(path);
         fetch(uri, this.makeData('PUT', data))
